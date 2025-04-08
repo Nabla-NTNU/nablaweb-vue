@@ -1,6 +1,5 @@
 <template>
-    <div class="text-dark font-poppins text-m max-w-280 min-h-screen mx-auto my-20">
-        <!-- Content -->
+    <div class="text-dark font-poppins text-m max-w-280 mx-auto ">
         <slot></slot>
     </div>
 </template>
