@@ -25,8 +25,21 @@ export async function get_group_members(nablaGroupEmail: string) {
     }));
 }
 
+export async function get_groups() {
+    const { data, error } = await supabase
+        .from("nabla_groups")
+        .select(`
+            group_mail,
+            group_kind,
+            group_name,
+            group_url,
+            logo
+        `);
 
-// TODO: 
-//  - Design user Model: what does a full NablaUser model look like?
-//  - What should database return? Do you get all public data at once?
-//  - Do you request one user at a time or many?
+    if (error) {
+        console.error("Error fetching users in group with roles:", error);
+        return [];
+    }
+
+    return data;
+}

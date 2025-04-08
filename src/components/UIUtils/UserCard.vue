@@ -11,7 +11,7 @@
 <template>
     <div class = "text-center w-40">
         <img :src='props.profile_picture' class = 'rounded-xl'>
-        {{ props.last_name }}, {{ props.first_name }}
+        {{ props.first_name }}, {{ props.last_name }}
         <br>
         <i> {{  props.member_role || "."  }} </i>
     </div>

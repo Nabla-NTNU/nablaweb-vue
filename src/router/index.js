@@ -3,7 +3,8 @@ import HjemView from '../views/hjem/hjem.vue'
 import NyStudentView from '../views/ny-student/ny-student.vue'
 import ProfilView from '../views/profil/profil.vue'
 import StillingsannonseView from '../views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
-import KomiteView from '../views/for-studenter/komite-side.vue'
+import GroupPage from '../views/for-studenter/nabla-group.vue'
+import GroupsPage from '../views/for-studenter/nabla-groups.vue'
 import UnderKonstruksjonView from '../views/diverse/error/under-konstruksjon.vue'
 
 const routes = [
@@ -28,8 +29,8 @@ const routes = [
   { path: '/for-komponenter/faglig-innhold', component: UnderKonstruksjonView },
   { path: '/for-komponenter/interessegrupper', component: UnderKonstruksjonView },
   { path: '/for-komponenter/kjellern', component: UnderKonstruksjonView },
-  { path: '/for-komponenter/komiteer', component: KomiteView },
-  { path: '/for-komponenter/komiteer/:id', component: KomiteView, props: true },
+  { path: '/for-komponenter/komiteer', component: GroupsPage },
+  { path: '/for-komponenter/komiteer/:id', component: GroupPage, props: true },
   { path: '/for-komponenter/kontakt', component: UnderKonstruksjonView },
   { path: '/for-komponenter/motereferater', component: UnderKonstruksjonView },
   { path: '/for-komponenter/okonomisk-stotte', component: UnderKonstruksjonView },
