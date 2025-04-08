@@ -14,12 +14,6 @@ import ThemeToggler from '../../components/buttons/ThemeToggler.vue';
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ProfilView',
-}
-</script>
-
 <style>
 /* Global styles or additional customization */
 </style>
