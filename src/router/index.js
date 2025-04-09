@@ -6,6 +6,7 @@ import StillingsannonseView from '../views/for-bedrifter/stillingsannonse/stilli
 import GroupPage from '../views/for-studenter/nabla-group.vue'
 import GroupsPage from '../views/for-studenter/nabla-groups.vue'
 import UnderKonstruksjonView from '../views/diverse/error/under-konstruksjon.vue'
+import PageNotFoundView from '../views/diverse/error/404.vue'
 
 const routes = [
 
@@ -64,7 +65,7 @@ const routes = [
   { path: '/soknad', component: UnderKonstruksjonView }, 
   { path: '/tilbakemeldinger', component: UnderKonstruksjonView },
 
-//  { path: '/error', component: (Your choice)View },
+ { path: '/404', component: PageNotFoundView },
 ]
 
 // Create a router instance
