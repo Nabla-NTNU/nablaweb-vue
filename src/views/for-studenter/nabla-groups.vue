@@ -8,7 +8,6 @@
     const nablaGroups = ref([])
     onMounted(async () => {
         nablaGroups.value = await get_groups()
-        console.log('hi')
     })
 </script>
 
@@ -18,11 +17,11 @@
             <GroupCard
                 v-for="nablaGroup in nablaGroups"
                     :key="nablaGroup.group_mail"
-                    :group_mail="nablaGroup.group_mail"
-                    :group_kind="nablaGroup.group_kind"
-                    :group_name="nablaGroup.group_name"
-                    :group_url="nablaGroup.group_url"
-                    :group_logo="nablaGroup.logo"
+                    :groupMail="nablaGroup.group_mail"
+                    :groupKind="nablaGroup.group_kind"
+                    :groupName="nablaGroup.group_name"
+                    :groupURL="nablaGroup.group_url"
+                    :groupLogo="nablaGroup.logo"
             />
         </div>
     </div>

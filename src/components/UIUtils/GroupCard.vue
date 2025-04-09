@@ -1,21 +1,21 @@
 <script setup>
 import { computed } from 'vue'
     const props = defineProps({
-        group_mail: String, 
-        group_kind: String, 
-        group_name: String, 
-        group_url: String,  
-        group_logo: String
+        groupMail: String, 
+        groupKind: String, 
+        groupName: String, 
+        groupURL: String,  
+        groupLogo: String
     })
 
-    const link = computed(() => `/for-komponenter/komiteer/${props.group_mail}`)
+    const link = computed(() => `/for-komponenter/komiteer/${props.groupURL}`)
 </script>
 
 <template>
     <RouterLink :to='link'>
         <div class = "text-center w-40">
-            <img :src='props.group_logo' class = 'rounded-xl'>
-            {{ props.group_name }}
+            <img :src='props.groupLogo' class = 'rounded-xl'>
+            {{ props.groupName }}
         </div>
     </RouterLink>
 </template>

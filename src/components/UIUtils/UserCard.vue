@@ -1,18 +1,18 @@
 <script setup>
     const props = defineProps({ 
-        school_email: String,
-        first_name: String,           
-        last_name: String,
-        profile_picture: String,
-        member_role: String  
+        userName: String,
+        firstName: String,           
+        lastName: String,
+        profilePicture: String,
+        memberRole: String  
     })
 </script>
 
 <template>
     <div class = "text-center w-40">
-        <img :src='props.profile_picture' class = 'rounded-xl'>
-        {{ props.first_name }}, {{ props.last_name }}
+        <img :src='props.profilePicture' class = 'rounded-xl'>
+        {{ props.lastName }}, {{ props.firstName }}
         <br>
-        <i> {{  props.member_role || "."  }} </i>
+        <i> {{  props.memberRole || "."  }} </i>
     </div>
 </template>
