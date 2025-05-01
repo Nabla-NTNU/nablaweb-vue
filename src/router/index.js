@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HjemView from '../views/hjem/hjem.vue'
-import NyStudentView from '../views/ny-student/ny-student.vue'
-import ProfilView from '../views/profil/profil.vue'
-import StillingsannonseView from '../views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
-import GroupPage from '../views/for-studenter/nabla-group.vue'
-import GroupsPage from '../views/for-studenter/nabla-groups.vue'
-import UnderKonstruksjonView from '../views/diverse/error/under-konstruksjon.vue'
-import PageNotFoundView from '../views/diverse/error/404.vue'
+import HjemView from '@/views/hjem/hjem.vue'
+import NyStudentView from '@/views/ny-student/ny-student.vue'
+import ProfilView from '@/views/profil/profil.vue'
+// import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
+import GroupPage from '@/views/for-studenter/undergrupper/nabla-group.vue'
+import GroupAdminPage from '@/views/for-studenter/undergrupper/nabla-group-admin.vue'
+import GroupsPage from '@/views/for-studenter/undergrupper/nabla-groups.vue'
+import UnderKonstruksjonView from '@/views/diverse/error/under-konstruksjon.vue'
+import PageNotFoundView from '@/views/diverse/error/404.vue'
 
 const routes = [
 
@@ -32,6 +33,7 @@ const routes = [
   { path: '/for-komponenter/kjellern', component: UnderKonstruksjonView },
   { path: '/for-komponenter/komiteer', component: GroupsPage },
   { path: '/for-komponenter/komiteer/:id', component: GroupPage, props: true },
+  { path: '/for-komponenter/komiteer/:id/admin', component: GroupAdminPage, props: true },
   { path: '/for-komponenter/kontakt', component: UnderKonstruksjonView },
   { path: '/for-komponenter/motereferater', component: UnderKonstruksjonView },
   { path: '/for-komponenter/okonomisk-stotte', component: UnderKonstruksjonView },

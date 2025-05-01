@@ -9,3 +9,7 @@ html, body {
     padding: 0;
     height: 100%;
 }
+
+.reset-tailwind * {
+    all: revert !important;
+}

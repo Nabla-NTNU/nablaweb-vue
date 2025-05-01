@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+    import { computed } from 'vue'
+    
     const props = defineProps({
         groupMail: String, 
         groupKind: String, 
@@ -12,10 +13,12 @@ import { computed } from 'vue'
 </script>
 
 <template>
+    <div style="padding: 20pt ">
     <RouterLink :to='link'>
-        <div class = "text-center w-40">
-            <img :src='props.groupLogo' class = 'rounded-xl'>
+        <div class = "text-center" >
+            <img :src='props.groupLogo' class="square-aspect-ratio"style = 'margin-left: auto; margin-right: auto; height: 100pt;'>
             {{ props.groupName }}
         </div>
     </RouterLink>
+    </div>
 </template>

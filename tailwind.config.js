@@ -512,9 +512,9 @@ export default {
       6: '6px',
     },
     plugins: [
-      typography,
-      forms,
-      aspectRatio,
+      require('@tailwindcss/typography'),
+      require('@tailwindcss/forms'),
+      require('@tailwindcss/aspect-ratio'),
     ],
   }
 }

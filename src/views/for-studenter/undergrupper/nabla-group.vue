@@ -1,9 +1,12 @@
 <script setup>
-    import { onMounted } from 'vue';
-    import { getGroupDetails } from '../../lib/db/db';
-    import UserCard from './../../components/UIUtils/UserCard.vue';
-    import { useRoute, useRouter } from 'vue-router';
-    import { ref } from 'vue'
+    import { ref, onMounted } from 'vue';
+    import { useRoute, useRouter, RouterLink } from 'vue-router';
+    import { marked } from 'marked'
+
+    import { getGroupDetails } from '@/lib/db/db';
+    import { useAuth } from '@/composables/useAuth';
+    import UserCard from '@/components/UIUtils/UserCard.vue';
+
 
     const route = useRoute();
     const router = useRouter();
@@ -15,11 +18,11 @@
     onMounted(async () => {
         nablaGroup.value = await getGroupDetails(groupURL)
         if (nablaGroup.value == null) {
-            console.log('hi')
             router.push('/404')
         }
         mailtoLink.value = `mailto:${nablaGroup.value.groupMail}`
     })
+  const { user, isLoading, isAuthenticated } = useAuth()
 </script>
 
 <template>
@@ -27,14 +30,19 @@
         <img class = "object-fit: w-full object-cover" :src='nablaGroup.groupImage' alt="Flotte folk">
         <div class="mx-auto flex w-full px-4 sm:px-6 lg:px-8 max-w-[1200px] py-10">
             <div class="flex-1 pr-6">
-                
-                <h1 class="group flex items-center font-semibold tracking-tight text-title-2 mb-4">
-                    {{ nablaGroup.groupName }}
-                </h1>
-                <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
+                <div class="flex flex-row mb-4">
+                    <h1 class="grow font-semibold tracking-tight text-title-2">
+                        {{ nablaGroup.groupName }}    
+                    </h1>
+                    <RouterLink :to="`${groupURL}/admin`" v-if="isAuthenticated" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
+                        Hemmelige Saker <br> (Adminpanel)
+                    </RouterLink>
+                </div>
+                <h2 class=" font-semibold tracking-tight text-subtitle-2 mb-4">
                     <a :href="mailtoLink"> {{ nablaGroup.groupMail }}</a>
                 </h2>
-                {{ nablaGroup.about }}
+                
+                <article class="flex-1 reset-tailwind" v-html='marked.parse(nablaGroup.about)' v-if='nablaGroup.about'></article>
 
                 <div v-if="nablaGroup.members">
                     <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">

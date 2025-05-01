@@ -1,9 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
-import { getAnonKey } from './SECRETS.js'
-
-export const supabase = createClient('https://db.testing.nabla.no', getAnonKey(), {
-    db : { schema: 'nablaweb_vue'}
-})
+import { supabase } from "@/lib/supabaseClient"
+import { parse } from 'marked'
 
 export async function get_groups() {
     const { data, error } = await supabase
@@ -25,7 +21,7 @@ export async function get_groups() {
 }
 
 interface GroupPage {
-    about: string;
+    about: string | Promise<string>;
     groupImage: string;
 }
   

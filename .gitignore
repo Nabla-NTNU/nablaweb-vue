@@ -1,5 +1,5 @@
-# Secrets
-src/lib/db/SECRETS.js
+# Secrets (should be ignored anyways)
+.env.local
 
 # Logs
 logs
