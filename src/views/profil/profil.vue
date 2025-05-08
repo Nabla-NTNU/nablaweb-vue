@@ -7,7 +7,7 @@
   import ThemeToggler from '@/components/buttons/ThemeToggler.vue';
 
   
-  const { currentUser, isLoading, isAuthenticated } = useAuth()
+  const { isLoading, isAuthenticated, signOut } = useAuth()
   
   </script>
 
@@ -17,7 +17,7 @@
   </div>
 
   <div style="margin: 40pt;" v-else-if="isAuthenticated">
-    <button @click="signCurrentUserOut"> Sign Out </button>
+    <button class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" @click="signOut"> Sign Out </button>
   </div>
   
   <div style="margin: 40pt;" v-else>
@@ -28,23 +28,3 @@
     <ThemeToggler />
   </div>
 </template>
-
-
-<!-- Identical to the one in LoginCard - why don't we have global styles for kiunds of buttons? -->
-<style scoped>
-    input {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border-radius: 5pt;
-        box-sizing: border-box;
-    }
-
-    button {
-        background-color: blue;
-        border: none;
-        border-radius: 5pt;
-        padding: 5pt 8pt;
-        color: white;
-    }
-</style>

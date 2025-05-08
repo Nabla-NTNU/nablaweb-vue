@@ -1,7 +1,7 @@
 <script setup>
     import { ref, onMounted } from 'vue';
     import { useRoute, useRouter, RouterLink } from 'vue-router';
-    import { marked } from 'marked'
+    import markdownit from 'markdown-it'
 
     import { getGroupDetails } from '@/lib/db/db';
     import { useAuth } from '@/composables/useAuth';
@@ -14,6 +14,7 @@
 
     const nablaGroup = ref({})
     const mailtoLink = ref("");
+    const md = markdownit()
 
     onMounted(async () => {
         nablaGroup.value = await getGroupDetails(groupURL)
@@ -42,7 +43,7 @@
                     <a :href="mailtoLink"> {{ nablaGroup.groupMail }}</a>
                 </h2>
                 
-                <article class="flex-1 reset-tailwind" v-html='marked.parse(nablaGroup.about)' v-if='nablaGroup.about'></article>
+                <article class="flex-1 reset-tailwind" v-html='md.render(nablaGroup.about)' v-if='nablaGroup.about'></article>
 
                 <div v-if="nablaGroup.members">
                     <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">

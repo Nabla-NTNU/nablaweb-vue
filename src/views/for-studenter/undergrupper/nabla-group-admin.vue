@@ -1,19 +1,29 @@
-<script setup lang="ts">
+<script setup>
     import { ref, onMounted } from 'vue';
     import { useRoute, useRouter, RouterLink } from 'vue-router';
-    import { marked } from 'marked'
 
-    import { getGroupDetails } from '@/lib/db/db';
-    import { useAuth } from '@/composables/useAuth';
     import { supabase } from '@/lib/supabaseClient';
-    import GroupImagePicker from '@/components/group-page/group-image-picker.vue'
+    import { useAuth } from '@/composables/useAuth';
+    import { getGroupDetails } from '@/lib/db/db';
+    import { useGroupImageUpload } from '@/composables/useImageUpload';
+    
+    import ImagePicker from '@/components/group-page/image-picker.vue'
+    import MarkdownField from '@/components/group-page/markdown-field.vue'
+    
+    
+    const route = useRoute()
+    const router = useRouter()
 
-    const route = useRoute();
-    const router = useRouter();
     const groupURL = route.params.id;
 
-    const nablaGroup = ref({})
-    const mailtoLink = ref("");
+    const { uploading, error, publicURL, upload } = useGroupImageUpload(groupURL)
+
+    const { user, isLoading, isAuthenticated } = useAuth()
+
+
+    const nablaGroup = ref({}) // should be deleted I think
+    const groupAboutText = ref("")
+    const groupImageURL = ref("")
 
 
     onMounted(async () => {
@@ -21,29 +31,36 @@
         if (nablaGroup.value == null) {
             router.push('/404')
         }
-        mailtoLink.value = `mailto:${nablaGroup.value.groupMail}`
-
+        groupAboutText.value = nablaGroup.value.about
+        groupImageURL.value = nablaGroup.value.groupImage
     })
-  const { user, isLoading, isAuthenticated } = useAuth()
 
-  async function updateText() {
-    const {data, error} = await supabase
-        .from('nabla_group_pages')
-        .update({about: nablaGroup.value.about})
-        .eq('group', groupURL)
-  }
+    async function handleSaveImageURL(localText) {
+        console.log("A")
+        console.log(localText)
+        const {data, error} = await supabase
+            .from('nabla_group_pages')
+            .update({group_image: localText})
+            .eq('group', groupURL)
+        if (error) {
+            console.error('Error saving image URL:', error)
+        } else {
+            console.log("B")
+            groupImageURL.value = localText
+        }
+    }
 
-  async function reset() {
-    nablaGroup.value = await getGroupDetails(groupURL)
-  }
-  
+    async function reset() {
+        nablaGroup.value = await getGroupDetails(groupURL)
+    }
 </script>
 
 <template>
     <div class="flex w-full flex-grow flex-col">
-        <img class = "object-fit: w-full object-cover" :src='nablaGroup.groupImage' alt="Flotte folk">
+        <img class = "object-fit: w-full object-cover" :src='groupImageURL' alt="Flotte folk">
         <div class="mx-auto flex w-full px-4 sm:px-6 lg:px-8 max-w-[1200px] py-10">
             <div class="flex-1 pr-6">
+                
                 <div class="flex flex-row mb-4">
                     <h1 class="grow font-semibold tracking-tight text-title-2">
                         Adminsida for {{ nablaGroup.groupName }}    
@@ -53,22 +70,12 @@
                     </RouterLink>
                 </div>
 
-                <GroupImagePicker v-model:imageURL="nablaGroup.imageURL" @save-url="onSaveURL"/>
-
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
                     Endre gruppebilde
                 </h2>
                 Disse kan enten peke mot et bilde ute på nettet, eller lastes opp. Dersom dere laster opp - vi fastsetter maks ____ Mb per bilde. Det er ingen fast størrelse på bildet. Gjerne sjekk at det ser presentabelt på alle størrelser skjermer, fra mobiltelefon til storskjerm.
-                <div class="flex gap-4">
-                    <input v-model="nablaGroup.groupImage" placeholder="https://nabla.no/det_kuleste_bildet">
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" @click="reset()">
-                        Lagre annen URL
-                    </button>
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary" @click="reset()">
-                        Last opp nytt
-                        <!-- TODO!!! -->
-                    </button>
-                </div>
+
+                <ImagePicker :imageURL="groupImageURL" :uploadImage="upload" @saveImageURL="handleSaveImageURL"/>
                 
                 <br>
 
@@ -76,23 +83,11 @@
                     Tekst om undergruppen:
                 </h2>
                 Her er det nok best å være short & sweet, men dere har tilgang til markdown og HTML om noen har fryktelig lyst ;))
-                <br><br>
-                <div class="flex flex-row gap-4">
-                    <div class="flex flex-col flex-1 gap-2">
-                        <textarea class="w-full grow resize-none m-2" v-model="nablaGroup.about" placeholder="NablaKom er hele nablas nabla-komite!"></textarea>
-                    </div>
-                    <!-- Workaround for tailwind stripping all styling from normal html (smh) -->
-                    <article class="flex-1 reset-tailwind" v-html='marked.parse(nablaGroup.about) || " "' v-if='nablaGroup.about'></article>
-                </div>
-                <div class="flex flex-row gap-2 mb-4">
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" @click="updateText()">
-                        Lagre ny tekst
-                    </button>
+                
+                <br>
+                <br>
 
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary" @click="reset()">
-                        Gå tilbake
-                    </button>
-                </div>
+                <MarkdownField :text="groupAboutText"/>
                 
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
                     Medlemsliste:
@@ -180,27 +175,13 @@
     </div>
 </template>
 
-<!-- Identical to the one in LoginCard - why don't we have global styles for kiunds of buttons? -->
-<style scoped>
-    input {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border-radius: 5pt;
-        box-sizing: border-box;
-    }
-</style>
-
 <!--
 TODO: 
     - Split into components in @/components/Group/
     - move lib code into composables in @/composables/useGroup.ts and @useAuth.ts
         - Seems like we'd use defineProps<>() & defineEmits<>()
     - set explicit <script setup lang="ts">
-    - DO NOT USE CSS (do use tailwind)
     - Instead of creating common tailwind class - create common Vue components
-    - move markdown rendering out of this script into @/composables/useGroup.ts
-        - make sure to _actually_ sanitise it for lé DOM (DOMPurify)
     - Write readme.md for the composables folder
     - Actually protect admin page from non-owners
     - Add place to edit group name / group logo

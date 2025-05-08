@@ -19,30 +19,12 @@
 
 <template>
     <form @submit.prevent="handleLogin">
-        <input v-model="username" placeholder="NTNU Username" />
+        <input class="w-full rounded-xl p-4 m-4" v-model="username" placeholder="NTNU Username" />
         <br/>
-        <input v-model="password" placeholder="Password" type="password"/>
+        <input class="w-full rounded-xl p-4 m-4" v-model="password" placeholder="Password" type="password"/>
         <br/>
-        <button type="submit">
+        <button class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" type="submit" @click="handleLogin">
             Log in
         </button>
     </form>
 </template>
-
-<style scoped>
-    input {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border-radius: 5pt;
-        box-sizing: border-box;
-    }
-
-    button {
-        background-color: blue;
-        border: none;
-        border-radius: 5pt;
-        padding: 5pt 8pt;
-        color: white;
-    }
-</style>
