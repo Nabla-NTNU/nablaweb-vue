@@ -35,23 +35,28 @@
         groupImageURL.value = nablaGroup.value.groupImage
     })
 
-    async function handleSaveImageURL(localText) {
-        console.log("A")
-        console.log(localText)
+    async function handleSaveImageURL(localImageURL) {
         const {data, error} = await supabase
             .from('nabla_group_pages')
-            .update({group_image: localText})
+            .update({group_image: localImageURL})
             .eq('group', groupURL)
         if (error) {
             console.error('Error saving image URL:', error)
         } else {
-            console.log("B")
-            groupImageURL.value = localText
+            groupImageURL.value = localImageURL
         }
     }
 
-    async function reset() {
-        nablaGroup.value = await getGroupDetails(groupURL)
+    async function handleSaveAboutText(localAboutText) {
+        const {data, error} = await supabase
+            .from('nabla_group_pages')
+            .update({about: localAboutText})
+            .eq('group', groupURL)
+        if (error) {
+            console.error('Error saving about text:', error)
+        } else {
+            groupAboutText.value = localAboutText
+        }
     }
 </script>
 
@@ -87,7 +92,7 @@
                 <br>
                 <br>
 
-                <MarkdownField :text="groupAboutText"/>
+                <MarkdownField :text="groupAboutText" @saveText="handleSaveAboutText"/>
                 
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
                     Medlemsliste:
