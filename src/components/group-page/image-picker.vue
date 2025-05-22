@@ -86,11 +86,14 @@
             Lagre nytt bilde
         </button>
     </div>
-
-    <img
-        v-if="localImageURL !== imageURL"
+    <div v-if="localImageURL !== imageURL">
+        <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
+            Preview:
+        </h2>
+        <img
         :src="localImageURL"
         class="w-full object-contain mt-4 rounded-xl"
         alt="Flotte folk"
-    />
+        />
+    </div>
 </template>

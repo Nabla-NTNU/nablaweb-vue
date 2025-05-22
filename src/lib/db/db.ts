@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabaseClient"
-import { parse } from 'marked'
 
 export async function get_groups() {
     const { data, error } = await supabase
@@ -33,7 +32,7 @@ interface GroupMember {
     memberRole: string;
 }
   
-  interface GroupDetails {
+interface GroupDetails {
     groupMail: string;
     groupKind: string;
     groupName: string;

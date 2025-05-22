@@ -4,6 +4,7 @@
     import markdownit from 'markdown-it'
 
     import { getGroupDetails } from '@/lib/db/db';
+    import { useGroup } from '@/composables/useNablaGroup';
     import { useAuth } from '@/composables/useAuth';
     import UserCard from '@/components/UIUtils/UserCard.vue';
 
@@ -17,7 +18,7 @@
     const md = markdownit()
 
     onMounted(async () => {
-        nablaGroup.value = await getGroupDetails(groupURL)
+        nablaGroup.value = await useGroup(groupURL)
         if (nablaGroup.value == null) {
             router.push('/404')
         }
@@ -45,19 +46,19 @@
                 
                 <article class="flex-1 reset-tailwind" v-html='md.render(nablaGroup.about)' v-if='nablaGroup.about'></article>
 
-                <div v-if="nablaGroup.members">
+                <div v-if="nablaGroup.groupMembers">
                     <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
                         Medlemmer:
                     </h2>
                     <div class="flex flex-wrap justify-center gap-6">
                         <UserCard
-                            v-for="nablaUser in nablaGroup.members"
+                            v-for="nablaUser in nablaGroup.groupMembers"
                                 :key="nablaUser.username"
                                 :userName="nablaUser.username"
                                 :firstName="nablaUser.firstName"
                                 :lastName="nablaUser.lastName"
                                 :profilePicture="nablaUser.profilePicture"
-                                :memberRole="nablaUser.memberRole"
+                                :memberRole="nablaUser.role"
                         />
                     </div>
                 </div>

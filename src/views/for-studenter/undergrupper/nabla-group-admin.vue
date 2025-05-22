@@ -5,10 +5,12 @@
     import { supabase } from '@/lib/supabaseClient';
     import { useAuth } from '@/composables/useAuth';
     import { getGroupDetails } from '@/lib/db/db';
+    import { useGroup } from '@/composables/useNablaGroup'
     import { useGroupImageUpload } from '@/composables/useImageUpload';
     
     import ImagePicker from '@/components/group-page/image-picker.vue'
     import MarkdownField from '@/components/group-page/markdown-field.vue'
+    import MemberAdminTable from '@/components/group-page/member-admin-table.vue'
     
     
     const route = useRoute()
@@ -24,15 +26,19 @@
     const nablaGroup = ref({}) // should be deleted I think
     const groupAboutText = ref("")
     const groupImageURL = ref("")
-
+    const groupMembers = ref([])
+    const searchString = ref("")
+    const foundUsers = ref([])
 
     onMounted(async () => {
-        nablaGroup.value = await getGroupDetails(groupURL)
+        nablaGroup.value = await useGroup(groupURL)
         if (nablaGroup.value == null) {
             router.push('/404')
         }
         groupAboutText.value = nablaGroup.value.about
         groupImageURL.value = nablaGroup.value.groupImage
+        groupMembers.value = nablaGroup.value.groupMembers
+        searchForUsers("")
     })
 
     async function handleSaveImageURL(localImageURL) {
@@ -58,6 +64,46 @@
             groupAboutText.value = localAboutText
         }
     }
+
+    async function handleSaveMemberTable(localMemberTable) {
+        const offset = Math.floor(Math.random() * (2**30)) // crusty but funny solution to ordering members with unique orders in a single request. Not actually needed, but there's a bug throwing an error somewhere without this that I can't track down
+        const updates = localMemberTable.map((member, index) => ({
+            group:       groupURL,
+            user:        member.username,
+            member_role: member.role,
+            order:       offset + index,
+            is_active:   member.isActive
+        }));
+        
+        const {data, error} = await supabase
+            .from('nabla_group_members')
+            .upsert(updates)
+        if (error) {
+            console.error('Error saving membership updates:', error)
+        } else {
+            nablaGroup.value = await useGroup(groupURL)
+            if (nablaGroup.value == null) {
+                router.push('/404')
+            }
+            groupMembers.value = nablaGroup.value.groupMembers
+        }
+    }
+
+    async function searchForUsers(newMemberSearchString) {
+        const alreadyMembers = new Set(groupMembers.value.map(m => m.username))
+
+        const {data, error} = await supabase
+            .from('nabla_users')
+            .select()
+            .or(`first_name_last_name_username.ilike.%${newMemberSearchString}%`)
+        if (error) {
+            console.error('Error searching for members:', error)
+        } else {
+            foundUsers.value = data.filter(u => !alreadyMembers.has(u.username))
+            console.log(data)
+        }
+    }
+
 </script>
 
 <template>
@@ -97,74 +143,34 @@
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
                     Medlemsliste:
                 </h2>
-                <table class="min-w-full table-auto mb-4">
-                    <thead>
-                        <tr>
-                            <th class="w-auto whitespace-nowrap text-left px-2">Navn</th>
-                            <th class="whitespace-nowrap px-2">Kull</th>
-                            <th class="w-full whitespace-nowrap">Rolle</th>
-                            <th class="whitespace-nowrap px-2">Dato</th>
-                            <th class="whitespace-nowrap px-2">Flytt</th>
-                            <th class="whitespace-nowrap px-2">Ferdig</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="nablaGroup.members" v-for="nablaUser in nablaGroup.members">
-                            <td class="text-left whitespace-nowrap px-2">
-                                {{  nablaUser.firstName }} {{ nablaUser.lastName }} 
-                            </td>
-                            <td>
-                                kull??
-                            </td>
-                            <td class="px-2">
-                                <input placeholder="Kuleste medlem!"/>
-                            </td>
-                            <td>
-                                00.00.0000
-                            </td>
-                            <td>
-                                <button class="mt-auto px-4 py-2 my-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" @click="">
-                                    Δ
-                                </button>
-                                <button class="mt-auto px-4 py-2 my-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" @click="">
-                                    ∇
-                                </button>
-                            </td>
-                            <td>
-                                <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary" @click="">
-                                    Slett
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-left whitespace-nowrap px-2" colspan="2">
-                                <input placeholder="Brukernavn"/>
-                            </td>
-                            <td class="px-2">
-                                <input placeholder="Den nye rollen"/>
-                            </td>
-                            <td colspan="3">
-                                <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" @click="">
-                                    Legg ny medlem inn!
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-        
 
+                <MemberAdminTable
+                    :members="groupMembers"
+                    v-model:searchString="searchString"
+                    :foundUsers="foundUsers"
+                    @saveMemberTable="handleSaveMemberTable"
+                    @searchForUsers="searchForUsers"
+                />
+                <br>
+                <br>
+                
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
-                    Endre gruppeleder
+                    Endre gruppeleder:
                 </h2>
                 Faresone! Ikke reversibelt!
                 <br>
-                <div class="md-4">
-                    <select v-if="nablaGroup.members" class="mx-4">
-                        <option v-for="nablaUser in nablaGroup.members">
-                            {{nablaUser.username}}
+                <div class="md-4 flex">
+                    <input
+                        list="new-leader"
+                        placeholder="Ny leder?"
+                        class="border rounded p-2 w-full m-2"
+                    />
+                    <datalist id="new-leader" v-if="groupMembers" class="mx-4">
+                        <option v-for="nablaUser in groupMembers" :value="nablaUser.username">
+                            {{nablaUser.firstName}} {{ nablaUser.lastName }}, {{ nablaUser.class }}, {{ nablaUser.role }}
                         </option>
-                    </select>
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary" @click="reset()">
+                    </datalist>
+                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary" @click="console.log(nablaGroup.members)">
                         Sett ny leder
                     </button>
                 </div>
@@ -183,12 +189,15 @@
 <!--
 TODO: 
     - Split into components in @/components/Group/
+        - only leader picker left
+        - Consider if a "tillitsvalgt" picker needed?
     - move lib code into composables in @/composables/useGroup.ts and @useAuth.ts
         - Seems like we'd use defineProps<>() & defineEmits<>()
     - set explicit <script setup lang="ts">
+        - Easier with local database
     - Instead of creating common tailwind class - create common Vue components
     - Write readme.md for the composables folder
-    - Actually protect admin page from non-owners
+    - Actually protect admin page from non-owners (get RLS going)
     - Add place to edit group name / group logo
     
 TODO (non-critical)
@@ -196,7 +205,8 @@ TODO (non-critical)
     - actually implement and respect loading & states
     - get ESLing working (eslint-plugin-vue)
     - get pre-commit working (lint-staged)
-    - get serverside supabase type-generation working
+    - Get local supabase setup working and document in README
+    - get supabase type-generation working (easier locally)
     - Unit tests :((
     - animation for changing leader would be lit
         - mby a thank you for your service meme gif?
