@@ -27,8 +27,10 @@
     const groupAboutText = ref("")
     const groupImageURL = ref("")
     const groupMembers = ref([])
+    const groupLeader = ref("")
     const searchString = ref("")
     const foundUsers = ref([])
+    const newLeaderUsername = ref("")
 
     onMounted(async () => {
         nablaGroup.value = await useGroup(groupURL)
@@ -38,6 +40,7 @@
         groupAboutText.value = nablaGroup.value.about
         groupImageURL.value = nablaGroup.value.groupImage
         groupMembers.value = nablaGroup.value.groupMembers
+        groupLeader.value = 'alexamm'//nablaGroup.value.groupLeader
         searchForUsers("")
     })
 
@@ -146,10 +149,11 @@
 
                 <MemberAdminTable
                     :members="groupMembers"
-                    v-model:searchString="searchString"
-                    :foundUsers="foundUsers"
+                    :notRemovable="groupLeader"
                     @saveMemberTable="handleSaveMemberTable"
+                    v-model:searchString="searchString"
                     @searchForUsers="searchForUsers"
+                    :foundUsers="foundUsers"
                 />
                 <br>
                 <br>
@@ -162,15 +166,18 @@
                 <div class="md-4 flex">
                     <input
                         list="new-leader"
+                        v-model="newLeaderUsername"
                         placeholder="Ny leder?"
                         class="border rounded p-2 w-full m-2"
                     />
                     <datalist id="new-leader" v-if="groupMembers" class="mx-4">
-                        <option v-for="nablaUser in groupMembers" :value="nablaUser.username">
-                            {{nablaUser.firstName}} {{ nablaUser.lastName }}, {{ nablaUser.class }}, {{ nablaUser.role }}
-                        </option>
+                        <div v-for="nablaUser in groupMembers">
+                            <option v-if="nablaUser.username !== groupLeader" :value="nablaUser.username">
+                                {{nablaUser.firstName}} {{ nablaUser.lastName }}, {{ nablaUser.class }}, {{ nablaUser.role }}
+                            </option>
+                        </div>
                     </datalist>
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary" @click="console.log(nablaGroup.members)">
+                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray" @click="console.error('not implemented')" :disabled="!groupMembers.some(user => user.username === newLeaderUsername)">
                         Sett ny leder
                     </button>
                 </div>

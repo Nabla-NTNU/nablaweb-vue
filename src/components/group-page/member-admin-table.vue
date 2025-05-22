@@ -3,6 +3,7 @@
 
     const props = defineProps({
         members: [{}],
+        notRemovable: "",
         searchString: "",
         foundUsers: [{}],
     })
@@ -111,7 +112,7 @@
                     </button>
                 </td>
                 <td v-if="props.members[index]">
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary" v-if="member.role == props.members[index].role" @click="removeMember(index)">
+                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray" v-if="member.role == props.members[index].role" @click="removeMember(index)" :disabled="notRemovable.includes(member.username)">
                         Slett
                     </button>
                     <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" v-else @click="$emit('saveMemberTable', localMemberTable)">
@@ -160,5 +161,4 @@
 <!-- TODO:
     - Leader should not be removable
     - Change leader UI (and maybe show leader somewhere UI)
-    - Prettier UI and better UX
 -->

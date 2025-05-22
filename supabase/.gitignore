@@ -1,0 +1,11 @@
+# Supabase
+.branches
+.temp
+
+# dotenvx
+.env.keys
+.env.local
+.env.*.local
+
+# As we're only using migrations for diffing  I don't think we need to save them to git?
+migrations

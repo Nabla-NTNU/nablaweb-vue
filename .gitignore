@@ -1,5 +1,5 @@
 # Secrets (should be ignored anyways)
-.env.local
+.env.remote
 
 # Logs
 logs
