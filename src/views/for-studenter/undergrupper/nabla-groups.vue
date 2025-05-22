@@ -11,7 +11,7 @@
         nablaGroups.value = await get_groups()
         nablaCommittees.value = nablaGroups.value.filter(groupKind => groupKind == "committee")
         nablaInterestGroups.value = nablaGroups.value.filter(groupKind => groupKind == "interest group")
-        console.log(nablaCommittees.value)
+        console.log(nablaGroups.value)
     })
 </script>
 
