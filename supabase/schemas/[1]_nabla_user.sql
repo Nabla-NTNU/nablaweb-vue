@@ -11,24 +11,24 @@ CREATE TYPE nablaweb_vue.class AS ENUM (
 
 -- Actual table
 CREATE TABLE nablaweb_vue.nabla_users (
-    list_email text NOT NULL,
-    profile_picture text NOT NULL,
-    first_name text NOT NULL,
-    last_name text NOT NULL,
-    birthday date,
-    username text NOT NULL,
-    ntnu_email text NOT NULL,
-    class text,
-    first_name_last_name_username text GENERATED ALWAYS AS (((((first_name || ' '::text) || last_name) || ' '::text) || username)) STORED
+    username        TEXT                PRIMARY KEY,
+    supabase_id     UUID                NOT NULL UNIQUE,
+    ntnu_email      TEXT                NOT NULL UNIQUE,
+    list_email      TEXT                NOT NULL UNIQUE,
+    first_name      TEXT                NOT NULL,
+    last_name       TEXT                NOT NULL,
+    class           nablaweb_vue.class  NOT NULL,
+    profile_picture TEXT                NOT NULL DEFAULT '',
+    about           text                NOT NULL DEFAULT '',
+    website         text                NOT NULL DEFAULT '',
+    public_email    text                NOT NULL DEFAULT '',
+    birthday        DATE,
+    first_name_last_name_username TEXT  GENERATED ALWAYS AS
+        (first_name || ' ' || last_name || ' ' || username) STORED
 );
 
 -- Indexing (For efficient user searching)
-CREATE INDEX idx_nabla_users_search_string ON nablaweb_vue.nabla_users USING btree (first_name_last_name_username);
-
---  Constraints
-ALTER TABLE ONLY nablaweb_vue.nabla_users ADD CONSTRAINT "nablaUsers_listEmail_key" UNIQUE (list_email);
-ALTER TABLE ONLY nablaweb_vue.nabla_users ADD CONSTRAINT nabla_users_ntnu_email_key UNIQUE (ntnu_email);
-ALTER TABLE ONLY nablaweb_vue.nabla_users ADD CONSTRAINT nabla_users_pkey PRIMARY KEY (username);
+CREATE INDEX ON nablaweb_vue.nabla_users USING btree (first_name_last_name_username);
 
 -- Descriptions for Supabase Studio
 COMMENT ON TABLE nablaweb_vue.nabla_users IS 'Table containing unique details of past and present nablausers';

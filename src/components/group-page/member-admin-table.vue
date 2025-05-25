@@ -150,15 +150,7 @@
             </tr>
         </tbody>
     </table>
-    <!-- <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="" :disabled="localMemberTable==members">
-        Lagre
-    </button> -->
     <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="sortMembers" :disabled="isSorted">
         Sorter etter dato
     </button>
 </template>
-
-<!-- TODO:
-    - Leader should not be removable
-    - Change leader UI (and maybe show leader somewhere UI)
--->

@@ -19,7 +19,10 @@ supabase start
 ```
 This will take a while on the first run as the process downloads and installs everything. When finished, it prints out a bunch of links. When successfully started, the Supabase CLI prints out a bunch of URL's. Of these the Studio URL is most interesting: by going to [http://localhost:54323](http://localhost:54323) you'll be able to see their frontend to your local database, add users, etcetera. You can also log onto the database directly in an SQL interface by entering the docker container and connecting to the database through `psql` as user `postgres`, but that is beyond the scope of this `README`. As of today I think the schema in this repo should be the source of truth as to how the database looks, so note that any changes in your Supabase Studio or the database are very much local to your machine. See the `README` in the `supabase` directory for more.
 
-You'll then need to seed the database with random data, as an empty website is hard to work on, and just kind of boring. At the moment this is done automatically on startup, however it really should be done as a second step.
+You'll then need to seed the database with random data, as an empty website is hard to work on, and just kind of boring. This is done by the `src/lib/seedDatabase.ts` script, which is for your convenience also run by
+```shell
+npm run seed
+```
 
 You can rebuild the database from the ground up (if you're changing the chema in-code) by 
 ```shell
@@ -41,7 +44,7 @@ npm run dev
 ```
 will start up the server, and you'll see this beautiful thing we're working on on [http://localhost:5173/](http://localhost:5173/)!
 
-When seeding we add user `admin` with password `admin` who has all the privillages us other WebKom devs do, and user `user` with password `user`  who has regular komponent access.
+When seeding we add user `admin` with password `nabla_admin` who has all the privillages us other WebKom devs do, and user `user` with password `nabla_user`  who has regular nablauser access.
 
 # repoet for Farger og fonter til Nabla
 

@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "seed": "ts-node src/lib/seedDatabase.ts",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -12,10 +13,12 @@
     "@supabase/supabase-js": "^2.49.4",
     "markdown-it": "^14.1.0",
     "postcss-import": "^16.1.0",
+    "ts-node": "^10.9.2",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.16",

@@ -199,10 +199,9 @@ TODO:
         - only leader picker left
         - Consider if a "tillitsvalgt" picker needed?
     - move lib code into composables in @/composables/useGroup.ts and @useAuth.ts
-        - Seems like we'd use defineProps<>() & defineEmits<>()
     - set explicit <script setup lang="ts">
-        - Easier with local database
     - Instead of creating common tailwind class - create common Vue components
+        - Replace buttons and titles
     - Write readme.md for the composables folder
     - Actually protect admin page from non-owners (get RLS going)
     - Add place to edit group name / group logo
@@ -212,8 +211,6 @@ TODO (non-critical)
     - actually implement and respect loading & states
     - get ESLing working (eslint-plugin-vue)
     - get pre-commit working (lint-staged)
-    - Get local supabase setup working and document in README
-    - get supabase type-generation working (easier locally)
     - Unit tests :((
     - animation for changing leader would be lit
         - mby a thank you for your service meme gif?
