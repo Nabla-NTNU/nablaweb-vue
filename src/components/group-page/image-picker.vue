@@ -86,7 +86,7 @@
             Lagre nytt bilde
         </button>
     </div>
-    <div v-if="localImageURL !== imageURL">
+    <div>
         <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
             Preview:
         </h2>

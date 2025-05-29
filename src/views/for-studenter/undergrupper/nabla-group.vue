@@ -17,9 +17,6 @@
 </script>
 
 <template>
-    <div class="flex w-full flex-grow flex-col" v-if="loading">
-        LOADING
-    </div>
     <div class="flex w-full flex-grow flex-col" v-if="!loading">
         <img class = "object-fit: w-full object-cover" :src='nablaGroup.image' alt="Flotte folk">
         <div class="mx-auto flex w-full px-4 sm:px-6 lg:px-8 max-w-[1200px] py-10">

@@ -9,15 +9,15 @@
     })
 
     const emit = defineEmits([
-        'saveMemberTable',
         'searchForUsers',
+        'saveMemberTable',
         'update:searchString'
     ])
 
     const localMemberTable = ref(props.members)
     
     watch(() => props.members, members => {
-        localMemberTable.value = JSON.parse(JSON.stringify(members))
+        localMemberTable.value = JSON.parse(JSON.stringify(props.members))
     })
 
     const sortedMemberTable = computed(() => 
@@ -43,7 +43,6 @@
     const newRole = ref('')
 
     function sortMembers() {
-        console.log('sorting')
         localMemberTable.value = sortedMemberTable.value
         emit('saveMemberTable', localMemberTable.value)
     }
@@ -62,15 +61,12 @@
     function removeMember(index) {
         localMemberTable.value[index].isActive = false
         emit('saveMemberTable', localMemberTable.value);
-        localMemberTable.value.pop(index)
     }
 
     function insertMember() {
-        console.log(searchString)
-        console.log(newRole)
         localMemberTable.value.push({
-            username: searchString,
-            role: newRole,
+            username: searchString.value,
+            role: newRole.value? newRole.value : '',
             isActive: true
         })
         searchString.value = ''
@@ -80,44 +76,46 @@
 </script>
 
 <template>
+    <div>
     <table class="min-w-full table-auto mb-4">
         <thead>
             <tr>
                 <th class="w-auto whitespace-nowrap text-left px-2">Navn</th>
                 <th class="whitespace-nowrap px-2">Kull</th>
-                <th class="w-full whitespace-nowrap">Rolle</th>
-                <th class="whitespace-nowrap px-2">Dato</th>
+                <th class="whitespace-nowrap">Rolle</th>
+                <th class="w-auto whitespace-nowrap px-2">Dato</th>
                 <th class="whitespace-nowrap px-2">Flytt</th>
                 <th class="whitespace-nowrap px-2"><!-- available action --></th>
             </tr>
         </thead>
         <tbody>
-            <tr v-if="localMemberTable" v-for="(member, index) in props.members">
-                <td class="text-left whitespace-nowrap px-2" v-if="member.firstName && member.lastName">
-                    {{  member.firstName}} {{ member.lastName}} 
+            <tr v-for="(member, index) in localMemberTable">
+                <td class="text-left px-2" v-if="member.firstName && member.lastName">
+                    {{  member.firstName ? member.firstName : '' }} {{ member.lastName ? member.lastName : ''}} 
                 </td>
+                <td v-else />
                 <td>
-                    {{ member.class }}
+                    {{ member.class ? member.class : '' }}
                 </td>
                 <td class="px-2">
-                    <input class="border rounded p-2 w-full" placeholder="Kuleste medlem!" v-model="member.role"/>
+                    <textarea class="border rounded p-3 resize-none h-[2.5rem] min-w-3xs" placeholder="Kuleste medlem!" v-model="member.role"/>
                 </td>
                 <td>
-                    {{ new Date(member.dateJoined).toDateString() }}
-                </td>
+                    {{ member.dateJoined? new Date(member.dateJoined).toDateString(): '' }}
+                </td> 
                 <td>
-                    <button class="mt-auto px-4 py-2 my-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="incrementMember(index)" :disabled="index === 0">
+                    <button class="mt-auto px-4 py-2 m-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="incrementMember(index)" :disabled="index === 0">
                         Δ
                     </button>
-                    <button class="mt-auto px-4 py-2 my-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="decrementMember(index)" :disabled="index === localMemberTable.length - 1">
+                    <button class="mt-auto px-4 py-2 m-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="decrementMember(index)" :disabled="index === localMemberTable.length - 1">
                         ∇
                     </button>
                 </td>
-                <td v-if="props.members[index]">
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray" v-if="member.role == props.members[index].role" @click="removeMember(index)" :disabled="notRemovable.includes(member.username)">
+                <td>
+                    <button class="mt-auto px-4 py-2 m-1 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray" v-if="member.role == props.members[index]?.role" @click="removeMember(index)" :disabled="notRemovable.includes(member.username)">
                         Slett
                     </button>
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" v-else @click="$emit('saveMemberTable', localMemberTable)">
+                    <button class="mt-auto px-4 py-2 m-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" v-else @click="$emit('saveMemberTable', localMemberTable)">
                         Lagre
                     </button>
                 </td>
@@ -146,12 +144,13 @@
                 </td>
                 <td colspan="3">
                     <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="insertMember(searchString, newRole)" :disabled="!searchIsValid">
-                        Legg ny medlem inn!
+                        Legg ny medlem inn! 
                     </button>
                 </td>
             </tr>
         </tbody>
     </table>
+    </div>
     <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="sortMembers" :disabled="isSorted">
         Sorter etter dato
     </button>

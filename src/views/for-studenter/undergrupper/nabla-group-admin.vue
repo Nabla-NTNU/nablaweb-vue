@@ -10,6 +10,7 @@
     import ImagePicker from '@/components/group-page/image-picker.vue'
     import MarkdownField from '@/components/group-page/markdown-field.vue'
     import MemberAdminTable from '@/components/group-page/member-admin-table.vue'
+    import UserPicker from '@/components/group-page/user-picker.vue'
     
     
     const route = useRoute()
@@ -17,13 +18,9 @@
     const groupID = route.params.id;
 
 
-    const {group: nablaGroup, loading, error} = useGroup(groupID)
+    const { group: nablaGroup, loading, error, refreshGroupMembers} = useGroup(groupID)
     const { user, isLoading, isAuthenticated } = useAuth()
     const { uploading, error: uploadError, publicURL, upload } = useGroupImageUpload(groupID)
-
-    const searchString = ref("")
-    const foundUsers = ref([])
-    const newLeaderUsername = ref("")
 
     async function handleSaveImageURL(localImageURL) {
         const {data, error} = await supabase
@@ -33,7 +30,6 @@
             .eq('id', groupID)
 
         if (error) {
-            console.log(localImageURL)
             console.error('Error saving image URL:', error)
             console.error(error)
         } else {
@@ -54,30 +50,44 @@
         }
     }
 
+    async function handleSaveNewLeader(newLeaderUsername) {
+        const {data, error} = await supabase
+            .schema('nablaweb_vue')
+            .from('nabla_groups')
+            .update({leader: newLeaderUsername})
+            .eq('id', groupID)
+        if (error) {
+            console.error('Error saving new leader text:', error)
+        } else {
+            nablaGroup.value.leader=newLeaderUsername
+        }
+    }
+
     async function handleSaveMemberTable(localMemberTable) {
         const offset = Math.floor(Math.random() * (2**30)) // crusty but funny solution to ordering members with unique orders in a single request. Not actually needed, but there's a bug throwing an error somewhere without this that I can't track down
         const updates = localMemberTable.map((member, index) => ({
             group:          groupID,
             user:           member.username,
-            member_role:    member.role ? member.role : '',
+            member_role:    member.role? member.role : '',
             order:          offset + index,
-            is_active:      member.isActive? member.isActive : true
+            is_active:      member.isActive
         }));
         
-        const {data, error} = await supabase
+        const {error} = await supabase
             .schema('nablaweb_vue')
             .from('nabla_group_members')
-            .upsert(updates)
+            .upsert(updates, {onConflict: ['group', 'user']});
 
         if (error) {
             console.error('Error saving membership updates:', error)
         } 
         if (!error) {
-            const { nablaGroupNew, loadingNew, errorNew } = useGroup(groupID)
-            nablaGroup.value = nablaGroupNew.value
+            refreshGroupMembers()
         }
     }
 
+    const searchString = ref("")
+    const foundUsers = ref([])
     async function searchForUsers(newMemberSearchString) {
         const alreadyMembers = new Set(nablaGroup.value.members.map(m => m.username))
 
@@ -95,11 +105,8 @@
 </script>
 
 <template>
-    <div class="flex w-full flex-grow flex-col" v-if="loading">
-        Loading!qwerfawerfuawopefaweuihfiawe
-    </div>
-    <div class="flex w-full flex-grow flex-col" v-if="!loading">
-        <img class = "object-fit: w-full object-cover" :src='nablaGroup.image' alt="Flotte folk">
+    <div class="flex w-full flex-grow flex-col" v-if="nablaGroup">
+        <!-- <img class = "object-fit: w-full object-cover" :src='nablaGroup.image' alt="Flotte folk"> -->
         <div class="mx-auto flex w-full px-4 sm:px-6 lg:px-8 max-w-[1200px] py-10">
             <div class="flex-1 pr-6">
                 
@@ -151,24 +158,11 @@
                 </h2>
                 Faresone! Ikke reversibelt!
                 <br>
-                <div class="md-4 flex">
-                    <input
-                        list="new-leader"
-                        v-model="newLeaderUsername"
-                        placeholder="Ny leder?"
-                        class="border rounded p-2 w-full m-2"
-                    />
-                    <datalist id="new-leader" v-if="nablaGroup.members" class="mx-4">
-                        <div v-for="nablaUser in nablaGroup.members">
-                            <option v-if="nablaUser.username !== nablaGroup.leader" :value="nablaUser.username">
-                                {{nablaUser.firstName}} {{ nablaUser.lastName }}, {{ nablaUser.class }}, {{ nablaUser.role }}
-                            </option>
-                        </div>
-                    </datalist>
-                    <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray" @click="console.error('not implemented')" :disabled="!nablaGroup.members.some(user => username === newLeaderUsername)">
-                        Sett ny leder
-                    </button>
-                </div>
+                <UserPicker v-if="nablaGroup"
+                    :current="nablaGroup.leader"
+                    :members="nablaGroup.members"
+                    @saveChosenUsername="handleSaveNewLeader"
+                />
                 <br>
                 <br>
 
@@ -184,9 +178,7 @@
 <!--
 TODO: 
     - Split into components in @/components/Group/
-        - only leader picker left
         - Consider if a "tillitsvalgt" picker needed?
-    - move lib code into composables in @/composables/useGroup.ts and @useAuth.ts
     - set explicit <script setup lang="ts">
     - Instead of creating common tailwind class - create common Vue components
         - Replace buttons and titles

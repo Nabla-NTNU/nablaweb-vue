@@ -13,6 +13,6 @@
         <img :src='props.profilePicture' class = 'rounded-xl'>
         {{ props.lastName }}, {{ props.firstName }}
         <br>
-        <i> {{  props.memberRole || "."  }} </i>
+        <i> {{  props.memberRole }} </i>
     </div>
 </template>
