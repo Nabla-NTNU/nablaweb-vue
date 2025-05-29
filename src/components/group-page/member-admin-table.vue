@@ -3,7 +3,7 @@
 
     const props = defineProps({
         members: [{}],
-        notRemovable: "",
+        notRemovable: [{}],
         searchString: "",
         foundUsers: [{}],
     })
@@ -65,10 +65,12 @@
         localMemberTable.value.pop(index)
     }
 
-    function insertMember(username, role) {
+    function insertMember() {
+        console.log(searchString)
+        console.log(newRole)
         localMemberTable.value.push({
-            username: username,
-            role: role,
+            username: searchString,
+            role: newRole,
             isActive: true
         })
         searchString.value = ''
@@ -90,9 +92,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-if="localMemberTable" v-for="(member, index) in localMemberTable">
-                <td class="text-left whitespace-nowrap px-2">
-                    {{  member.firstName }} {{ member.lastName }} 
+            <tr v-if="localMemberTable" v-for="(member, index) in props.members">
+                <td class="text-left whitespace-nowrap px-2" v-if="member.firstName && member.lastName">
+                    {{  member.firstName}} {{ member.lastName}} 
                 </td>
                 <td>
                     {{ member.class }}

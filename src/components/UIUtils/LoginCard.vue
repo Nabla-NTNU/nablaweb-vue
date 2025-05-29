@@ -1,3 +1,5 @@
+<!-- Very temporary. Please make sure this doesn't end up in prod -->
+
 <script setup>
     import { ref } from 'vue';
     import { supabase } from '@/lib/supabaseClient'
@@ -11,12 +13,12 @@
     async function handleLogin() {
         const { data, error } = await supabase.auth.signInWithPassword({
             email: username.value + "@stud.ntnu.no",
-            password: password.value,
+            password: password.value
         })
+
         if (error) {
             console.log(error)
         }
-        return null
     }
 </script>
 

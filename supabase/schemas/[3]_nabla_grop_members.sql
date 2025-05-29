@@ -1,11 +1,11 @@
 -- Actual table
 CREATE TABLE nablaweb_vue.nabla_group_members (
-    "user"      TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE,
-    "group"     TEXT NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE,
-    member_role TEXT DEFAULT '',
-    date_joined TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-    is_active   BOOLEAN DEFAULT true NOT NULL,
-    "order"     INTEGER GENERATED ALWAYS AS IDENTITY,
+    "user"      TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
+    "group"     TEXT NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    member_role TEXT                        NOT NULL DEFAULT '',
+    date_joined TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now(),
+    is_active   BOOLEAN                     NOT NULL DEFAULT true ,
+    "order"     INTEGER                     NOT NULL DEFAULT 0,
     
     -- Constraints
     PRIMARY KEY ("group", "user"),

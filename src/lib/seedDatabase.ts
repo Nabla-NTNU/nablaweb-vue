@@ -10,35 +10,39 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseServiceRoleK
 
 type NablaUser = Database['nablaweb_vue']['Tables']['nabla_users']['Insert']
 type NablaGroup = Database['nablaweb_vue']['Tables']['nabla_groups']['Insert']
+type ClassEnum = Database['nablaweb_vue']['Enums']['class']
 
 const faker = new Faker({
     locale: [nb_NO, sv, en, base] // Faker doesn't support nynorsk atm :((
 })
 
 async function makeRandomUsers(nUsers: number) {
-    const users:NablaUser[] = []
+    const users = []
     for (let i = 0; i < nUsers; i++) {
+        faker.seed(i);
         const firstName = faker.person.firstName()
         const lastName = faker.person.lastName()
-        const username = firstName.slice(0,2) + lastName
+        const username = faker.internet.username({firstName, lastName})
+        const email = username + '@stud.ntnu.no'
 
-        const { data, error } = await supabase.auth.signUp({
-            email: username + '@stud.ntnu.com',
-            password: username,
+        const { data, error } = await supabase.auth.admin.createUser({
+            email: username + '@stud.ntnu.no',
+            password: '',
+            email_confirm: true
         })
         if (error) {
-            console.error("Error generating random user: " + error )
+            console.log("Error making random user: " + error)
         }
-
-        if (!error) {
+        if (data.user) {
             const nablaKomponent: NablaUser = {
                 username: username,
                 supabase_id: data.user!.id,
-                ntnu_email: data.user!.email!,
-                list_email: data.user!.email!,
+                ntnu_email: email,
+                list_email: email,
                 first_name: firstName,
                 last_name: lastName,
-                class: 'kull20'
+                profile_picture: 'https://upload.wikimedia.org/wikipedia/commons/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg',
+                class: 'kull20' as ClassEnum
             }
             users.push(nablaKomponent)
         }
@@ -47,12 +51,13 @@ async function makeRandomUsers(nUsers: number) {
 }
 
 async function makeAdminUser() {
-    const { data, error } = await supabase.auth.signUp({
-        email: 'admin@stud.ntnu.com',
+    const { data, error } = await supabase.auth.admin.createUser({
+        email: 'admin@stud.ntnu.no',
         password: 'nabla_admin',
+        email_confirm: true
     })
     if (error) {
-        console.error("Error making admin user: " + error)
+        console.log("Error making admin user: " + error)
         return
     }
 
@@ -63,17 +68,19 @@ async function makeAdminUser() {
         list_email: data.user!.email!,
         first_name: 'Admin',
         last_name: 'Adminsdatter',
-        class: 'kull20'
+        profile_picture: 'https://upload.wikimedia.org/wikipedia/commons/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg',
+        class: 'kull20' as ClassEnum
     }
 }
 
 async function makeUserUser() {
-    const { data, error } = await supabase.auth.signUp({
-        email: 'user@stud.ntnu.com',
+    const { data, error } = await supabase.auth.admin.createUser({
+        email: 'user@stud.ntnu.no',
         password: 'nabla_user',
+        email_confirm: true
     })
     if (error) {
-        console.error("Error making user user: " + error)
+        console.log("Error making user user: " + error)
         return
     }
 
@@ -84,7 +91,8 @@ async function makeUserUser() {
         list_email: data.user!.email!,
         first_name: 'User',
         last_name: 'Userssønn',
-        class: 'kull20'
+        profile_picture: 'https://upload.wikimedia.org/wikipedia/commons/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg',
+        class: 'kull20' as ClassEnum
     }
 }
 
@@ -98,13 +106,18 @@ if (users.length > 0) {
 }
 
 if (users.length === 0) {
-    const nablaUsers: NablaUser[] = await makeRandomUsers(2_000)
+    const nablaUsers = []
+    console.log("Making random users...")
+    const random = await makeRandomUsers(500)
+    if (random) {nablaUsers.push(...random)}
+
+    console.log("Making admin user...")
     const admin = await makeAdminUser()
     if (admin) {nablaUsers.push(admin)}
 
-    console.log("Making users...")
+    console.log("Making user user...")
     const user = await makeUserUser()
-    if (user) {nablaUsers.push(user)}
+    if (user) {nablaUsers!.push(user)}
 
     console.log("Populating nablauser table...")
     const { error } = await supabase
@@ -118,19 +131,46 @@ if (users.length === 0) {
             id: 'webkom',
             name: 'WebKom',
             kind: 'Committee',
-            logo: '',
+            logo: 'https://nabla.no/media/thumbnails/uploads/news_pictures/webkom-logo_cd43LtI.png.250x250_q85_crop-smart.png',
             mail_list: 'webkom@nabla.no',
             about: faker.lorem.text(),
-            group_image: '',
+            group_image: 'https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg',
             leader: 'admin'
         },
         {
             id: 'kultkom',
             name: 'Kultkom',
             kind: 'Interest group',
-            logo: '',
+            logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/Kultkom.png.250x250_q85_crop-smart.png',
             about: faker.lorem.text(),
-            group_image: '',
+            group_image: 'https://nabla.no/media/uploads/content/nabla_under_gruppe_kultkom.jpg',
+            leader: 'user'
+        },
+        {
+            id: 'prokom',
+            name: 'ProKom',
+            kind: 'Committee',
+            logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/Prokom-ikon-monokrom.jpg.250x250_q85_crop-smart.jpg',
+            about: faker.lorem.text(),
+            group_image: 'https://nabla.no/media/uploads/com_pictures/HU5A9317.jpeg',
+            leader: 'user'
+        },
+        {
+            id: 'redaksjonen',
+            name: 'Redaksjonen',
+            kind: 'Committee',
+            logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/redaksjonen_logo.jpg.250x250_q85_crop-smart.jpg',
+            about: faker.lorem.text(),
+            group_image: 'https://nabla.no/media/uploads/content/Nabladet_logo_bla.JPG',
+            leader: 'user'
+        },
+        {
+            name: 'Styret',
+            id: 'styret',
+            kind: 'Committee',
+            logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/styret.jpeg.250x250_q85_crop-smart.jpg',
+            about: faker.lorem.text(),
+            group_image: 'https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg',
             leader: 'user'
         }
     ]
@@ -141,4 +181,3 @@ if (users.length === 0) {
 
     console.log("Filling groups with members...")
 }
-    

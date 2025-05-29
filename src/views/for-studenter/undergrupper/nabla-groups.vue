@@ -1,18 +1,15 @@
 <script setup>
-    import { onMounted } from 'vue';
-    import { get_groups } from '@/lib/db/db';
+    import { computed } from 'vue'
+    import { useGroups } from '@/composables/useNablaGroup'
     import GroupCard from '@/components/UIUtils/GroupCard.vue';
-    import { ref } from 'vue'
     
-    const nablaGroups = ref([])
-    const nablaCommittees = ref([])
-    const nablaInterestGroups = ref([])
-    onMounted(async () => {
-        nablaGroups.value = await get_groups()
-        nablaCommittees.value = nablaGroups.value.filter(groupKind => groupKind == "committee")
-        nablaInterestGroups.value = nablaGroups.value.filter(groupKind => groupKind == "interest group")
-        console.log(nablaGroups.value)
-    })
+    const  {groups: nablaGroups, loading, error} = useGroups()
+    const nablaCommittees = computed(() =>
+        nablaGroups.value.filter(group => group.kind == 'Committee')
+    )
+    const nablaInterestGroups = computed(() =>
+        nablaGroups.value.filter(group => group.kind == 'Interest group')
+    )
 </script>
 
 <template>
@@ -22,12 +19,10 @@
         </h1>
         <div class="flex flex-wrap justify-center gap-6">
             <GroupCard
-                v-for="nablaGroup in nablaGroups"
-                :key="nablaGroup.group_mail"
-                :groupMail="nablaGroup.group_mail"
-                :groupKind="nablaGroup.group_kind"
-                :groupName="nablaGroup.group_name"
-                :groupURL="nablaGroup.group_url"
+                v-for="nablaGroup in nablaCommittees"
+                :key="nablaGroup.id"
+                :groupURL="nablaGroup.id"
+                :groupName="nablaGroup.name"
                 :groupLogo="nablaGroup.logo"
             />
         </div>
@@ -35,4 +30,13 @@
         Undergrupper!
         </h1>
     </div>
+        <div class="flex flex-wrap justify-center gap-6">
+            <GroupCard
+                v-for="nablaGroup in nablaInterestGroups"
+                :key="nablaGroup.id"
+                :groupURL="nablaGroup.id"
+                :groupName="nablaGroup.name"
+                :groupLogo="nablaGroup.logo"
+            />
+        </div>
 </template>
