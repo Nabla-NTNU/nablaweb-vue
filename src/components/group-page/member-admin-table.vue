@@ -40,6 +40,7 @@
     const searchIsValid = computed(() =>
         props.foundUsers.some(user => user.username === searchString.value)
     )
+    
     const newRole = ref('')
 
     function sortMembers() {

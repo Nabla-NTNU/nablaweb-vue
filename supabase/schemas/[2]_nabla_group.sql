@@ -22,6 +22,34 @@ CREATE TABLE nablaweb_vue.nabla_groups (
 -- Indexing (For efficient user searching)
 CREATE INDEX ON nablaweb_vue.nabla_groups USING btree (name);
 
+-- Security
+ALTER TABLE nablaweb_vue.nabla_groups ENABLE ROW LEVEL SECURITY;
+
+GRANT SELECT ON TABLE nablaweb_vue.nabla_groups TO anon, authenticated, service_role;
+
+CREATE POLICY "Everyone can see group data"
+    ON nablaweb_vue.nabla_groups
+    FOR SELECT
+    USING (true);
+
+CREATE POLICY "Group leaders can update their group's data"
+    ON nablaweb_vue.nabla_groups
+    FOR UPDATE
+    TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabla_users as u
+            WHERE u.username = nablaweb_vue.nabla_groups.leader
+            AND u.supabase_id = (SELECT auth.uid())
+        )
+    )
+    WITH CHECK(
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabla_users as u
+            WHERE u.username = nablaweb_vue.nabla_groups.leader
+        )
+    );
+
 -- Descriptions for Supabase Studio
 COMMENT ON TYPE     nablaweb_vue.group_kind         IS 'Nabla has two kinds of groups which follow different regulations';
 COMMENT ON TABLE    nablaweb_vue.nabla_groups       IS 'Committees, interest groups, etc';

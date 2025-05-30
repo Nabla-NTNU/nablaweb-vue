@@ -66,8 +66,6 @@ async function getGroupWithoutMembers(groupID: String) {
     return {data, error}
 }
 
-
-
 async function getGroupMembers(groupID: String) {
     const {data, error} = await supabase
         .schema('nablaweb_vue')

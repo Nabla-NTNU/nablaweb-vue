@@ -125,6 +125,15 @@ if (users.length === 0) {
         .from('nabla_users')
         .insert(nablaUsers)
 
+    console.log("Making admin admin an admin...")
+    const { errorer } = await supabase
+        .schema('nablaweb_vue')
+        .from('nabladmins')
+        .insert({
+            user: "admin",
+            reason: "Administration"
+        })
+
     console.log("Making groups...")
     const nablaGroups: NablaGroup[] = [
         {
@@ -174,7 +183,7 @@ if (users.length === 0) {
             leader: 'user'
         }
     ]
-    const { errors } = await supabase
+    const { errorerer } = await supabase
         .schema('nablaweb_vue')
         .from('nabla_groups')
         .insert(nablaGroups)

@@ -1,6 +1,6 @@
 <script setup>
-    import { computed } from 'vue'
     import { useRoute, useRouter, RouterLink } from 'vue-router'
+    import { computed } from 'vue'
     import markdownit from 'markdown-it'
 
     import { useGroup } from '@/composables/useNablaGroup'
@@ -13,7 +13,18 @@
     const md = markdownit()
     
     const { group: nablaGroup, loading, error } = useGroup(groupID)
-    const { user, isLoading, isAuthenticated } = useAuth()
+    const { user, username, isLoading, isAuthenticated } = useAuth()
+
+    const userIsAdmin = computed(() => {
+        if (nablaGroup.value.leader) {
+            if (nablaGroup.value.leader === username.value) {
+                return true
+            }
+        }
+        if (username.value === 'admin') {
+            return true
+        }
+    })
 </script>
 
 <template>
@@ -25,7 +36,7 @@
                     <h1 class="grow font-semibold tracking-tight text-title-2">
                         {{ nablaGroup.name }}
                     </h1>
-                    <RouterLink :to="`${groupID}/admin`" v-if="isAuthenticated" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
+                    <RouterLink :to="`${groupID}/admin`" v-if="userIsAdmin" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
                         Hemmelige Saker <br> (Adminpanel)
                     </RouterLink>
                 </div>

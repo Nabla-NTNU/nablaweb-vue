@@ -35,7 +35,6 @@
         const file = files[0]
         // Optional: early MIME or size validation here
         const url = await props.uploadImage(file)
-        console.log(url)
         if (url) {
             localImageURL.value = url       // update preview in child
         }

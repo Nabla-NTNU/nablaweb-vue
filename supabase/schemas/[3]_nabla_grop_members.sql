@@ -12,6 +12,39 @@ CREATE TABLE nablaweb_vue.nabla_group_members (
     UNIQUE ("group", "order")
 );
 
+-- Security
+ALTER TABLE nablaweb_vue.nabla_group_members ENABLE ROW LEVEL SECURITY;
+
+GRANT SELECT ON TABLE nablaweb_vue.nabla_group_members TO anon, authenticated, service_role;
+
+CREATE POLICY "Everyone can see group memberships"
+    ON nablaweb_vue.nabla_group_members
+    FOR SELECT
+    USING (true);
+    
+CREATE POLICY "Group leaders can edit their group's members"
+    ON nablaweb_vue.nabla_group_members
+    FOR ALL
+    TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabla_groups as g
+            JOIN nablaweb_vue.nabla_users as u
+            ON u.username = g.leader
+            WHERE u.supabase_id = (SELECT auth.uid())
+            AND g.id = nablaweb_vue.nabla_group_members."group"
+        )
+    )
+    WITH CHECK(
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabla_groups as g
+            JOIN nablaweb_vue.nabla_users as u
+            ON u.username = g.leader
+            WHERE u.supabase_id = (SELECT auth.uid())
+            AND g.id = nablaweb_vue.nabla_group_members."group"
+        )
+    );
+
 -- Descriptions for Supabase Studio
 COMMENT ON TABLE nablaweb_vue.nabla_group_members IS 'What members are part of what group';
 COMMENT ON COLUMN nablaweb_vue.nabla_group_members."user" IS 'Member''s username';

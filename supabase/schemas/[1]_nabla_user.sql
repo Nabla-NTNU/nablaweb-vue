@@ -31,5 +31,24 @@ CREATE TABLE nablaweb_vue.nabla_users (
 -- Indexing (For efficient user searching)
 CREATE INDEX ON nablaweb_vue.nabla_users USING btree (first_name_last_name_username);
 
+-- Security
+ALTER TABLE nablaweb_vue.nabla_users ENABLE ROW LEVEL SECURITY;
+
+GRANT SELECT (username, first_name, last_name, class, profile_picture) ON TABLE nablaweb_vue.nabla_users TO anon;
+GRANT SELECT ON TABLE nablaweb_vue.nabla_users TO authenticated, service_role;
+
+CREATE POLICY "Everyone can see user data"
+    ON nablaweb_vue.nabla_users
+    FOR SELECT
+    USING (true);
+
+CREATE POLICY "Users can edit their data"
+    ON nablaweb_vue.nabla_users
+    FOR UPDATE
+    TO authenticated
+    USING (
+        (SELECT auth.uid()) = supabase_id
+    );
+
 -- Descriptions for Supabase Studio
 COMMENT ON TABLE nablaweb_vue.nabla_users IS 'Table containing unique details of past and present nablausers';

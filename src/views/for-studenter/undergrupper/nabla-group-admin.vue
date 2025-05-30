@@ -177,16 +177,16 @@
 
 <!--
 TODO: 
-    - Split into components in @/components/Group/
-        - Consider if a "tillitsvalgt" picker needed?
     - set explicit <script setup lang="ts">
     - Instead of creating common tailwind class - create common Vue components
         - Replace buttons and titles
-    - Write readme.md for the composables folder
-    - Actually protect admin page from non-owners (get RLS going)
+    - Reroute non-admins away from /admin, even though they can't send away
+    - show errors in UI
+        - Better try-catch loops in composables pls
     - Add place to edit group name / group logo
     
 TODO (non-critical)
+    - choose tilitsvalgt 
     - clean tailwind.config.js
     - actually implement and respect loading & states
     - get ESLing working (eslint-plugin-vue)

@@ -1,17 +1,46 @@
 import { ref, computed, readonly, onUnmounted } from 'vue'
 import { supabase } from '@/lib/supabaseClient'
-import type { User, Session } from '@supabase/supabase-js'      // typescript moment
+import type { User, Session } from '@supabase/supabase-js'
+import type { Database } from "@/lib/database.types";
 
 const user = ref<User | null>(null)
+const username = ref<String | null>(null)
 const session = ref<Session | null>(null)
 const isLoading = ref(true)
+
+// Not very pretty - as supabase uses email and we use usernames we
+//   have to first get the supabase user, then get our id for them:
+//   their username in the user table.
+
+async function getUsername( ) {
+    if (user.value?.id) {
+        try {
+            const { data, error } = await supabase
+                .schema('nablaweb_vue')
+                .from('nabla_users')
+                .select('username')
+                .eq('supabase_id', user.value.id)
+                .single()
+            if (error) throw error
+            username.value = data.username
+        } catch (e) {
+            console.error('[useAuth] error finding username for user `supabaseID`', e)
+        } finally {
+            isLoading.value = false
+        }
+    }
+    else {
+        username.value = null
+    }   
+}
 
 async function initialize() {
     try {
         const { data, error } = await supabase.auth.getSession()
         if (error) throw error
-            session.value = data.session
-            user.value    = data.session?.user ?? null
+        session.value = data.session
+        user.value    = data.session?.user ?? null
+        await getUsername()
     } catch (e) {
         console.error('[useAuth] init error', e)
     } finally {
@@ -24,6 +53,7 @@ const { data: authListener } = supabase.auth.onAuthStateChange(
     (_event, newSession) => {
         session.value = newSession
         user.value    = newSession?.user ?? null
+        getUsername()
     }
 )
 
@@ -35,10 +65,8 @@ export function useAuth() {
         authListener.subscription.unsubscribe()
     })
   
-    // If user == null, isAuthenticated is false
     const isAuthenticated = computed(() => !!user.value)
   
-    // action methods
     async function signIn(email: string, password: string) {
         const { error, data } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
@@ -57,6 +85,7 @@ export function useAuth() {
   
     return {
         user: readonly(user),
+        username: readonly(username),
         session: readonly(session),
         isLoading: readonly(isLoading),
         isAuthenticated,
