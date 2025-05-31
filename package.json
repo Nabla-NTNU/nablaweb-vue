@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "seed": "ts-node src/lib/seedDatabase.ts",
+    "seed": "ts-node --esm src/lib/seedDatabase.ts",
+    "gen-types": "supabase gen types typescript --local > src/lib/database.types.ts",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
