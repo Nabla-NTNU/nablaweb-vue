@@ -26,7 +26,7 @@ npm run seed
 
 You can rebuild the database from the ground up (if you're changing the chema in-code) by 
 ```shell
-supabase db relooad
+supabase db reset
 ```
 , and stop the database and delete all data by
 ```shell
