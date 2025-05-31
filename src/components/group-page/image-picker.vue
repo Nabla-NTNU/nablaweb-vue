@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { ref, watch } from 'vue'
+    import InlineButton from '@/components/buttons/inline-button.vue';
 
     const props = defineProps<{
         imageURL: string
@@ -62,33 +63,26 @@
         />
         <label
             for="fileInput"
-            class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary cursor-pointer"
+            class="m-auto items-center text-nowrap px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary cursor-pointer"
             v-if="localImageURL === imageURL"
         >
-            Last opp lokalt
+            Last opp
         </label>
-        <button
-            class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary cursor-pointer"
-            @click="localImageURL = imageURL"
+
+        <InlineButton
             v-if="localImageURL !== imageURL"
-        >
-            Gå tilbake
-        </button>
+            :text="'Avbryt'"
+            @onClick="localImageURL = imageURL"
+        />
 
-
-        <button
-            type="button"
-            class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray"
-            @click="$emit('saveImageURL', localImageURL)"
-            :disabled="localImageURL === imageURL"
-        >
-            Lagre nytt bilde
-        </button>
+        <InlineButton
+            :text="'Lagre endring'"
+            :color="'bg-secondary'"
+            @onClick="$emit('saveImageURL', localImageURL)"
+            :disable-condition="localImageURL === imageURL"
+        />
     </div>
     <div>
-        <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
-            Preview:
-        </h2>
         <img
         :src="localImageURL"
         class="w-full object-contain mt-4 rounded-xl"

@@ -114,7 +114,7 @@
                     <h1 class="grow font-semibold tracking-tight text-title-2">
                         Adminsida for {{ nablaGroup.name }}    
                     </h1>
-                    <RouterLink :to="`/for-komponenter/komiteer/${groupID}`" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
+                    <RouterLink :to="`/for-komponenter/komiteer/${groupID}`" class="m-auto items-center text-nowrap px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
                         Gå <br> tilbake
                     </RouterLink>
                 </div>
@@ -177,12 +177,15 @@
 
 <!--
 TODO: 
-    - set explicit <script setup lang="ts">
+    - Fix explicit <script setup lang="ts">
     - Instead of creating common tailwind class - create common Vue components
-        - Replace buttons and titles
-    - Reroute non-admins away from /admin, even though they can't send away
-    - show errors in UI
+        - Replace buttons
+        - Replace titles?
+    - Reroute intruders away from /admin
+    - Show errors in UI
         - Better try-catch loops in composables pls
+        - Button success state
+        - Text banner on non-local error
     - Add place to edit group name / group logo
     
 TODO (non-critical)
