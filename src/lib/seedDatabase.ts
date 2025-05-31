@@ -27,7 +27,7 @@ async function makeRandomUsers(nUsers: number) {
 
         const { data, error } = await supabase.auth.admin.createUser({
             email: username + '@stud.ntnu.no',
-            password: '',
+            password: 'user',
             email_confirm: true
         })
         if (error) {
@@ -53,7 +53,7 @@ async function makeRandomUsers(nUsers: number) {
 async function makeAdminUser() {
     const { data, error } = await supabase.auth.admin.createUser({
         email: 'admin@stud.ntnu.no',
-        password: 'nabla_admin',
+        password: 'admin',
         email_confirm: true
     })
     if (error) {
@@ -76,7 +76,7 @@ async function makeAdminUser() {
 async function makeUserUser() {
     const { data, error } = await supabase.auth.admin.createUser({
         email: 'user@stud.ntnu.no',
-        password: 'nabla_user',
+        password: 'user',
         email_confirm: true
     })
     if (error) {

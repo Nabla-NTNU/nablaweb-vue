@@ -14,7 +14,7 @@ export type Database = {
           date_joined: string
           group: string
           is_active: boolean
-          member_role: string | null
+          member_role: string
           order: number
           user: string
         }
@@ -22,16 +22,16 @@ export type Database = {
           date_joined?: string
           group: string
           is_active?: boolean
-          member_role?: string | null
-          order?: never
+          member_role?: string
+          order?: number
           user: string
         }
         Update: {
           date_joined?: string
           group?: string
           is_active?: boolean
-          member_role?: string | null
-          order?: never
+          member_role?: string
+          order?: number
           user?: string
         }
         Relationships: [
@@ -54,30 +54,39 @@ export type Database = {
       nabla_groups: {
         Row: {
           about: string
+          date_began: string
           group_image: string
           id: string
+          is_active: boolean
           kind: Database["nablaweb_vue"]["Enums"]["group_kind"]
           leader: string | null
+          leader_mail: string | null
           logo: string
           mail_list: string | null
           name: string
         }
         Insert: {
           about?: string
+          date_began?: string
           group_image?: string
           id: string
+          is_active?: boolean
           kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]
           leader?: string | null
+          leader_mail?: string | null
           logo?: string
           mail_list?: string | null
           name: string
         }
         Update: {
           about?: string
+          date_began?: string
           group_image?: string
           id?: string
+          is_active?: boolean
           kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]
           leader?: string | null
+          leader_mail?: string | null
           logo?: string
           mail_list?: string | null
           name?: string
@@ -99,6 +108,7 @@ export type Database = {
           class: Database["nablaweb_vue"]["Enums"]["class"]
           first_name: string
           first_name_last_name_username: string | null
+          is_active: boolean
           last_name: string
           list_email: string
           ntnu_email: string
@@ -114,6 +124,7 @@ export type Database = {
           class: Database["nablaweb_vue"]["Enums"]["class"]
           first_name: string
           first_name_last_name_username?: string | null
+          is_active?: boolean
           last_name: string
           list_email: string
           ntnu_email: string
@@ -129,6 +140,7 @@ export type Database = {
           class?: Database["nablaweb_vue"]["Enums"]["class"]
           first_name?: string
           first_name_last_name_username?: string | null
+          is_active?: boolean
           last_name?: string
           list_email?: string
           ntnu_email?: string
@@ -139,6 +151,32 @@ export type Database = {
           website?: string
         }
         Relationships: []
+      }
+      nabladmins: {
+        Row: {
+          date: string
+          reason: string
+          user: string
+        }
+        Insert: {
+          date?: string
+          reason: string
+          user: string
+        }
+        Update: {
+          date?: string
+          reason?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nabladmins_user_fkey"
+            columns: ["user"]
+            isOneToOne: true
+            referencedRelation: "nabla_users"
+            referencedColumns: ["username"]
+          },
+        ]
       }
     }
     Views: {

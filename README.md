@@ -44,7 +44,7 @@ npm run dev
 ```
 will start up the server, and you'll see this beautiful thing we're working on on [http://localhost:5173/](http://localhost:5173/)!
 
-When seeding we add user `admin` with password `nabla_admin` who has all the privillages us other WebKom devs do, and user `user` with password `nabla_user`  who has regular nablauser access.
+When seeding we add user `admin` with password `admin` who has all the privillages us other WebKom devs do, and user `user` with password `user`  who has regular nablauser access.
 
 # repoet for Farger og fonter til Nabla
 
