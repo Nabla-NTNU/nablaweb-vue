@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "seed": "ts-node --esm src/lib/seedDatabase.ts",
+    "seed": "tsx src/lib/seedDatabase.ts",
     "gen-types": "supabase gen types typescript --local > src/lib/database.types.ts",
     "dev": "vite",
     "build": "vite build",
@@ -14,7 +14,7 @@
     "@supabase/supabase-js": "^2.49.4",
     "markdown-it": "^14.1.0",
     "postcss-import": "^16.1.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5"
   },
