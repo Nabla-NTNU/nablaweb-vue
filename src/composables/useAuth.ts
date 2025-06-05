@@ -100,6 +100,7 @@ export function useAuth() {
     async function signOut() {
         const { error } = await supabase.auth.signOut()
         if (error) throw error
+        location.reload()
     }
   
     return {

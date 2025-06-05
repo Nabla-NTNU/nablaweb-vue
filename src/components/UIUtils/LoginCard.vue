@@ -15,7 +15,6 @@
             email: username.value + "@stud.ntnu.no",
             password: password.value
         })
-
         if (error) {
             console.log(error)
         }
