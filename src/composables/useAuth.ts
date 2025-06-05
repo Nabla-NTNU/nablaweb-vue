@@ -35,17 +35,19 @@ async function getUsername() {
 
 async function isUserAdmin() {
     try {
+        if (!username.value) {
+            // broken for when user accesses page via link
+            await getUsername()
+        }
+
         const {data, error} = await supabase
             .schema('nablaweb_vue')
             .from('nabladmins')
             .select('user')
             .eq('user', username.value)
-        if (data) {
-            console.log(data)
-            console.log(data.length > 0)
-            return data.length > 0
-        }
-        if (error) {throw error}
+
+        if (data) { return data.length > 0 }
+        if (error) { throw error }
     }
     catch (e) {
         console.error(`[useAuth] error checking if user ${username} is admin $`)
