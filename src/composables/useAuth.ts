@@ -11,8 +11,7 @@ const isLoading = ref(true)
 // Not very pretty - as supabase uses email and we use usernames we
 //   have to first get the supabase user, then get our id for them:
 //   their username in the user table.
-
-async function getUsername( ) {
+async function getUsername() {
     if (user.value?.id) {
         try {
             const { data, error } = await supabase
@@ -24,7 +23,7 @@ async function getUsername( ) {
             if (error) throw error
             username.value = data.username
         } catch (e) {
-            console.error('[useAuth] error finding username for user `supabaseID`', e)
+            console.error(`[useAuth] error finding username for user ${user.value.id}`, e)
         } finally {
             isLoading.value = false
         }
@@ -32,6 +31,26 @@ async function getUsername( ) {
     else {
         username.value = null
     }   
+}
+
+async function isUserAdmin() {
+    try {
+        const {data, error} = await supabase
+            .schema('nablaweb_vue')
+            .from('nabladmins')
+            .select('user')
+            .eq('user', username.value)
+        if (data) {
+            console.log(data)
+            console.log(data.length > 0)
+            return data.length > 0
+        }
+        if (error) {throw error}
+    }
+    catch (e) {
+        console.error(`[useAuth] error checking if user ${username} is admin $`)
+    }
+    return false
 }
 
 async function initialize() {
@@ -93,5 +112,6 @@ export function useAuth() {
         signIn,
         signUp,
         signOut,
+        isUserAdmin
     }
-  }
+}

@@ -1,6 +1,6 @@
 <script setup>
     import { ref } from 'vue';
-    import { useRoute, useRouter, RouterLink } from 'vue-router';
+    import { useRoute } from 'vue-router';
 
     import { supabase } from '@/lib/supabaseClient';
     import { useAuth } from '@/composables/useAuth';
@@ -12,14 +12,11 @@
     import MemberAdminTable from '@/components/group-page/member-admin-table.vue'
     import UserPicker from '@/components/group-page/user-picker.vue'
     
-    
     const route = useRoute()
-    const router = useRouter()
-    const groupID = route.params.id;
+    const groupID = route.params.id
 
 
     const { group: nablaGroup, loading, error, refreshGroupMembers} = useGroup(groupID)
-    const { user, isLoading, isAuthenticated } = useAuth()
     const { uploading, error: uploadError, publicURL, upload } = useGroupImageUpload(groupID)
 
     async function handleSaveImageURL(localImageURL) {
@@ -176,19 +173,16 @@
 </template>
 
 <!--
-TODO: 
+TODO:
+    - Clean useNablaGroup
+    
+TODO (non-critical)
     - Fix explicit <script setup lang="ts">
-    - Instead of creating common tailwind class - create common Vue components
-        - Replace buttons
-        - Replace titles?
-    - Reroute intruders away from /admin
     - Show errors in UI
         - Better try-catch loops in composables pls
         - Button success state
         - Text banner on non-local error
     - Add place to edit group name / group logo
-    
-TODO (non-critical)
     - choose tilitsvalgt 
     - clean tailwind.config.js
     - actually implement and respect loading & states

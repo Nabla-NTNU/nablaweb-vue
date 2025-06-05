@@ -36,7 +36,7 @@
                     <h1 class="grow font-semibold tracking-tight text-title-2">
                         {{ nablaGroup.name }}
                     </h1>
-                    <RouterLink :to="`${groupID}/admin`" v-if="userIsAdmin" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
+                    <RouterLink :to="`/for-komponenter/komiteer/${groupID}/admin`" v-if="userIsAdmin" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
                         Hemmelige Saker <br> (Adminpanel)
                     </RouterLink>
                 </div>

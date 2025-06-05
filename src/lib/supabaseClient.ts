@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '@/lib/database.types'
 
 // Defined in a .env.local for dev, can explore what makes sense for prod
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
@@ -10,4 +11,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, { db: { schema: 'nablaweb_vue' } })
+export const supabase: SupabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey)
