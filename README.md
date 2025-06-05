@@ -68,3 +68,26 @@ Her får teksten den selvdefinerte størrelsen title-1, fonten Poppins, bakgrunn
 Lek litt rundt med App.vue og prøv å lage egne komponenter du kan bruke på siden i mappen components.
 
 
+
+
+<!--
+TODO:
+    - Clean useNablaGroup
+    
+TODO (non-critical)
+    - Fix explicit <script setup lang="ts">
+    - Show errors in UI
+        - Better try-catch loops in composables pls
+        - Button success state
+        - Text banner on non-local error
+    - Add place to edit group name / group logo
+    - choose tilitsvalgt 
+    - clean tailwind.config.js
+    - actually implement and respect loading & states
+    - get ESLing working (eslint-plugin-vue)
+    - get pre-commit working (lint-staged)
+    - Unit tests :((
+    - animation for changing leader would be lit
+        - mby a thank you for your service meme gif?
+    - Fix header/footer links (& simplify?)
+-->
