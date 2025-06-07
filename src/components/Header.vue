@@ -31,7 +31,6 @@
     </div>
     <div id="dropdown-box" class="absolute top-full opacity-0 invisible transition-all duration-300 ease-in-out z-1 w-full">
       <div class="relative bg-light p-6 grid grid-cols-2 gap-4 text-m font-poppins rounded-[8px]">
-        hi
         <!-- Content dynamically populated -->
       </div>
     </div>

@@ -1,7 +1,7 @@
 <script setup>
     import { computed } from 'vue'
     import { useGroups } from '@/composables/useNablaGroup'
-    import GroupCard from '@/components/UIUtils/GroupCard.vue'
+    import GroupCard from '@/components/general/group-card.vue'
     
     const  {groups: nablaGroups, loading, error} = useGroups()
     const nablaCommittees = computed(() =>
