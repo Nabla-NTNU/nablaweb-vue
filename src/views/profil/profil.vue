@@ -1,25 +1,30 @@
 <script setup>
-import '../../style.css'
-import '../../assets/fonts/fonts.css';
+  import '@/style.css'
+  import '@/assets/fonts/fonts.css';
+  
+  import { useAuth } from '@/composables/useAuth'
+  import LoginCard from '@/components/general/login-card.vue';
+  import ThemeToggler from '@/components/buttons/ThemeToggler.vue';
 
-import NesteArrangement from '../../components/home-components/NesteArrangement.vue';
-import Arrangementer from '../../components/home-components/Arrangementer.vue';
-
-import ThemeToggler from '../../components/buttons/ThemeToggler.vue';
-</script>
+  
+  const { isLoading, isAuthenticated, signOut } = useAuth()
+  
+  </script>
 
 <template>
+  <div style="margin: 40pt;" v-if="isLoading">
+    Loading…
+  </div>
+
+  <div style="margin: 40pt;" v-else-if="isAuthenticated">
+    <button class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" @click="signOut"> Sign Out </button>
+  </div>
+  
+  <div style="margin: 40pt;" v-else>
+    <LoginCard/>
+  </div>
+
   <div class="min-h-screen flex justify-center items-center">
     <ThemeToggler />
   </div>
 </template>
-
-<script>
-export default {
-  name: 'ProfilView',
-}
-</script>
-
-<style>
-/* Global styles or additional customization */
-</style>

@@ -1,6 +1,7 @@
+<!-- We have a bug where the page loaded on a phone looks horrible, wider than the screen. Might be tailwind error here -->
+
 <template>
-    <div class="text-dark font-poppins text-m max-w-280 min-h-screen mx-auto my-20">
-        <!-- Content -->
+    <div class="text-dark font-poppins text-m max-w-280 mx-auto ">
         <slot></slot>
     </div>
 </template>

@@ -1,3 +1,6 @@
+# Secrets (should be ignored anyways)
+.env.remote
+
 # Logs
 logs
 *.log

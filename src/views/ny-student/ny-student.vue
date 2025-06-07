@@ -9,7 +9,7 @@ import Footer from '../../components/Footer.vue';
 </script>
 
 <template>
-    <div class="flex  flex-grow flex-col">
+    <div class="flex flex-grow flex-col">
       <div class="mx-auto flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-[1200px] py-10">
         <article>
           <h1 id="stillingsutlysninger" class="group flex items-center font-semibold tracking-tight text-title-2 mb-4">
@@ -24,9 +24,3 @@ import Footer from '../../components/Footer.vue';
       </div>
     </div>
 </template>
-
-<script>
-export default {
-  name: 'NyStudentView',
-}
-</script>

@@ -1,10 +1,6 @@
 <script setup>
 import '../../../style.css'
 import '../../../assets/fonts/fonts.css';
-
-import Header from '../../../components/Header.vue';
-import MainContent from '../../../components/MainContent.vue';
-import Footer from '../../../components/Footer.vue';
 </script>
 
 <template>
@@ -23,9 +19,3 @@ import Footer from '../../../components/Footer.vue';
         </div>
     </div>
 </template>
-
-<script>
-export default {
-  name: 'UnderKonstruksjonView',
-}
-</script>

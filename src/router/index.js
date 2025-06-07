@@ -1,9 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HjemView from '../views/hjem/hjem.vue'
-import NyStudentView from '../views/ny-student/ny-student.vue'
-import ProfilView from '../views/profil/profil.vue'
-import StillingsannonseView from '../views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
-import UnderKonstruksjonView from '../views/diverse/error/under-konstruksjon.vue'
+import HjemView from '@/views/hjem/hjem.vue'
+import NyStudentView from '@/views/ny-student/ny-student.vue'
+import ProfilView from '@/views/profil/profil.vue'
+// import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
+import GroupPage from '@/views/for-studenter/undergrupper/nabla-group.vue'
+import GroupAdminPage from '@/views/for-studenter/undergrupper/nabla-group-admin.vue'
+import GroupsPage from '@/views/for-studenter/undergrupper/nabla-groups.vue'
+import UnderKonstruksjonView from '@/views/diverse/error/under-konstruksjon.vue'
+import PageNotFoundView from '@/views/diverse/error/404.vue'
+
+import { groupAdminPageGuard } from './guards.ts'
 
 const routes = [
 
@@ -27,7 +33,9 @@ const routes = [
   { path: '/for-komponenter/faglig-innhold', component: UnderKonstruksjonView },
   { path: '/for-komponenter/interessegrupper', component: UnderKonstruksjonView },
   { path: '/for-komponenter/kjellern', component: UnderKonstruksjonView },
-  { path: '/for-komponenter/komiteer', component: UnderKonstruksjonView },
+  { path: '/for-komponenter/komiteer', component: GroupsPage },
+  { path: '/for-komponenter/komiteer/:id', component: GroupPage, props: true },
+  { path: '/for-komponenter/komiteer/:id/admin', component: GroupAdminPage, props: true, beforeEnter: groupAdminPageGuard },
   { path: '/for-komponenter/kontakt', component: UnderKonstruksjonView },
   { path: '/for-komponenter/motereferater', component: UnderKonstruksjonView },
   { path: '/for-komponenter/okonomisk-stotte', component: UnderKonstruksjonView },
@@ -61,7 +69,7 @@ const routes = [
   { path: '/soknad', component: UnderKonstruksjonView }, 
   { path: '/tilbakemeldinger', component: UnderKonstruksjonView },
 
-//  { path: '/error', component: (Your choice)View },
+ { path: '/404', component: PageNotFoundView },
 ]
 
 // Create a router instance

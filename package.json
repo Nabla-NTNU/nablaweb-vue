@@ -4,22 +4,29 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "seed": "tsx src/lib/seedDatabase.ts",
+    "gen-types": "supabase gen types typescript --local > src/lib/database.types.ts",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "markdown-it": "^14.1.0",
     "postcss-import": "^16.1.0",
-    "vue": "^3.4.37",
+    "tsx": "^4.19.4",
+    "vue": "^3.5.13",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
-    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/typography": "^0.5.16",
     "@vitejs/plugin-vue": "^5.1.2",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "supabase": "^2.22.6",
     "tailwindcss": "^3.4.13",
     "vite": "^5.4.1"
   }
