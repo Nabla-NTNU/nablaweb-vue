@@ -14,7 +14,7 @@ CREATE TABLE nablaweb_vue.nabla_groups (
     leader_mail     TEXT                    UNIQUE,
     leader          TEXT REFERENCES nablaweb_vue.nabla_users(username),
     about           TEXT                    NOT NULL DEFAULT '',
-    group_image     TEXT                    NOT NULL DEFAULT '',
+    group_photo     TEXT                    NOT NULL DEFAULT '',
     date_began TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     is_active       BOOLEAN                 NOT NULL DEFAULT true
 );

@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from "./database.types.ts";
+import type { Database } from "./types/database.types.js";
 import { base, nb_NO, sv, en, Faker } from '@faker-js/faker';
 
 

@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@/lib/database.types'
+import type { Database } from '@/lib/types/database.types'
 
 // Defined in a .env.local for dev, can explore what makes sense for prod
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
