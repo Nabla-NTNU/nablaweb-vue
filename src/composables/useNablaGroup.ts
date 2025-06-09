@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabaseClient'
 import { QueryData } from '@supabase/supabase-js'
 import { Ref, ref, onMounted} from 'vue'
-import type { Database } from '@/lib/database.types'
+import type { Database } from '@/lib/types/database.types'
 
 
 async function getGroupWithoutMembers(groupID: String) {

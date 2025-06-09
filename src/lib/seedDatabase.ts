@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from "./database.types.ts";
+import type { Database } from "./types/database.types.js";
 import { base, nb_NO, sv, en, Faker } from '@faker-js/faker';
 
 
@@ -120,13 +120,13 @@ if (users.length === 0) {
     if (user) {nablaUsers!.push(user)}
 
     console.log("Populating nablauser table...")
-    const { error } = await supabase
+    const { error: error0 } = await supabase
         .schema('nablaweb_vue')
         .from('nabla_users')
         .insert(nablaUsers)
 
     console.log("Making admin admin an admin...")
-    const { errorer } = await supabase
+    const { error: error1 } = await supabase
         .schema('nablaweb_vue')
         .from('nabladmins')
         .insert({
@@ -183,10 +183,15 @@ if (users.length === 0) {
             leader: 'user'
         }
     ]
-    const { errorerer } = await supabase
+    const { error: error2 } = await supabase
         .schema('nablaweb_vue')
         .from('nabla_groups')
         .insert(nablaGroups)
 
     console.log("Filling groups with members...")
+    // const { error: error3 } = await supabase.storage.createBucket('images', {
+    //     public: true,
+    //     allowedMimeTypes: ['image/*'],
+    //     // fileSizeLimit: '10MB',
+    // })
 }

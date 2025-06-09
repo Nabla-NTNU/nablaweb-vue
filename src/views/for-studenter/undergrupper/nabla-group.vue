@@ -5,7 +5,7 @@
 
     import { useGroup } from '@/composables/useNablaGroup'
     import { useAuth } from '@/composables/useAuth'
-    import UserCard from '@/components/UIUtils/UserCard.vue'
+    import UserCard from '@/components/general/user-card.vue'
 
     const route = useRoute()
     const router = useRouter()

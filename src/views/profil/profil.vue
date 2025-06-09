@@ -3,7 +3,7 @@
   import '@/assets/fonts/fonts.css';
   
   import { useAuth } from '@/composables/useAuth'
-  import LoginCard from '@/components/UIUtils/LoginCard.vue';
+  import LoginCard from '@/components/general/login-card.vue';
   import ThemeToggler from '@/components/buttons/ThemeToggler.vue';
 
   

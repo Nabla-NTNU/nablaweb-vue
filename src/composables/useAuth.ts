@@ -1,7 +1,7 @@
 import { ref, computed, readonly, onUnmounted } from 'vue'
 import { supabase } from '@/lib/supabaseClient'
 import type { User, Session } from '@supabase/supabase-js'
-import type { Database } from "@/lib/database.types";
+import type { Database } from "@/lib/types/database.types";
 
 const user = ref<User | null>(null)
 const username = ref<String | null>(null)

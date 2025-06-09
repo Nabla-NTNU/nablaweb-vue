@@ -35,7 +35,7 @@ export function useGroupImageUpload(groupURL: string,) {
         const fileExtention = file.name.split('.').pop()
         const filepath = `group-images/${groupURL}/${date.toISOString()}.${fileExtention}`
 
-        return uploadFile(file, filepath, 'images-vue', uploading, error, publicURL)
+        return uploadFile(file, filepath, 'images', uploading, error, publicURL)
     }
 
     return { uploading, error, publicURL, upload }
