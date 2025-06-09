@@ -11,7 +11,7 @@
 
     const errorMessage = ref(null)
 
-    const hideMessage = () => showError.value = null
+    const hideMessage = () => errorMessage.value = null
 
     async function handleLogin() {
         try {
