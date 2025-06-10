@@ -8,6 +8,9 @@
   
     // Fix the newest standard of getting modules
     "module": "ESNext",
+    
+    // Unsure why - markdown-it requires this
+    "esModuleInterop": true,
 
     // For some reason the IDE complains about not seeing modules without this
     "moduleResolution": "node",

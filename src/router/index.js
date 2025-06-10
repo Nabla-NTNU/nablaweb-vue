@@ -9,7 +9,7 @@ import GroupsPage from '@/views/for-studenter/undergrupper/nabla-groups.vue'
 import UnderKonstruksjonView from '@/views/diverse/error/under-konstruksjon.vue'
 import PageNotFoundView from '@/views/diverse/error/404.vue'
 
-import { groupAdminPageGuard } from './guards.ts'
+import { groupPageGuard, groupAdminPageGuard } from './guards.ts'
 
 const routes = [
 
@@ -34,7 +34,7 @@ const routes = [
   { path: '/for-komponenter/interessegrupper', component: UnderKonstruksjonView },
   { path: '/for-komponenter/kjellern', component: UnderKonstruksjonView },
   { path: '/for-komponenter/komiteer', component: GroupsPage },
-  { path: '/for-komponenter/komiteer/:id', component: GroupPage, props: true },
+  { path: '/for-komponenter/komiteer/:id', component: GroupPage, props: true, beforeEnter: groupPageGuard },
   { path: '/for-komponenter/komiteer/:id/admin', component: GroupAdminPage, props: true, beforeEnter: groupAdminPageGuard },
   { path: '/for-komponenter/kontakt', component: UnderKonstruksjonView },
   { path: '/for-komponenter/motereferater', component: UnderKonstruksjonView },

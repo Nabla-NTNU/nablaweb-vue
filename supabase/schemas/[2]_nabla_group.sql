@@ -12,9 +12,9 @@ CREATE TABLE nablaweb_vue.nabla_groups (
     logo            TEXT                    NOT NULL DEFAULT '',
     mail_list       TEXT                    UNIQUE,
     leader_mail     TEXT                    UNIQUE,
-    leader          TEXT REFERENCES nablaweb_vue.nabla_users(username),
+    leader          TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username),
     about           TEXT                    NOT NULL DEFAULT '',
-    group_image     TEXT                    NOT NULL DEFAULT '',
+    group_photo     TEXT                    NOT NULL DEFAULT '',
     date_began TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     is_active       BOOLEAN                 NOT NULL DEFAULT true
 );

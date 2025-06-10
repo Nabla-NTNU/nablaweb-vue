@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from "./database.types.ts";
+import type { Database } from "./types/database.types.js";
 import { base, nb_NO, sv, en, Faker } from '@faker-js/faker';
 
 
@@ -143,7 +143,7 @@ if (users.length === 0) {
             logo: 'https://nabla.no/media/thumbnails/uploads/news_pictures/webkom-logo_cd43LtI.png.250x250_q85_crop-smart.png',
             mail_list: 'webkom@nabla.no',
             about: faker.lorem.text(),
-            group_image: 'https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg',
+            group_photo: 'https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg',
             leader: 'admin'
         },
         {
@@ -152,7 +152,7 @@ if (users.length === 0) {
             kind: 'Interest group',
             logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/Kultkom.png.250x250_q85_crop-smart.png',
             about: faker.lorem.text(),
-            group_image: 'https://nabla.no/media/uploads/content/nabla_under_gruppe_kultkom.jpg',
+            group_photo: 'https://nabla.no/media/uploads/content/nabla_under_gruppe_kultkom.jpg',
             leader: 'user'
         },
         {
@@ -161,7 +161,7 @@ if (users.length === 0) {
             kind: 'Committee',
             logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/Prokom-ikon-monokrom.jpg.250x250_q85_crop-smart.jpg',
             about: faker.lorem.text(),
-            group_image: 'https://nabla.no/media/uploads/com_pictures/HU5A9317.jpeg',
+            group_photo: 'https://nabla.no/media/uploads/com_pictures/HU5A9317.jpeg',
             leader: 'user'
         },
         {
@@ -170,7 +170,7 @@ if (users.length === 0) {
             kind: 'Committee',
             logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/redaksjonen_logo.jpg.250x250_q85_crop-smart.jpg',
             about: faker.lorem.text(),
-            group_image: 'https://nabla.no/media/uploads/content/Nabladet_logo_bla.JPG',
+            group_photo: 'https://nabla.no/media/uploads/content/Nabladet_logo_bla.JPG',
             leader: 'user'
         },
         {
@@ -179,7 +179,7 @@ if (users.length === 0) {
             kind: 'Committee',
             logo: 'https://nabla.no/media/thumbnails/uploads/com_pictures/styret.jpeg.250x250_q85_crop-smart.jpg',
             about: faker.lorem.text(),
-            group_image: 'https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg',
+            group_photo: 'https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg',
             leader: 'user'
         }
     ]

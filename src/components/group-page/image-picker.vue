@@ -8,7 +8,7 @@
     }>()
 
     const emit = defineEmits<{
-        (e: 'saveImageURL', url: string): void
+        saveImage: [localImageURL: string]
     }>()
 
     const localImageURL = ref(props.imageURL)
@@ -78,7 +78,7 @@
         <InlineButton
             :text="'Lagre endring'"
             :color="'bg-secondary'"
-            @onClick="$emit('saveImageURL', localImageURL)"
+            @onClick="$emit('saveImage', localImageURL)"
             :disable-condition="localImageURL === imageURL"
         />
     </div>

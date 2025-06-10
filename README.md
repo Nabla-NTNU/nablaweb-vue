@@ -71,11 +71,7 @@ Lek litt rundt med App.vue og prøv å lage egne komponenter du kan bruke på si
 
 
 <!--
-TODO:
-    - Clean useNablaGroup
-    
 TODO (non-critical)
-    - Fix explicit <script setup lang="ts">
     - Show errors in UI
         - Better try-catch loops in composables pls
         - Button success state
