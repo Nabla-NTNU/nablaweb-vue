@@ -8,9 +8,6 @@ const username = ref<String | null>(null)
 const session = ref<Session | null>(null)
 const isLoading = ref(true)
 
-// Not very pretty - as supabase uses email and we use usernames we
-//   have to first get the supabase user, then get our id for them:
-//   their username in the user table.
 async function getUsername() {
     if (user.value?.id) {
         try {
