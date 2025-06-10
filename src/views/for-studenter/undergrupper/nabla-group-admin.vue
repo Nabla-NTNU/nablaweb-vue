@@ -91,7 +91,7 @@
         }
     }
 
-    const searchString = ref("")
+    // const searchString = ref("")
     const foundUsers: Ref<NablaUser[]> = ref([])
 
     async function searchForUsers(newMemberSearchString: string) {
@@ -157,10 +157,9 @@
                 <MemberAdminTable
                     :members="group.members ? group.members : []"
                     :notRemovable="group.leader? [group.leader] : []"
-                    @saveMemberTable="handleSaveMemberTable"
-                    v-model:searchString="searchString"
-                    @searchForUsers="searchForUsers"
                     :foundUsers="foundUsers"
+                    @saveMemberTable="handleSaveMemberTable"
+                    @searchForUsers="searchForUsers"
                 />
                 <br>
                 <br>

@@ -41,8 +41,7 @@ async function isUserAdmin(): Promise<boolean> {
             .schema('nablaweb_vue')
             .from('nabladmins')
             .select('user')
-            .eq('user', username.toString())
-
+            .eq('user', username.value!)
         if (data) { return data.length > 0 }
         if (error) { throw error }
     }

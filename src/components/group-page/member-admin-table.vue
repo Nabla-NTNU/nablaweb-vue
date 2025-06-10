@@ -5,9 +5,9 @@
     const props = defineProps<{
         members: GroupMember[],
         notRemovable: GroupMember[],
-        searchString: string,
         foundUsers: NablaUser[],
     }>()
+
 
     const emit = defineEmits<{
         saveMemberTable: [localMemberTable: GroupMember[]]
@@ -40,11 +40,15 @@
 
     // New member search logic
     const newRole = ref('')
+    const newUser = ref('')
     const searchString = computed({
-        get: () => props.searchString,
+        get: () => newUser.value,
         set:  searchString => {
-            emit('updateSearchString', searchString)
-            emit('searchForUsers', searchString)
+            if (newUser.value != searchString) {
+                emit('updateSearchString', searchString)
+                emit('searchForUsers', searchString)
+                newUser.value = searchString
+            }
         }
     })
 

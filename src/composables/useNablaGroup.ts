@@ -73,7 +73,7 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
                 user: {
                     username: member.user.username,
                     firstName: member.user.firstName,
-                    lastName: member.user.firstName,
+                    lastName: member.user.lastName,
                     profilePicture: new URL(member.user.profilePicture),
                     class: member.user.class
                 }
