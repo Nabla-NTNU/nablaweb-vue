@@ -143,6 +143,23 @@ export async function isUserGroupLeader(username: string, groupID: string): Prom
     return false
 }
 
+export async function doesGroupExist(groupID: string): Promise<boolean> {
+    try {
+        const { data, error } = await supabase
+        .schema('nablaweb_vue')
+        .from('nabla_groups')
+        .select('id')
+        .eq('id', groupID)
+        if (error) { throw error }
+        return data.length > 0
+    }
+    catch (e) {
+        console.error(`[useNablaGroup] Error fetching group leader: ${e}`)
+    }
+    return false
+    
+}
+
 export function useGroup(groupID: string) {
     const group: Ref<NablaGroup> = ref({id: groupID})
     const loading: Ref<boolean> = ref(true)

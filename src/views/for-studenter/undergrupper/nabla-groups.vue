@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
     import { computed } from 'vue'
     import { useGroups } from '@/composables/useNablaGroup'
-    import GroupCard from '@/components/general/group-card.vue'
+    import GroupCard from '@/components/group-page/group-card.vue'
     
     const  {groups: nablaGroups, loading, error} = useGroups()
     const nablaCommittees = computed(() =>
@@ -21,9 +21,9 @@
             <GroupCard
                 v-for="nablaGroup in nablaCommittees"
                 :key="nablaGroup.id"
-                :groupURL="nablaGroup.id"
-                :groupName="nablaGroup.name"
-                :groupLogo="nablaGroup.logo"
+                :id="nablaGroup.id"
+                :name="nablaGroup.name"
+                :logo="nablaGroup.logo"
             />
         </div>
         <h1>
@@ -34,9 +34,9 @@
             <GroupCard
                 v-for="nablaGroup in nablaInterestGroups"
                 :key="nablaGroup.id"
-                :groupURL="nablaGroup.id"
-                :groupName="nablaGroup.name"
-                :groupLogo="nablaGroup.logo"
+                :id="nablaGroup.id"
+                :name="nablaGroup.name"
+                :logo="nablaGroup.logo"
             />
         </div>
 </template>
