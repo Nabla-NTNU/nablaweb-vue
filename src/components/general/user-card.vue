@@ -6,8 +6,8 @@
         profilePicture?: URL,
         memberRole?: string  
     }>()
-
-    const image: URL = props.profilePicture ? props.profilePicture : new URL('')
+    const defaultImage = 'https://upload.wikimedia.org/wikipedia/commons/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg'
+    const image: URL = props.profilePicture ? props.profilePicture : new URL(defaultImage)
 </script>
 
 <template>

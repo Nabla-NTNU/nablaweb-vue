@@ -47,7 +47,7 @@
             if (error) throw error
             else group.value.about = newAboutText
         }
-        catch {
+        catch (error) {
             console.error('[Nabla Group Admin] Error saving about text:', error)
         }
     }
@@ -63,7 +63,7 @@
             if (error) throw error
             else group.value.leader = {user: {username: newLeaderUsername}}
         }
-        catch {
+        catch (error) {
             console.error('[Nabla Group Admin] Error saving new leader:', error)
         }
     }
