@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
+    "@types/markdown-it": "^14.1.2",
     "markdown-it": "^14.1.0",
     "postcss-import": "^16.1.0",
     "tsx": "^4.19.4",

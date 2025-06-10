@@ -2,13 +2,14 @@
     import { computed } from 'vue'
     import { useGroups } from '@/composables/useNablaGroup'
     import GroupCard from '@/components/group-page/group-card.vue'
+    import { GroupKind } from '@/lib/types/frontend.types'
     
-    const  {groups: nablaGroups, loading, error} = useGroups()
-    const nablaCommittees = computed(() =>
-        nablaGroups.value.filter(group => group.kind == 'Committee')
+    const  {groups, loading: groupsLoading, error: groupsError} = useGroups()
+    const committees = computed(() =>
+        groups.value.filter(group => group.kind == GroupKind.Committee)
     )
-    const nablaInterestGroups = computed(() =>
-        nablaGroups.value.filter(group => group.kind == 'Interest group')
+    const interestGroups = computed(() =>
+        groups.value.filter(group => group.kind == GroupKind.InterestGroup)
     )
 </script>
 
@@ -19,11 +20,11 @@
         </h1>
         <div class="flex flex-wrap justify-center gap-6">
             <GroupCard
-                v-for="nablaGroup in nablaCommittees"
-                :key="nablaGroup.id"
-                :id="nablaGroup.id"
-                :name="nablaGroup.name"
-                :logo="nablaGroup.logo"
+                v-for="group in committees"
+                :key="group.id"
+                :id="group.id"
+                :name="group.name"
+                :logo="group.logo"
             />
         </div>
         <h1>
@@ -32,11 +33,11 @@
     </div>
         <div class="flex flex-wrap justify-center gap-6">
             <GroupCard
-                v-for="nablaGroup in nablaInterestGroups"
-                :key="nablaGroup.id"
-                :id="nablaGroup.id"
-                :name="nablaGroup.name"
-                :logo="nablaGroup.logo"
+                v-for="group in interestGroups"
+                :key="group.id"
+                :id="group.id"
+                :name="group.name"
+                :logo="group.logo"
             />
         </div>
 </template>
