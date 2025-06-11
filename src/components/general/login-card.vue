@@ -1,6 +1,6 @@
 <!-- Very temporary. Please make sure this doesn't end up in prod -->
 
-<script setup>
+<script setup lang='ts'>
     import { ref } from 'vue';
     import { supabase } from '@/lib/supabaseClient'
 

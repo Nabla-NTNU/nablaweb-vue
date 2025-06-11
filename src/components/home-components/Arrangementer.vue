@@ -1,3 +1,7 @@
+<script setup lang='ts'>
+    // None as of yet
+</script>
+
 <template>
     <div class="flex justify-around mt-32">
         <!-- Arrangementer -->
@@ -14,18 +18,3 @@
         
     </div>
 </template>
-
-<script>
-export default {
-    name: "Arrangementer",
-};
-</script>
-
-<script setup>
-// No special logic
-</script>
-
-<style scoped>
-/* You can add any specific styles related to the component here */
-</style>
-  

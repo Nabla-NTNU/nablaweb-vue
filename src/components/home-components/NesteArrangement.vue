@@ -1,3 +1,7 @@
+<script setup lang='ts'>
+    // TODO
+</script>
+
 <template>
     <div class="flex items-center justify-between">
         
@@ -22,18 +26,3 @@
         
     </div>
 </template>
-
-<script>
-export default {
-    name: "NesteArrangement",
-};
-</script>
-
-<script setup>
-// No special logic
-</script>
-
-<style scoped>
-/* You can add any specific styles related to the component here */
-</style>
-  

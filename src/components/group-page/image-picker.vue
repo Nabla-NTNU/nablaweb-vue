@@ -1,5 +1,8 @@
 <script setup lang="ts">
     import { ref, watch } from 'vue'
+    import { useI18n } from 'vue-i18n'
+    const { t } = useI18n()
+
     import InlineButton from '@/components/buttons/inline-button.vue';
 
     const props = defineProps<{
@@ -66,17 +69,17 @@
             class="m-auto items-center text-nowrap px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary cursor-pointer"
             v-if="localImageURL === imageURL"
         >
-            Last opp
+            {{ t('last-opp') }}
         </label>
 
         <InlineButton
             v-if="localImageURL !== imageURL"
-            :text="'Avbryt'"
+            :text="t('avbryt')"
             @onClick="localImageURL = imageURL"
         />
 
         <InlineButton
-            :text="'Lagre endring'"
+            :text="t('lagre-endring')"
             :color="'bg-secondary'"
             @onClick="$emit('saveImage', localImageURL)"
             :disable-condition="localImageURL === imageURL"
@@ -86,7 +89,20 @@
         <img
         :src="localImageURL"
         class="w-full object-contain mt-4 rounded-xl"
-        alt="Flotte folk"
+        :alt="t('alt-text')"
         />
     </div>
 </template>
+
+<i18n lang="yaml">
+nb:
+    last-opp: Last opp
+    avbryt: Avbryt
+    lagre-endring: Lagre endring
+    alt-text: Bilde av gruppemedlemmene
+en: 
+    last-opp: Upload
+    avbryt: Cancel
+    lagre-endring: Save change
+    alt-text: Picture of the group members
+</i18n>

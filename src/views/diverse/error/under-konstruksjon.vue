@@ -1,6 +1,5 @@
-<script setup>
-import '../../../style.css'
-import '../../../assets/fonts/fonts.css';
+<script setup lang="ts">
+import '@/style.css'
 </script>
 
 <template>

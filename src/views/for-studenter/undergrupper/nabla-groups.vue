@@ -1,5 +1,8 @@
 <script setup lang="ts">
     import { computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
+    const { t } = useI18n()
+
     import { useGroups } from '@/composables/useNablaGroup'
     import GroupCard from '@/components/group-page/group-card.vue'
     import { GroupKind } from '@/lib/types/frontend.types'
@@ -16,7 +19,7 @@
 <template>
     <div class="flex w-full flex-grow flex-col" style="padding: 20pt">
         <h1>
-            Komiteer!
+            {{ t('komiteer') }}!
         </h1>
         <div class="flex flex-wrap justify-center gap-6">
             <GroupCard
@@ -28,7 +31,7 @@
             />
         </div>
         <h1>
-        Undergrupper!
+            {{ t('undergrupper') }}!
         </h1>
     </div>
         <div class="flex flex-wrap justify-center gap-6">
@@ -41,3 +44,12 @@
             />
         </div>
 </template>
+
+<i18n lang="yaml">
+    nb:
+        komiteer: Komiteer
+        undergrupper: Undergrupper
+    en:
+        komiteer: Committees
+        undergrupper: Interest Groups
+</i18n>

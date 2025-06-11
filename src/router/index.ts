@@ -9,7 +9,7 @@ import GroupsPage from '@/views/for-studenter/undergrupper/nabla-groups.vue'
 import UnderKonstruksjonView from '@/views/diverse/error/under-konstruksjon.vue'
 import PageNotFoundView from '@/views/diverse/error/404.vue'
 
-import { groupPageGuard, groupAdminPageGuard } from './guards.ts'
+import { groupPageGuard, groupAdminPageGuard } from './guards'
 
 const routes = [
 
