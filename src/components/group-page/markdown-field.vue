@@ -45,7 +45,7 @@
 nb:
     placeholder: NablaKom er hele nablas nabla-komite!
     gå-tilbake: Gå tilbake
-    lagre-ny-tekst: Large ny tekst
+    lagre-ny-tekst: Lagre ny tekst
 en:
     placeholder: NablaKom is all of nabla's nabla-committee!
     gå-tilbake: Cancel
