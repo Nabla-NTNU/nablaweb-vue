@@ -1,37 +1,53 @@
 {
-  "name": "nablaweb-vue",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "seed": "tsx src/lib/seedDatabase.ts",
-    "gen-types": "supabase gen types typescript --local > src/lib/database.types.ts",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@intlify/core-base": "^12.0.0-alpha.2",
-    "@intlify/unplugin-vue-i18n": "^6.0.8",
-    "@supabase/supabase-js": "^2.49.4",
-    "@types/markdown-it": "^14.1.2",
-    "markdown-it": "^14.1.0",
-    "postcss-import": "^16.1.0",
-    "tsx": "^4.19.4",
-    "vue": "^3.5.13",
-    "vue-i18n": "^11.1.5",
-    "vue-router": "^4.4.5"
-  },
-  "devDependencies": {
-    "@faker-js/faker": "^9.8.0",
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.9",
-    "@tailwindcss/typography": "^0.5.16",
-    "@vitejs/plugin-vue": "^5.1.2",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "supabase": "^2.22.6",
-    "tailwindcss": "^3.4.13",
-    "vite": "^6.3.5"
-  }
+    "name": "nablaweb-vue",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "seed": "tsx src/lib/seedDatabase.ts",
+        "gen-types": "supabase gen types typescript --local > src/lib/database.types.ts",
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "prepare": "husky"
+    },
+    "dependencies": {
+        "@intlify/core-base": "^12.0.0-alpha.2",
+        "@intlify/unplugin-vue-i18n": "^6.0.8",
+        "@supabase/supabase-js": "^2.49.4",
+        "@types/markdown-it": "^14.1.2",
+        "markdown-it": "^14.1.0",
+        "postcss-import": "^16.1.0",
+        "tsx": "^4.19.4",
+        "vue": "^3.5.13",
+        "vue-i18n": "^11.1.5",
+        "vue-router": "^4.4.5"
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^9.8.0",
+        "@tailwindcss/aspect-ratio": "^0.4.2",
+        "@tailwindcss/forms": "^0.5.9",
+        "@tailwindcss/typography": "^0.5.16",
+        "@vitejs/plugin-vue": "^5.1.2",
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.47",
+        "prettier": "^3.5.3",
+        "prettier-plugin-tailwindcss": "^0.6.12",
+        "supabase": "^2.22.6",
+        "tailwindcss": "^3.4.13",
+        "vite": "^6.3.5"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "semi": false,
+        "vueIndentScriptAndStyle": true,
+        "plugins": [
+            "prettier-plugin-tailwindcss"
+        ]
+    },
+    "lint-staged": {
+        "*.{js,css,md,vue}": [
+            "prettier --write"
+        ]
+    }
 }
