@@ -182,7 +182,9 @@
       <!-- Links in header -->
       <nav class="flex items-center">
         <div class="group" data-dropdown-content="om">
-          <router-link to="/om" class="content-center pr-4"> {{ t('om-nabla' )}} </router-link>
+          <router-link to="/om" class="content-center pr-4">
+            {{ t('om-nabla' )}}
+          </router-link>
         </div>
         <div class="group" data-dropdown-content="for-komponenter">
           <router-link to="/for-komponenter" class="content-center px-4"> {{ t('for-komponenter' )}} </router-link>

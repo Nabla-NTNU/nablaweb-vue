@@ -21,7 +21,6 @@
         applyTheme(savedTheme, savedMode);
     }
 
-
     onMounted(() => {
         loadThemeFromLocalStorage()
     })
@@ -31,7 +30,9 @@
     <div class="min-h-screen flex flex-col">
         <Header />
         <main class="flex-1 bg-light">
-        <MainContent><RouterView /></MainContent>
+            <MainContent>
+                <RouterView />
+            </MainContent>
         </main>
         <Footer />
     </div>

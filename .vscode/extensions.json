@@ -1,3 +1,9 @@
+//  Format codumented below:
+//    https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_workspace-recommended-extensions
+//
 {
-  "recommendations": ["Vue.volar"]
+  "recommendations": [
+    "Vue.volar",                    // Vue language support extension 
+    "bradlc.vscode-tailwindcss"     // Tailwind IntelliSense support
+  ]
 }
