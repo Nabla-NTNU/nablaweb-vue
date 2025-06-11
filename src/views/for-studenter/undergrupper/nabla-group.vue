@@ -2,6 +2,8 @@
     import { useRoute, useRouter, RouterLink } from 'vue-router'
     import { computed, onMounted } from 'vue'
     import markdownit from 'markdown-it'
+    import { useI18n } from 'vue-i18n'
+    const { t } = useI18n()
 
     import { useGroup } from '@/composables/useNablaGroup'
     import { useAuth } from '@/composables/useAuth'
@@ -36,8 +38,8 @@
                     <h1 class="grow font-semibold tracking-tight text-title-2">
                         {{ group.name }}
                     </h1>
-                    <RouterLink :to="`/for-komponenter/komiteer/${groupID}/admin`" v-if="userIsAdmin" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
-                        Hemmelige Saker <br> (Adminpanel)
+                    <RouterLink :to="`/for-komponenter/komiteer/${groupID}/admin`" v-if="userIsAdmin" class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center" style="white-space: pre-line;">
+                        {{ t('adminpanel') }}
                     </RouterLink>
                 </div>
                 <h2 class=" font-semibold tracking-tight text-subtitle-2 mb-4" v-if="group.mailList">
@@ -48,7 +50,7 @@
 
                 <div v-if="group.members">
                     <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
-                        Medlemmer:
+                        {{ t('medlemmer') }}:
                     </h2>
                     <div class="flex flex-wrap justify-center gap-6">
                         <UserCard
@@ -66,3 +68,12 @@
         </div>
     </div>
 </template>
+
+<i18n lang="yaml">
+    nb:
+        adminpanel : "Hemmelige Saker \n (Adminpanel)"
+        medlemmer: Medlemmer
+    en:
+        adminpanel: "Secret Button \n (Admin page)"
+        medlemmer: Members
+</i18n>

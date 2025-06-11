@@ -1,5 +1,8 @@
 <script setup lang="ts">
     import { ref, watch, computed } from 'vue'
+    import { useI18n } from 'vue-i18n'
+    const { t } = useI18n()
+
     import { GroupMember, NablaUser } from '@/lib/types/frontend.types'
 
     const props = defineProps<{
@@ -92,11 +95,11 @@
     <table class="min-w-full table-auto mb-4">
         <thead>
             <tr>
-                <th class="w-auto whitespace-nowrap text-left px-2">Navn</th>
-                <th class="whitespace-nowrap px-2">Kull</th>
-                <th class="whitespace-nowrap">Rolle</th>
-                <th class="w-auto whitespace-nowrap px-2">Dato</th>
-                <th class="whitespace-nowrap px-2">Flytt</th>
+                <th class="w-auto whitespace-nowrap text-left px-2"> {{ t('navn') }} </th>
+                <th class="whitespace-nowrap px-2"> {{ t('kull') }} </th>
+                <th class="whitespace-nowrap"> {{ t('rolle') }} </th>
+                <th class="w-auto whitespace-nowrap px-2"> {{ t('dato') }} </th>
+                <th class="whitespace-nowrap px-2"> {{ t('flytt') }} </th>
                 <th class="whitespace-nowrap px-2"><!-- available action --></th>
             </tr>
         </thead>
@@ -110,12 +113,12 @@
                     {{ member.user.class ? member.user.class : '' }}
                 </td>
                 <td class="px-2">
-                    <textarea class="border rounded p-3 resize-none h-[2.5rem] min-w-3xs" placeholder="Kuleste medlem!" v-model="member.role"/>
+                    <textarea class="border rounded p-3 resize-none h-[2.5rem] min-w-3xs" :placeholder="t('rolle-placeholder')" v-model="member.role"/>
                 </td>
                 <td>
                     {{ member.date? new Date(member.date).toDateString(): '' }}
                 </td> 
-                <td>
+                <td class="justify-center">
                     <button class="mt-auto px-4 py-2 m-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="incrementMember(index)" :disabled="index === 0">
                         Δ
                     </button>
@@ -125,12 +128,13 @@
                 </td>
                 <td>
                     <button class="mt-auto px-4 py-2 m-1 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray"
-                            v-if="member.role == props.members[index]?.role"
-                            @click="removeMember(index)":disabled="notRemovable.some(nonRemovableMember => nonRemovableMember.user.username == member.user.username)">
-                        Slett
+                        v-if="member.role == props.members[index]?.role"
+                        @click="removeMember(index)":disabled="notRemovable.some(nonRemovableMember => nonRemovableMember.user.username == member.user.username)"
+                    >
+                        {{ t('slett' )}}
                     </button>
                     <button class="mt-auto px-4 py-2 m-1 rounded-lg text-white font-semibold transition-all duration-300 bg-primary" v-else @click="$emit('saveMemberTable', localMemberTable)">
-                        Lagre
+                        {{ t('lagre')}}
                     </button>
                 </td>
             </tr>
@@ -139,7 +143,7 @@
                     <input
                         list="user-list"
                         v-model="searchString"
-                        placeholder="Søk etter ny medlem"
+                        :placeholder="t('søk-etter-ny-medlem')"
                         class="border rounded p-2 w-full"
                     />
                     <datalist id="user-list" >
@@ -154,11 +158,11 @@
                     </datalist>
                 </td>
                 <td class="px-2">
-                    <input v-model='newRole' placeholder="Den nye rollen" class="border rounded p-2 w-full"/>
+                    <input v-model='newRole' :placeholder="t('den-nye-rollen')" class="border rounded p-2 w-full"/>
                 </td>
                 <td colspan="3">
                     <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="insertMember()" :disabled="!searchIsValid">
-                        Legg ny medlem inn! 
+                        {{ t('legg-ny-medlem-inn') }}
                     </button>
                 </td>
             </tr>
@@ -166,6 +170,35 @@
     </table>
     </div>
     <button class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary disabled:bg-gray" @click="sortMembersByDate()" :disabled="isSortedByDate">
-        Sorter etter dato
+        {{ t('sorter-etter-dato') }}
     </button>
 </template>
+
+<i18n lang='yaml'>
+nb:
+    navn: Navn
+    kull: Kull
+    rolle: Rolle
+    dato: Dato
+    flytt: Flytt
+    rolle-placeholder: Kuleste medlem!
+    slett: Slett
+    lagre: Lagre
+    søk-etter-ny-medlem: Søk etter ny medlem
+    den-nye-rollen: Den nye rollen
+    legg-ny-medlem-inn: Legg ny medlem inn!
+    sorter-etter-dato: Sorter etter dato
+en:
+    navn: Name
+    kull: Class
+    rolle: Role
+    dato: Date
+    flytt: Move
+    rolle-placeholder: Coolest member!
+    slett: Delete
+    lagre: Save
+    søk-etter-ny-medlem: Search for new member
+    den-nye-rollen: The member's role
+    legg-ny-medlem-inn: Add new member!
+    sorter-etter-dato: Sort by date
+</i18n>

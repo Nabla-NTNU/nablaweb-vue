@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import '../../style.css'
 import '../../assets/fonts/fonts.css';
 

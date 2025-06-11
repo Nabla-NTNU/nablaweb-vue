@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang='ts'>
 import '../../style.css'
 import '../../assets/fonts/fonts.css';
 
-import NesteArrangement from '../../components/home-components/NesteArrangement.vue';
-import Arrangementer from '../../components/home-components/Arrangementer.vue';
+import NesteArrangement from '@/components/home-components/NesteArrangement.vue';
+import Arrangementer from '@/components/home-components/Arrangementer.vue';
 
 </script>
 
@@ -11,9 +11,3 @@ import Arrangementer from '../../components/home-components/Arrangementer.vue';
     <NesteArrangement />
     <Arrangementer />
 </template>
-
-<script>
-export default {
-  name: 'HjemView',
-}
-</script>

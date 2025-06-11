@@ -1,24 +1,4 @@
-<template>
-  <div class="flex flex-col space-y-4 p-4 items-center">
-    <!-- Toggle Classic/Modern Button -->
-    <button
-      @click="toggleTheme"
-      class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary"
-    >
-      {{ theme === 'classic' ? 'Switch to Modern' : 'Switch to Classic' }}
-    </button>
-
-    <!-- Toggle Lightmode/Darkmode Button -->
-    <button
-      @click="toggleMode"
-      class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary"
-    >
-      {{ mode === 'light' ? 'Switch to Darkmode' : 'Switch to Lightmode' }}
-    </button>
-  </div>
-</template>
-
-<script>
+<script lang="ts">
 export default {
   data() {
     return {
@@ -67,6 +47,22 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Scoped styles if needed */
-</style>
+<template>
+  <div class="flex flex-col space-y-4 p-4 items-center">
+    <!-- Toggle Classic/Modern Button -->
+    <button
+      @click="toggleTheme"
+      class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary"
+    >
+      {{ theme === 'classic' ? 'Switch to Modern' : 'Switch to Classic' }}
+    </button>
+
+    <!-- Toggle Lightmode/Darkmode Button -->
+    <button
+      @click="toggleMode"
+      class="px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary"
+    >
+      {{ mode === 'light' ? 'Switch to Darkmode' : 'Switch to Lightmode' }}
+    </button>
+  </div>
+</template>

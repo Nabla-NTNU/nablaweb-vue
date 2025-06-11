@@ -1,17 +1,19 @@
 <script setup lang=ts>
-    import { ref, Ref } from 'vue';
-    import { useRoute } from 'vue-router';
+    import { ref, Ref } from 'vue'
+    import { useRoute } from 'vue-router'
+    import { useI18n } from 'vue-i18n'
+    const { t } = useI18n()
 
-    import { supabase } from '@/lib/supabaseClient';
-    import { useAuth } from '@/composables/useAuth';
+    import { supabase } from '@/lib/supabaseClient'
+    import { useAuth } from '@/composables/useAuth'
     import { useGroup } from '@/composables/useNablaGroup'
-    import { useGroupImageUpload } from '@/composables/useImageUpload';
+    import { useGroupImageUpload } from '@/composables/useImageUpload'
     
     import ImagePicker from '@/components/group-page/image-picker.vue'
     import MarkdownField from '@/components/group-page/markdown-field.vue'
     import MemberAdminTable from '@/components/group-page/member-admin-table.vue'
     import UserPicker from '@/components/group-page/user-picker.vue'
-    import { GroupMember, NablaUser } from '@/lib/types/frontend.types';
+    import { GroupMember, NablaUser } from '@/lib/types/frontend.types'
     
     const route = useRoute()
     const groupID = route.params.id as string
@@ -20,6 +22,7 @@
     const { group, loading, error, refreshGroupMembers} = useGroup(groupID)
     const { uploading, error: uploadError, publicURL, upload } = useGroupImageUpload(groupID)
 
+    // Functions below should probably be part of a composable, not this view.
     async function handleSaveImage(newImage: string) {
         try {
             const { error } = await supabase
@@ -121,29 +124,28 @@
         <!-- <img class = "object-fit: w-full object-cover" :src='nablaGroup.image' alt="Flotte folk"> -->
         <div class="mx-auto flex w-full px-4 sm:px-6 lg:px-8 max-w-[1200px] py-10">
             <div class="flex-1 pr-6">
-                
                 <div class="flex flex-row mb-4">
                     <h1 class="grow font-semibold tracking-tight text-title-2">
-                        Adminsida for {{ group.name }}    
+                        {{ t('adminsida-for') }} {{ group.name }}    
                     </h1>
-                    <RouterLink :to="`/for-komponenter/komiteer/${groupID}`" class="m-auto items-center text-nowrap px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center">
-                        Gå <br> tilbake
+                    <RouterLink :to="`/for-komponenter/komiteer/${groupID}`" class="m-auto items-center text-nowrap px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-primary text-center" style="white-space: pre-line;">
+                        {{ t('gå-tilbake') }}
                     </RouterLink>
                 </div>
 
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
-                    Endre gruppebilde
+                    {{ t('endre-gruppebilde') }}
                 </h2>
-                Disse kan enten peke mot et bilde ute på nettet, eller lastes opp. Dersom dere laster opp - vi fastsetter maks ____ Mb per bilde. Det er ingen fast størrelse på bildet. Gjerne sjekk at det ser presentabelt på alle størrelser skjermer, fra mobiltelefon til storskjerm.
+                {{ t('endre-gruppebilde-tekst') }}
 
                 <ImagePicker :imageURL="group.groupPhoto? group.groupPhoto.href : ''" :uploadImage="upload" @saveImage="handleSaveImage"/>
                 
                 <br>
 
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
-                    Tekst om undergruppen:
+                    {{ t('tekst-om-gruppen')}}:
                 </h2>
-                Her er det nok best å være short & sweet, men dere har tilgang til markdown og HTML om noen har fryktelig lyst ;))
+                {{ t('tekst-om-gruppen-tekst')}}
                 
                 <br>
                 <br>
@@ -151,7 +153,7 @@
                 <MarkdownField :text="group.about ? group.about : ''" @saveText="handleSaveAboutText"/>
                 
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
-                    Medlemsliste:
+                    {{t('medlemsliste')}}:
                 </h2>
 
                 <MemberAdminTable
@@ -165,9 +167,9 @@
                 <br>
                 
                 <h2 class="group flex items-center font-semibold tracking-tight text-subtitle-2 mb-4">
-                    Endre gruppeleder:
+                    {{ t('endre-leder') }}:
                 </h2>
-                Faresone! Ikke reversibelt!
+                {{ t('faresone') }}
                 <br>
                 <UserPicker v-if="group"
                     :current="group.leader"
@@ -185,3 +187,36 @@
         </div>
     </div>
 </template>
+
+<i18n lang="yaml">
+nb:
+    adminsida-for: Adminsida for
+    gå-tilbake: "Gå \n tilbake"
+    endre-gruppebilde: Endre gruppebilde
+    endre-gruppebilde-tekst: >
+        Disse kan enten peke mot et bilde ute på nettet, eller lastes opp. Dersom dere laster opp - vi fastsetter
+        maks ____ Mb per bilde. Det er ingen fast størrelse på bildet. Gjerne sjekk at det ser presentabelt på alle
+        størrelser skjermer, fra mobiltelefon til storskjerm.
+    tekst-om-gruppen: Tekst om undergruppen
+    tekst-om-gruppen-tekst: >
+        Her er det nok best å være short & sweet, men dere har tilgang til markdown og HTML om noen har fryktelig
+        lyst ;))
+    medlemsliste: Medlemsliste
+    endre-leder: Endre gruppeleder
+    faresone: Fare! Ikke reversiblet!
+en:
+    adminsida-for: Admin page for
+    gå-tilbake: "Go \n back"
+    endre-gruppebilde: Change group photo
+    endre-gruppebilde-tekst: >
+        You can choose a web-link, or upload a picture to our servers. If you're uploading - we enforce a maxomum of
+        ____ Mb per image. There's no aspect ratio, however, so please make sure it looks alright on both large and
+        smaller screens.
+    tekst-om-gruppen: About text
+    tekst-om-gruppen-tekst: >
+        You'll likely be best off being short and sweet, however you have access to all of markdown and HTML if you
+        so wish ;))
+    medlemsliste: Member list
+    endre-leder: Change group leader
+    faresone: Danger zone! Non-reversible!
+</i18n>
