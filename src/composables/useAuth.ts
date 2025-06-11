@@ -4,14 +4,11 @@ import type { User, Session } from '@supabase/supabase-js'
 import type { Database } from "@/lib/types/database.types";
 
 const user = ref<User | null>(null)
-const username = ref<String | null>(null)
+const username = ref<string | null>(null)
 const session = ref<Session | null>(null)
 const isLoading = ref(true)
 
-// Not very pretty - as supabase uses email and we use usernames we
-//   have to first get the supabase user, then get our id for them:
-//   their username in the user table.
-async function getUsername() {
+async function getUsername(): Promise<void> {
     if (user.value?.id) {
         try {
             const { data, error } = await supabase
@@ -33,7 +30,7 @@ async function getUsername() {
     }   
 }
 
-async function isUserAdmin() {
+async function isUserAdmin(): Promise<boolean> {
     try {
         if (!username.value) {
             // broken for when user accesses page via link
@@ -44,8 +41,7 @@ async function isUserAdmin() {
             .schema('nablaweb_vue')
             .from('nabladmins')
             .select('user')
-            .eq('user', username.value)
-
+            .eq('user', username.value!)
         if (data) { return data.length > 0 }
         if (error) { throw error }
     }
@@ -55,7 +51,7 @@ async function isUserAdmin() {
     return false
 }
 
-async function initialize() {
+async function initialize(): Promise<void> {
     try {
         const { data, error } = await supabase.auth.getSession()
         if (error) throw error

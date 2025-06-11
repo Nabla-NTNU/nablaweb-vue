@@ -55,7 +55,7 @@ export type Database = {
         Row: {
           about: string
           date_began: string
-          group_image: string
+          group_photo: string
           id: string
           is_active: boolean
           kind: Database["nablaweb_vue"]["Enums"]["group_kind"]
@@ -68,7 +68,7 @@ export type Database = {
         Insert: {
           about?: string
           date_began?: string
-          group_image?: string
+          group_photo?: string
           id: string
           is_active?: boolean
           kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]
@@ -81,7 +81,7 @@ export type Database = {
         Update: {
           about?: string
           date_began?: string
-          group_image?: string
+          group_photo?: string
           id?: string
           is_active?: boolean
           kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]

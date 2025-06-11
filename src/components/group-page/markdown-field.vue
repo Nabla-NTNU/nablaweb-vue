@@ -1,16 +1,17 @@
-<script setup>
+<script setup lang="ts">
     import { ref, watch } from 'vue'
 
     import markdownit from 'markdown-it'
     const md = markdownit()
 
 
-    const props = defineProps({
-        text: String
-    })
-    defineEmits([
-        'saveText'
-    ])
+    const props = defineProps<{
+        text: string
+    }>()
+
+    const emit = defineEmits<{
+        saveText: [text: string]
+    }>()
 
     const localText = ref(props.text)
 

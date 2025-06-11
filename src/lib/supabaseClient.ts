@@ -11,4 +11,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-export const supabase: SupabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
