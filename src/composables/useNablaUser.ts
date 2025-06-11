@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabaseClient'
 import { QueryData } from '@supabase/supabase-js'
-import { Ref, ref, onMounted} from 'vue'
+import { Ref, ref, onMounted, watch} from 'vue'
 import { nablaUser, nablaGroup, groupMember } from '@/lib/types/frontend.types'
 import { useGroups } from './useNablaGroup' 
 
@@ -42,7 +42,7 @@ async function getUserData (username: string) {
 
 export function useUser (username: string){
     const user:    Ref<nablaUser | undefined> = ref()
-    const loading: Ref<boolean> = ref(true)
+    const isLoading: Ref<boolean> = ref(true)
     const error:   Ref<boolean> = ref(false)
 
     onMounted(async() => {
@@ -64,8 +64,8 @@ export function useUser (username: string){
                 website: userData.website
             }
         }
-        updateGroupMembership()
-        loading.value = false
+        await updateGroupMembership()
+        isLoading.value = false
     })
 
 
@@ -73,16 +73,23 @@ export function useUser (username: string){
         if (user.value) {
             let memberships: nablaGroup[] = []
 
-            loading.value = true
+            isLoading.value = true
 
             memberships = groups.value.filter((group: nablaGroup) => {
+
                 if (group && group.members){
                     const memberNames = group.members.map((member) => member.user.username)
+                    console.log(memberNames)
                     return memberNames.includes(username)
+                }
+                else {
+                    console.error("Group or group.members is undefined")
                 }
             })
 
-        loading.value = false
+            user.value.memberOf = memberships
+
+            isLoading.value = false
         } else {
             console.error("User is undefined")
             return false
@@ -90,5 +97,5 @@ export function useUser (username: string){
 
     }
 
-    return {user, loading, error, updateGroupMembership}
+    return {user, isLoading, error, updateGroupMembership}
 }
