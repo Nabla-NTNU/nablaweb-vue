@@ -23,10 +23,6 @@ export default defineConfig([
             "prettier",
         ),
 
-        rules: {
-            "@typescript-eslint/no-unused-vars": "warn",
-        },
-
         plugins: {
             "@typescript-eslint": typescriptEslint,
         },
