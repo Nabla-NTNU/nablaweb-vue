@@ -33,7 +33,7 @@ export default defineConfig([{
     languageOptions: {
         parser: parser,
         ecmaVersion: 5,
-        sourceType: "script",
+        sourceType: "module",
 
         parserOptions: {
             parser: "@typescript-eslint/parser",
