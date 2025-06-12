@@ -1,6 +1,6 @@
 # Installation for local dev
 
-In short, you'll need to install the Supabase CLI, start the supabase server, seed it, install the node packages, and start node server before you can see the local website on your machiene.
+In short, you'll need to install the Supabase CLI, start the supabase server, seed it, install the node packages, and start node server before you can see the local website on your machine.
 
 ### Git
 
@@ -16,7 +16,7 @@ Please do not commit to main, but please do send pull requests when they're read
 
 You'll need to install the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=windows&queryGroups=access-method&access-method=postgres), which we use to run the local database referenced by `.env.loval`. In case of uncertainty, follow [their guide](https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=windows&queryGroups=access-method&access-method=postgres).
 
-Note that Docker is a dependancy for running the supabase server without interferring with your machiene. As of May 2025, supabase requires Windows and MacOS users to have [Docker Desktop](https://docs.docker.com/desktop/) (yes, including the GUI unfortunately), available both as an app from the linked website, as well as a [homebrew cask](https://formulae.brew.sh/cask/docker). On linux you'll find Docker in your favourite package repository.
+Note that Docker is a dependancy for running the supabase server without interferring with your machine. As of May 2025, supabase requires Windows and MacOS users to have [Docker Desktop](https://docs.docker.com/desktop/) (yes, including the GUI unfortunately), available both as an app from the linked website, as well as a [homebrew cask](https://formulae.brew.sh/cask/docker). On linux you'll find Docker in your favourite package repository.
 
 Then you can run the following to start the database server:
 
@@ -32,7 +32,7 @@ You'll then need to seed the database with random data, as an empty website is h
 npm run seed
 ```
 
-You can rebuild the database from the ground up (if you're changing the chema in-code) by
+You can rebuild the database from the ground up (if you're changing the schema in-code) by
 
 ```shell
 supabase db reset
