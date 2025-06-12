@@ -1,46 +1,54 @@
 <script setup lang="ts">
-    import { ref, watch } from 'vue'
-    import { NablaUser, GroupMember } from '@/lib/types/frontend.types'
-    import { useI18n } from 'vue-i18n'
+    import { ref } from "vue"
+    import { GroupMember } from "@/lib/types/frontend.types"
+    import { useI18n } from "vue-i18n"
     const { t } = useI18n()
-    
-    const props = defineProps<{
+
+    defineProps<{
         current: GroupMember | undefined
         members: GroupMember[] | undefined
     }>()
 
-    const emit = defineEmits<{
+    defineEmits<{
         saveChosenUsername: [chosenUsername: string]
     }>()
 
-    const chosenUsername = ref('')
+    const chosenUsername = ref("")
 </script>
 
 <template>
     <div class="md-4 flex">
         <input
-            list="new-leader"
             v-model="chosenUsername"
+            list="new-leader"
             :placeholder="t('nytt-valg')"
-            class="border rounded p-2 w-full m-2"
+            class="border m-2 w-full rounded bg-neutralish p-2 text-fg"
         />
-        <datalist id="new-leader" v-if="members" class="mx-4">
-            <div v-for="member in members">
-                <option v-if="member.user.username !== (current ? current.user.username : '')"
+        <datalist v-if="members" id="new-leader" class="mx-4">
+            <div v-for="member in members" :key="member.user.username">
+                <option
+                    v-if="
+                        member.user.username !==
+                        (current ? current.user.username : '')
+                    "
                     :value="member.user.username"
-                    >
-                        {{ member.user.firstName }} {{ member.user.lastName }},
-                        {{ member.user.class }},
-                        {{ member.role }}
+                >
+                    {{ member.user.firstName }} {{ member.user.lastName }},
+                    {{ member.user.class }},
+                    {{ member.role }}
                 </option>
             </div>
         </datalist>
         <button
-            class="mt-auto px-4 py-2 rounded-lg text-white font-semibold transition-all duration-300 bg-secondary disabled:bg-gray"
+            class="mt-auto rounded-lg bg-secondary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
+            :disabled="
+                !members?.some(
+                    (member) => member.user.username === chosenUsername,
+                )
+            "
             @click="$emit('saveChosenUsername', chosenUsername)"
-            :disabled="!members?.some(member => member.user.username === chosenUsername)"
-            >
-                {{t('velg')}}
+        >
+            {{ t("velg") }}
         </button>
     </div>
 </template>

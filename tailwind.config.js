@@ -49,12 +49,13 @@ export default {
       /src/components
       */
             transparent: "transparent",
-            current: "currentColor",
+            // current: "currentColor", //commented out due to lack of use and I'm unsure what this... does?
             white: "var(--gray-25)",
             black: "var(--gray-950)",
 
-            light: "var(--text-light)",
-            dark: "var(--text-dark)",
+            neutral: "var(--neutral)",
+            neutralish: "var(--off-neutral)",
+            fg: "var(--fg)",
 
             primary: {
                 25: "var(--primary-25)",
@@ -217,7 +218,7 @@ export default {
         fontFamily: {
             poppins: ["Poppins", "sans-serif"],
             lato: ["Lato", "sans-serif"],
-            zilla: ["ZillaSlab", "sans-serif"],
+            zilla: ["ZillaSlab", "serif"],
         },
         //Poppins has font weights 100-900
         //Lato has font weights 100, 300-400, 700, 900

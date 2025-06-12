@@ -20,7 +20,8 @@ function setSystemTheme() {
 const systemTheme = ref<ColorTheme>(getSystemTheme())
 
 // Website colour theme logic
-const metaThemeColour = document.querySelector("meta[name='theme-color']")
+const metaStyleTheme = document.querySelector("meta[name='theme-color']")
+const metaColorTheme = document.querySelector("meta[name='color-scheme']")
 
 // Local storage logic
 function getLocalTheme() {
@@ -57,9 +58,11 @@ function updateTheme() {
     if (chosenTheme.value == ColorTheme.System) {
         document.documentElement.style.colorScheme = systemTheme.value
         document.documentElement.setAttribute("theme", systemTheme.value)
+        metaColorTheme?.setAttribute("content", "light dark")
     } else {
         document.documentElement.style.colorScheme = chosenTheme.value!
         document.documentElement.setAttribute("theme", chosenTheme.value!)
+        metaColorTheme?.setAttribute("content", chosenTheme.value!)
     }
     localStorage.setItem("theme", chosenTheme.value!)
 }
@@ -71,7 +74,7 @@ function updateStyle() {
     // Fix meta tag (for explicit browser window chrome colouring (very pretty))
     const currentStyleSheet = window.getComputedStyle(document.body)
     const newPrimaryColor = currentStyleSheet.getPropertyValue("--primary")
-    metaThemeColour?.setAttribute("content", newPrimaryColor)
+    metaStyleTheme?.setAttribute("content", newPrimaryColor)
 }
 
 function updateThemeStyle() {

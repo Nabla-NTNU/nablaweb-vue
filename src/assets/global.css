@@ -1,7 +1,10 @@
 :root {
-    /* light means light color difference, not light color */
-    --text-light: #fcfcfd;
-    --text-dark: #0b0f19;
+    /* Backgrounds */
+    --neutral: #fcfcfd;
+    --off-neutral: #ffffff;
+
+    /* Text and foreground */
+    --fg: #0b0f19;
 
     /* Primary */
     --primary-25: #fafeff;
@@ -190,8 +193,13 @@
 
 /* Classic Light Theme */
 [style="classic"][theme="light"] {
-    --text-light: #fcfcfd;
-    --text-dark: #0b0f19;
+    /* Background */
+    --neutral: #fcfcfd;
+    --off-neutral: #ffffff;
+
+    /* Text and foreground */
+    --fg: #0b0f19;
+
     /* Primary */
     --primary-25: #fafeff;
     --primary-50: #d9f7ff;
@@ -379,8 +387,13 @@
 
 /* Modern Light Theme */
 [style="modern"][theme="light"] {
-    --text-light: #fcfcfd;
-    --text-dark: #101319;
+    /* Background */
+    --neutral: #fcfcfd;
+    --off-neutral: #ffffff;
+
+    /* Text and foreground */
+    --fg: #0b0f19;
+
     /* Primary */
     --primary-25: #f5fdff;
     --primary-50: #dff6fd;
@@ -568,8 +581,13 @@
 
 /* Classic Dark Theme */
 [style="classic"][theme="dark"] {
-    --text-light: #0b0f19;
-    --text-dark: #fcfcfd;
+    /* Background */
+    --neutral: #0b0f19;
+    --off-neutral: #1e1e1e;
+
+    /* Text and foreground */
+    --fg: #fcfcfd;
+
     /* Primary */
     --primary-25: #fafeff;
     --primary-50: #d9f7ff;
@@ -757,8 +775,13 @@
 
 /* Modern Dark Theme */
 [style="modern"][theme="dark"] {
-    --text-light: #101319;
-    --text-dark: #fcfcfd;
+    /* Background */
+    --neutral: #101319;
+    --off-neutral: #1e1e1e;
+
+    /* Text and foreground */
+    --fg: #fcfcfd;
+
     /* Primary */
     --primary-25: #f5fdff;
     --primary-50: #dff6fd;

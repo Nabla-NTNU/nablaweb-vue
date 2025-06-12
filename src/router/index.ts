@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
-import HjemView from "@/views/hjem/hjem.vue"
+import HjemView from "@/views/hjem/nabla-hjem.vue"
 import NyStudentView from "@/views/ny-student/ny-student.vue"
-import ProfilView from "@/views/profil/profil-settings.vue"
+import ProfilView from "@/views/profil/nabla-profil.vue"
 // import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
 import GroupPage from "@/views/for-studenter/undergrupper/nabla-group.vue"
 import GroupAdminPage from "@/views/for-studenter/undergrupper/nabla-group-admin.vue"

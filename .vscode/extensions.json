@@ -4,6 +4,8 @@
 {
   "recommendations": [
     "Vue.volar",                    // Vue language support extension 
-    "bradlc.vscode-tailwindcss"     // Tailwind IntelliSense support
+    "bradlc.vscode-tailwindcss",    // Tailwind IntelliSense support
+    "dbaeumer.vscode-eslint",       // Linter: catches possible errors
+    "esbenp.prettier-vscode"        // Formatter: formats code every time you save
   ]
 }

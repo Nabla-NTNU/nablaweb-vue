@@ -1,20 +1,19 @@
 <script setup lang="ts">
     import { useTheme } from "@/composables/useTheme" // inits light mode/dark mode
+    useTheme()
 
-    import Header from "@/components/Header.vue"
+    import Header from "@/components/nabla-header.vue"
     import MainContent from "@/components/MainContent.vue"
-    import Footer from "@/components/Footer.vue"
+    import Footer from "@/components/nabla-footer.vue"
 
     import "@/style.css"
     import "@/assets/fonts/fonts.css"
-
-    useTheme()
 </script>
 
 <template>
     <div class="flex min-h-screen flex-col">
         <Header />
-        <main class="flex-1 bg-light">
+        <main class="flex-1 bg-neutral transition duration-300 ease-in-out">
             <MainContent>
                 <RouterView />
             </MainContent>
