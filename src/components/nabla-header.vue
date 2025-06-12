@@ -3,7 +3,7 @@
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
 
-    const movileNavVisible = ref(false)
+    const mobileNavVisible = ref(false)
 
     document.addEventListener("DOMContentLoaded", () => {
         const dropdownBox = document.getElementById("dropdown-box")
@@ -209,7 +209,7 @@
         <div class="flex items-center justify-between pl-4 pr-6">
             <!-- Tips & tricks -->
             <div
-                v-if="!movileNavVisible"
+                v-if="!mobileNavVisible"
                 class="absolute -bottom-6 left-14 rounded-ee-xl rounded-es-xl rounded-se-xl border-2 border-primary-400 bg-primary-800 px-2 py-1 font-zilla text-s font-semibold tracking-[0.5px]"
             >
                 {{ currentQuote }}
@@ -259,7 +259,7 @@
                 </router-link>
             </nav>
             <button
-                @click="movileNavVisible = !movileNavVisible"
+                @click="mobileNavVisible = !mobileNavVisible"
                 class="hover:text-secondary m:hidden"
             >
                 nav
@@ -278,20 +278,20 @@
 
         <!-- Shitty mobile menu to begin process -->
         <nav
-            v-if="movileNavVisible"
+            v-if="mobileNavVisible"
             class="flex flex-col space-y-4 bg-primary pb-4 m:hidden"
         >
             <router-link
                 to="/for-komponenter/komiteer"
                 class="m-4 block rounded-xl p-4 transition duration-300 ease-in-out hover:bg-secondary"
-                @click="movileNavVisible = false"
+                @click="mobileNavVisible = false"
             >
                 Undergrupper
             </router-link>
             <router-link
                 to="/profil"
                 class="m-4 block rounded-xl p-4 transition duration-300 ease-in-out hover:bg-secondary"
-                @click="movileNavVisible = false"
+                @click="mobileNavVisible = false"
             >
                 Profil
             </router-link>
