@@ -4,7 +4,6 @@ import { ColorTheme, StyleTheme } from "@/lib/types/frontend.types"
 // User-defined theme and style
 export const chosenTheme = ref<ColorTheme>()
 export const chosenStyle = ref<StyleTheme>()
-// export const loading = ref(true)
 
 // System dark mode logic
 const isDarkModeQuery = window.matchMedia("(prefers-color-scheme: dark)")
@@ -19,7 +18,7 @@ function setSystemTheme() {
 
 const systemTheme = ref<ColorTheme>(getSystemTheme())
 
-// Website colour theme logic
+// Meta-tag colour theme logic
 const metaStyleTheme = document.querySelector("meta[name='theme-color']")
 const metaColorTheme = document.querySelector("meta[name='color-scheme']")
 
@@ -42,7 +41,8 @@ function getLocalTheme() {
             chosenStyle.value = localStyle as StyleTheme
         } catch (error) {
             console.error(
-                `[useTheme] Error loading theme from storage, unexpected value found in local storage: ${error}`,
+                `[useTheme] Error loading theme from storage, unexpected value found in local storage`,
+                error,
             )
             // Reset to defaut settings
             chosenTheme.value = ColorTheme.System
@@ -54,6 +54,13 @@ function getLocalTheme() {
     }
 }
 
+//
+//  Updating the dark mode / light mode
+//      a) Correct CSS colorScheme to light/dark (we don't use this, but nice to be explicit)
+//      b) Set the document variable that global.css uses to get the colour (so actually set the color)
+//      c) Set the meta tag to tell the browser we're in light or dark mode
+//      d) Store the theme, whether its light, dark, or system, to local storage
+//
 function updateTheme() {
     if (chosenTheme.value == ColorTheme.System) {
         document.documentElement.style.colorScheme = systemTheme.value

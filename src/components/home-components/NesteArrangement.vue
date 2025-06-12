@@ -33,8 +33,9 @@
                 <router-link
                     to="/"
                     class="rounded-[4px] bg-primary-500 p-2 text-white"
-                    >Meld deg på!</router-link
                 >
+                    Meld deg på!
+                </router-link>
             </div>
         </div>
     </div>
