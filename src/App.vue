@@ -1,37 +1,24 @@
 <script setup lang="ts">
-    import { onMounted } from 'vue'
+    import { useTheme } from "@/composables/useTheme" // inits light mode/dark mode
+    useTheme()
 
-    import Header from '@/components/Header.vue';
-    import MainContent from '@/components/MainContent.vue';
-    import Footer from '@/components/Footer.vue';
+    import Header from "@/components/nabla-header.vue"
+    import MainContent from "@/components/main-content.vue"
+    import Footer from "@/components/nabla-footer.vue"
 
-    import '@/style.css'
-    import '@/assets/fonts/fonts.css';
-    
-    // Set colour theme
-    function applyTheme(theme: string, mode: string) {
-        document.documentElement.setAttribute('data-theme', theme);
-        document.documentElement.setAttribute('data-mode', mode);   
-    }
-
-    function loadThemeFromLocalStorage() {
-        const savedTheme = localStorage.getItem('theme') || 'classic';
-        const savedMode = localStorage.getItem('mode') || 'light';
-        
-        applyTheme(savedTheme, savedMode);
-    }
-
-
-    onMounted(() => {
-        loadThemeFromLocalStorage()
-    })
+    import "@/style.css"
+    import "@/assets/fonts/fonts.css"
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col">
+    <div class="flex min-h-screen flex-col">
         <Header />
-        <main class="flex-1 bg-light">
-        <MainContent><RouterView /></MainContent>
+        <main
+            class="flex flex-1 bg-neutral transition duration-300 ease-in-out"
+        >
+            <MainContent>
+                <RouterView />
+            </MainContent>
         </main>
         <Footer />
     </div>

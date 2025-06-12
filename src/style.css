@@ -4,10 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
+/* Sets the background colour (of everything outside of the page) 
+to our main bg colour, and stretches it */
+@layer base {
+  html, body {
+    @apply bg-primary;
+  }
 }
 
 .reset-tailwind * {
