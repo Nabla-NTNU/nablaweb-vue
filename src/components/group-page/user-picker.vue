@@ -47,8 +47,10 @@
                 )
             "
             @click="
-                $emit('saveChosenUsername', chosenUsername)
-                chosenUsername = ''
+                {
+                    $emit('saveChosenUsername', chosenUsername)
+                    chosenUsername = ''
+                }
             "
         >
             {{ t("velg") }}
