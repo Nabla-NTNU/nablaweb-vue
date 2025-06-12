@@ -17,12 +17,12 @@
 </script>
 
 <template>
-    <div class="md-4 flex">
+    <div class="md-2 flex">
         <input
             v-model="chosenUsername"
             list="new-leader"
             :placeholder="t('nytt-valg')"
-            class="border m-2 w-full rounded bg-neutralish p-2 text-fg"
+            class="border m-2 w-full rounded bg-neutralish p-6 text-fg"
         />
         <datalist v-if="members" id="new-leader" class="mx-4">
             <div v-for="member in members" :key="member.user.username">
@@ -40,13 +40,16 @@
             </div>
         </datalist>
         <button
-            class="mt-auto rounded-lg bg-secondary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
+            class="m-2 mx-auto rounded-lg bg-secondary px-4 font-semibold text-white transition-all duration-300 disabled:bg-gray"
             :disabled="
                 !members?.some(
                     (member) => member.user.username === chosenUsername,
                 )
             "
-            @click="$emit('saveChosenUsername', chosenUsername)"
+            @click="
+                $emit('saveChosenUsername', chosenUsername)
+                chosenUsername = ''
+            "
         >
             {{ t("velg") }}
         </button>

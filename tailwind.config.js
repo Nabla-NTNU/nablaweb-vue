@@ -436,7 +436,7 @@ export default {
             280: "1120px",
         },
         minHeight: {
-            screen: "calc(100vh - 60px - 2*40px - 214px)", //MainContent height //Don't think this maths checks out??? Our header/footer aren't a fixed height :// Probs best not to use
+            screen: "100vh", //MainContent height //Don't think this maths checks out??? Our header/footer aren't a fixed height :// Probs best not to use
             header: "64px",
             footer: "240px",
             1: "4px",
