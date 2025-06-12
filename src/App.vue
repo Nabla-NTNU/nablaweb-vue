@@ -1,33 +1,18 @@
 <script setup lang="ts">
-    import { onMounted } from 'vue'
+    import { useTheme } from "@/composables/useTheme" // inits light mode/dark mode
 
-    import Header from '@/components/Header.vue';
-    import MainContent from '@/components/MainContent.vue';
-    import Footer from '@/components/Footer.vue';
+    import Header from "@/components/Header.vue"
+    import MainContent from "@/components/MainContent.vue"
+    import Footer from "@/components/Footer.vue"
 
-    import '@/style.css'
-    import '@/assets/fonts/fonts.css';
-    
-    // Set colour theme
-    function applyTheme(theme: string, mode: string) {
-        document.documentElement.setAttribute('data-theme', theme);
-        document.documentElement.setAttribute('data-mode', mode);   
-    }
+    import "@/style.css"
+    import "@/assets/fonts/fonts.css"
 
-    function loadThemeFromLocalStorage() {
-        const savedTheme = localStorage.getItem('theme') || 'classic';
-        const savedMode = localStorage.getItem('mode') || 'light';
-        
-        applyTheme(savedTheme, savedMode);
-    }
-
-    onMounted(() => {
-        loadThemeFromLocalStorage()
-    })
+    useTheme()
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col">
+    <div class="flex min-h-screen flex-col">
         <Header />
         <main class="flex-1 bg-light">
             <MainContent>
