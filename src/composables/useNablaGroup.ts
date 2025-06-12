@@ -1,15 +1,18 @@
-import { supabase } from '@/lib/supabaseClient'
-import { Ref, ref, onMounted} from 'vue'
-import { NablaGroup, NablaUser, GroupMember, GroupKind } from '@/lib/types/frontend.types'
+import { supabase } from "@/lib/supabaseClient"
+import { Ref, ref, onMounted } from "vue"
+import { NablaGroup, GroupMember, GroupKind } from "@/lib/types/frontend.types"
 
-async function getGroupWithoutMembers(groupID: string): Promise<NablaGroup | undefined> {
+async function getGroupWithoutMembers(
+    groupID: string,
+): Promise<NablaGroup | undefined> {
     try {
         // recreate the database type here pls
         // then fix up the map in-place
-        const {data, error} = await supabase
-            .schema('nablaweb_vue')
-            .from('nabla_groups')
-            .select(`
+        const { data, error } = await supabase
+            .schema("nablaweb_vue")
+            .from("nabla_groups")
+            .select(
+                `
                 id,
                 name,
                 kind,
@@ -20,35 +23,39 @@ async function getGroupWithoutMembers(groupID: string): Promise<NablaGroup | und
                 groupPhoto: group_photo,
                 dateBegan: date_began,
                 isActive: is_active
-                `)
-            .eq('id', groupID)
-            .single();
-        if (error) throw error;
+                `,
+            )
+            .eq("id", groupID)
+            .single()
+        if (error) throw error
         const group: NablaGroup = {
             id: data.id,
             name: data.name,
-            kind: data.kind in GroupKind ? data.kind as GroupKind : undefined, // Will fail silently for unknown GroupKinds
+            kind: data.kind in GroupKind ? (data.kind as GroupKind) : undefined, // Will fail silently for unknown GroupKinds
             logo: new URL(data.logo),
             mailList: data.mailList,
-            leader: {user: {username: data.leader!}},
+            leader: { user: { username: data.leader! } },
             about: data.about,
-            groupPhoto: new URL(    data.groupPhoto),
+            groupPhoto: new URL(data.groupPhoto),
             date: new Date(data.dateBegan),
-            isActive: data.isActive
+            isActive: data.isActive,
         }
         return group
-    }
-    catch (error) {
-        console.error(`[useNablaGroup] error: failed to get groups without members:`, error)
+    } catch (error) {
+        console.error(
+            `[useNablaGroup] error: failed to get groups without members:`,
+            error,
+        )
     }
 }
 
 async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
     try {
         const { data, error } = await supabase
-            .schema('nablaweb_vue')
-            .from('nabla_group_members')
-            .select(`    
+            .schema("nablaweb_vue")
+            .from("nabla_group_members")
+            .select(
+                `    
                 memberRole: member_role,
                 dateJoined: date_joined,
                 isActive: is_active,
@@ -59,11 +66,14 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
                     profilePicture: profile_picture,
                     class
                     )
-                `)
-            .eq('group', groupID)
-            .eq('is_active', true)
-            .order('order', { ascending: true });
-        if (error) { throw error }
+                `,
+            )
+            .eq("group", groupID)
+            .eq("is_active", true)
+            .order("order", { ascending: true })
+        if (error) {
+            throw error
+        }
 
         const groupMembers: GroupMember[] = data.map((member) => {
             return {
@@ -75,14 +85,16 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
                     firstName: member.user.firstName,
                     lastName: member.user.lastName,
                     profilePicture: new URL(member.user.profilePicture),
-                    class: member.user.class
-                }
+                    class: member.user.class,
+                },
             }
         })
         return groupMembers
-    }
-    catch (error) {
-        console.error(`[useNablaGroup] error: failed to get members of group ${groupID}`, error)
+    } catch (error) {
+        console.error(
+            `[useNablaGroup] error: failed to get members of group ${groupID}`,
+            error,
+        )
     }
     return []
 }
@@ -90,9 +102,10 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
 async function getActiveGroups(): Promise<NablaGroup[]> {
     try {
         const { data, error } = await supabase
-            .schema('nablaweb_vue')
-            .from('nabla_groups')
-            .select(`
+            .schema("nablaweb_vue")
+            .from("nabla_groups")
+            .select(
+                `
                 id,
                 name,
                 kind,
@@ -102,42 +115,56 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                 about,
                 groupPhoto: group_photo,
                 dateBegan: date_began
-                `)
-            .eq('is_active', true)
-        if (error) { throw error }
+                `,
+            )
+            .eq("is_active", true)
+        if (error) {
+            throw error
+        }
         const activeGroups: NablaGroup[] = data.map((group) => {
             return {
                 id: group.id,
                 name: group.name,
-                kind: group.kind in GroupKind ? group.kind as GroupKind : undefined,
+                kind:
+                    group.kind in GroupKind
+                        ? (group.kind as GroupKind)
+                        : undefined,
                 logo: new URL(group.logo),
                 mailList: group.mailList,
-                leader: group.leader ? {user: {username: group.leader}} : undefined,
+                leader: group.leader
+                    ? { user: { username: group.leader } }
+                    : undefined,
                 about: group.about,
                 groupPhoto: new URL(group.groupPhoto),
-                dateBegan: new Date(group.dateBegan)
+                dateBegan: new Date(group.dateBegan),
             }
         })
         return activeGroups
-    }
-    catch (error) {
-        console.error(`[useNablaGroup] error: failed to get active groups`, error)
+    } catch (error) {
+        console.error(
+            `[useNablaGroup] error: failed to get active groups`,
+            error,
+        )
     }
     return []
 }
 
-export async function isUserGroupLeader(username: string, groupID: string): Promise<boolean> {
+export async function isUserGroupLeader(
+    username: string,
+    groupID: string,
+): Promise<boolean> {
     try {
         const { data, error } = await supabase
-        .schema('nablaweb_vue')
-        .from('nabla_groups')
-        .select('leader')
-        .eq('id', groupID)
-        .single()
-        if (error) { throw error }
+            .schema("nablaweb_vue")
+            .from("nabla_groups")
+            .select("leader")
+            .eq("id", groupID)
+            .single()
+        if (error) {
+            throw error
+        }
         return data.leader == username
-    }
-    catch (e) {
+    } catch (e) {
         console.error(`[useNablaGroup] Error fetching group leader: ${e}`)
     }
     return false
@@ -146,27 +173,27 @@ export async function isUserGroupLeader(username: string, groupID: string): Prom
 export async function doesGroupExist(groupID: string): Promise<boolean> {
     try {
         const { data, error } = await supabase
-        .schema('nablaweb_vue')
-        .from('nabla_groups')
-        .select('id')
-        .eq('id', groupID)
-        if (error) { throw error }
+            .schema("nablaweb_vue")
+            .from("nabla_groups")
+            .select("id")
+            .eq("id", groupID)
+        if (error) {
+            throw error
+        }
         return data.length > 0
-    }
-    catch (e) {
+    } catch (e) {
         console.error(`[useNablaGroup] Error fetching group leader: ${e}`)
     }
     return false
-    
 }
 
 export function useGroup(groupID: string) {
-    const group: Ref<NablaGroup> = ref({id: groupID})
+    const group: Ref<NablaGroup> = ref({ id: groupID })
     const loading: Ref<boolean> = ref(true)
     const error: Ref<boolean> = ref(false)
 
     async function refreshGroupMembers() {
-        if (group == undefined) {
+        if (group.value == undefined) {
             return false
         }
         loading.value = true
@@ -175,25 +202,25 @@ export function useGroup(groupID: string) {
         group.value.members = groupMembers
         loading.value = false
     }
-    
+
     onMounted(async () => {
-        const groupData  = await getGroupWithoutMembers(groupID)
-        if  (groupData) {
+        const groupData = await getGroupWithoutMembers(groupID)
+        if (groupData) {
             group.value = groupData
             refreshGroupMembers()
         }
         loading.value = false
     })
-    return {group, loading, error, refreshGroupMembers}
+    return { group, loading, error, refreshGroupMembers }
 }
 
 export function useGroups() {
     const groups: Ref<NablaGroup[]> = ref([])
-    const loading: Ref<Boolean> = ref(true)
-    const error: Ref<Boolean> = ref(false)
+    const loading: Ref<boolean> = ref(true)
+    const error: Ref<boolean> = ref(false)
 
     async function refreshGroups() {
-        loading.value  = true
+        loading.value = true
         const groupsResponse = await getActiveGroups()
         if (groupsResponse) {
             groups.value = groupsResponse
@@ -205,5 +232,5 @@ export function useGroups() {
         refreshGroups()
     })
 
-    return {groups, loading, error, refreshGroups}
+    return { groups, loading, error, refreshGroups }
 }
