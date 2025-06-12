@@ -5,9 +5,11 @@
 
 <template>
     <footer
-        class="bg-primary p-6 text-gray-25 transition duration-300 ease-in-out"
+        class="mx-6 bg-primary p-6 text-gray-25 transition duration-300 ease-in-out"
     >
-        <div class="mx-auto flex w-240 flex-wrap items-start justify-between">
+        <div
+            class="mx-auto w-full max-w-240 items-start justify-between text-center m:flex m:text-left"
+        >
             <!-- Address Section -->
             <div class="m-3 font-lato text-m">
                 <h4 class="mb-4 text-l">{{ t("adresse") }}</h4>
@@ -16,6 +18,7 @@
                     Sælands vei 10, NTNU<br />7034 Trondheim, Norway
                 </p>
             </div>
+            <br />
 
             <!-- Social Media Section -->
             <div class="m-3 font-lato text-m">
@@ -43,25 +46,24 @@
                     </li>
                 </ul>
             </div>
+            <br />
 
             <!-- Sponsor Logo Section -->
             <div class="m-3 font-lato text-m">
                 <h4 class="mb-4 text-l">{{ t("sponset-av") }}</h4>
-                <div class="flex items-center">
+                <div class="mx-auto content-center">
                     <a href="http://www.tekna.no/"
                         ><img
-                            class="mr-4 h-14"
+                            class="mx-auto h-12"
                             src="https://www.tekna.no/Static/Web2020/img/icons/tekna-logo-150-jubileum.png"
-                            alt="Tekna"
-                    /></a>
-                    <a
-                        class="focus-visible:outline-blueberry-600 ml-4 inline-block focus-visible:rounded-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-1"
-                        href="http://www.sit.no/"
+                            alt="Tekna" /></a
+                    ><br />
+                    <a class="" href="http://www.sit.no/"
                         ><span class="sr-only"></span
                         ><svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 92 36.67"
-                            class="w-[90px]"
+                            class="mx-auto h-10"
                         >
                             <g transform="translate(-1445.384 -680.572)">
                                 <path
@@ -84,8 +86,9 @@
                                     fill="#FCFCFD"
                                     d="M1467.91,701.79c0,0,1.76,0.09,1.88,1.29s-1.14,2.46-3.38,2.57c-1.78,0.02-3.56,0.15-5.32,0.38   c-0.99,0.36-1.61,1.34-1.5,2.39c0.13,1.33,2.05,2.76,4.19,3.07c1.51,0.22,7.54,1.71,13.37-8.18c1.52-2.57,2.28-2.26,2.84-2.1   c0.15,0.05,1.13,0.5,0.63,2.28c-1.16,4.21-3.72,7.9-7.25,10.46c-5.04,3.49-11.47,4.26-17.19,2.06c-5.69-2.01-9.18-6.71-9.12-9.73   c0.05-2.42,1.61-4.38,7.16-4.42C1459.94,701.82,1467.9,701.8,1467.91,701.79"
                                 ></path>
-                            </g></svg
-                    ></a>
+                            </g>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>

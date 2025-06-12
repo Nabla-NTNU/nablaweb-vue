@@ -3,6 +3,8 @@
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
 
+    const movileNavVisible = ref(false)
+
     document.addEventListener("DOMContentLoaded", () => {
         const dropdownBox = document.getElementById("dropdown-box")
         const headerItems = document.querySelectorAll("nav .group")
@@ -207,6 +209,7 @@
         <div class="flex items-center justify-between pl-4 pr-6">
             <!-- Tips & tricks -->
             <div
+                v-if="!movileNavVisible"
                 class="absolute -bottom-6 left-14 rounded-ee-xl rounded-es-xl rounded-se-xl border-2 border-primary-400 bg-primary-800 px-2 py-1 font-zilla text-s font-semibold tracking-[0.5px]"
             >
                 {{ currentQuote }}
@@ -221,8 +224,8 @@
                 />
             </router-link>
 
-            <!-- Links in header -->
-            <nav class="flex items-center">
+            <!-- Links in header: desktop -->
+            <nav class="hidden items-center m:flex">
                 <div class="group" data-dropdown-content="om">
                     <router-link to="/om" class="content-center pr-4">
                         {{ t("om-nabla") }}
@@ -255,6 +258,12 @@
                     />
                 </router-link>
             </nav>
+            <button
+                @click="movileNavVisible = !movileNavVisible"
+                class="hover:text-secondary m:hidden"
+            >
+                nav
+            </button>
         </div>
         <div
             id="dropdown-box"
@@ -266,6 +275,27 @@
                 <!-- Content dynamically populated -->
             </div>
         </div>
+
+        <!-- Shitty mobile menu to begin process -->
+        <nav
+            v-if="movileNavVisible"
+            class="flex flex-col space-y-4 bg-primary pb-4 m:hidden"
+        >
+            <router-link
+                to="/for-komponenter/komiteer"
+                class="m-4 block rounded-xl p-4 transition duration-300 ease-in-out hover:bg-secondary"
+                @click="movileNavVisible = false"
+            >
+                Undergrupper
+            </router-link>
+            <router-link
+                to="/profil"
+                class="m-4 block rounded-xl p-4 transition duration-300 ease-in-out hover:bg-secondary"
+                @click="movileNavVisible = false"
+            >
+                Profil
+            </router-link>
+        </nav>
     </header>
 </template>
 
@@ -275,9 +305,13 @@ nb:
     for-komponenter: For Komponenter
     for-bedrifter: For Bedrifter
     ny-student: Ny student?
+    profil: Profil/pålogging
+    undergrupper: Undergrupper
 en:
     om-nabla: About Nabla
     for-komponenter: For Members
     for-bedrifter: For Businesses
     ny-student: New student?
+    profil: Profile/login
+    undergrupper: Subgroups
 </i18n>

@@ -3,7 +3,7 @@
     useTheme()
 
     import Header from "@/components/nabla-header.vue"
-    import MainContent from "@/components/MainContent.vue"
+    import MainContent from "@/components/main-content.vue"
     import Footer from "@/components/nabla-footer.vue"
 
     import "@/style.css"
@@ -13,7 +13,9 @@
 <template>
     <div class="flex min-h-screen flex-col">
         <Header />
-        <main class="flex-1 bg-neutral transition duration-300 ease-in-out">
+        <main
+            class="flex flex-1 bg-neutral transition duration-300 ease-in-out"
+        >
             <MainContent>
                 <RouterView />
             </MainContent>

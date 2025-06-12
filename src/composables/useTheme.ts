@@ -85,6 +85,7 @@ function updateThemeStyle() {
 export function useTheme() {
     // Only allow this to run once
     if (chosenTheme.value || chosenStyle.value) return
+    watch([systemTheme, chosenStyle, chosenTheme], updateThemeStyle)
 
     onMounted(() => {
         getLocalTheme()
@@ -94,6 +95,4 @@ export function useTheme() {
     onUnmounted(() => {
         isDarkModeQuery.removeEventListener("change", setSystemTheme)
     })
-
-    watch([systemTheme, chosenStyle, chosenTheme], updateThemeStyle)
 }

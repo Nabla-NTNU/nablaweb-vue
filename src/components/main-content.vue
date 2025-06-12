@@ -4,7 +4,7 @@
 </script>
 
 <template>
-    <div class="mx-auto max-w-280 font-poppins text-m text-fg">
+    <div class="mx-auto flex-1 overflow-auto font-poppins text-m text-fg">
         <slot></slot>
     </div>
 </template>
