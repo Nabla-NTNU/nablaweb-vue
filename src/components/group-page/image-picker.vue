@@ -6,7 +6,7 @@
     import InlineButton from "@/components/buttons/inline-button.vue"
 
     const props = defineProps<{
-        imageURL: string
+        imageUrl: string
         uploadImage: (file: File) => Promise<string | null>
     }>()
 
@@ -14,9 +14,9 @@
         saveImage: [localImageURL: string]
     }>()
 
-    const localImageURL = ref(props.imageURL)
+    const localImageURL = ref(props.imageUrl)
     watch(
-        () => props.imageURL,
+        () => props.imageUrl,
         (url) => {
             localImageURL.value = url
         },
@@ -68,7 +68,7 @@
             @change="handleFileUpload"
         />
         <label
-            v-if="localImageURL === imageURL"
+            v-if="localImageURL === imageUrl"
             for="fileInput"
             class="m-auto cursor-pointer items-center text-nowrap rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
         >
@@ -76,15 +76,15 @@
         </label>
 
         <InlineButton
-            v-if="localImageURL !== imageURL"
+            v-if="localImageURL !== imageUrl"
             :text="t('avbryt')"
-            @on-click="localImageURL = imageURL"
+            @on-click="localImageURL = imageUrl"
         />
 
         <InlineButton
             :text="t('lagre-endring')"
             :color="'bg-secondary'"
-            :disable-condition="localImageURL === imageURL"
+            :disable-condition="localImageURL === imageUrl"
             @on-click="$emit('saveImage', localImageURL)"
         />
     </div>

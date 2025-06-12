@@ -14,7 +14,7 @@
     <div class="flex min-h-screen flex-col">
         <Header />
         <main
-            class="flex flex-1 bg-neutral transition duration-300 ease-in-out"
+            class="flex flex-1 bg-neutral transition duration-200 ease-in-out"
         >
             <MainContent>
                 <RouterView />
