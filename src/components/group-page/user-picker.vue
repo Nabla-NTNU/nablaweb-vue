@@ -9,11 +9,15 @@
         members: GroupMember[] | undefined
     }>()
 
-    defineEmits<{
+    const emit = defineEmits<{
         saveChosenUsername: [chosenUsername: string]
     }>()
 
     const chosenUsername = ref("")
+    function handleSaveMember() {
+        emit("saveChosenUsername", chosenUsername.value)
+        chosenUsername.value = ""
+    }
 </script>
 
 <template>
@@ -46,12 +50,7 @@
                     (member) => member.user.username === chosenUsername,
                 )
             "
-            @click="
-                {
-                    $emit('saveChosenUsername', chosenUsername)
-                    chosenUsername = ''
-                }
-            "
+            @click="handleSaveMember()"
         >
             {{ t("velg") }}
         </button>
