@@ -1,41 +1,41 @@
 {
-  "compilerOptions": {
-    // Vue reccomends: https://vuejs.org/guide/typescript/overview.html
-    "isolatedModules": true,
+    "compilerOptions": {
+        // Vue reccomends: https://vuejs.org/guide/typescript/overview.html
+        "isolatedModules": true,
 
-    // Fix a recent-ish language standard
-    "target": "ES2022",
-  
-    // Fix the newest standard of getting modules
-    "module": "ESNext",
-    
-    // Unsure why - markdown-it requires this
-    "esModuleInterop": true,
+        // Fix a recent-ish language standard
+        "target": "ES2022",
 
-    // For some reason the IDE complains about not seeing modules without this
-    "moduleResolution": "node",
-  
-    // Allow pulling environment variables from .env (for API keys etc)
-    "types": ["vite/client", "node"],
+        // Fix the newest standard of getting modules
+        "module": "ESNext",
 
-    // Fix prettier import root folder
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
+        // Unsure why - markdown-it requires this
+        "esModuleInterop": true,
+
+        // For some reason the IDE complains about not seeing modules without this
+        "moduleResolution": "node",
+
+        // Allow pulling environment variables from .env (for API keys etc)
+        "types": ["vite/client", "node"],
+
+        // Fix prettier import root folder
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        },
+
+        // Enforce good practice
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true
     },
 
-    // Enforce good practice
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-  },
-
-  // Define what files to actually compile to js (to ignore )
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue",
-    // "src/**/*.js"    // not included as hopefully we only use TS ;))
-  ],
-  "exclude": ["node_modules", "dist"]
+    // Define what files to actually compile to js (to ignore )
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.vue"
+        // "src/**/*.js"    // not included as hopefully we only use TS ;))
+    ],
+    "exclude": ["node_modules", "dist"]
 }

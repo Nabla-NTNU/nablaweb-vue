@@ -7,7 +7,7 @@ import GroupPage from "@/views/for-studenter/undergrupper/nabla-group.vue"
 import GroupAdminPage from "@/views/for-studenter/undergrupper/nabla-group-admin.vue"
 import GroupsPage from "@/views/for-studenter/undergrupper/nabla-groups.vue"
 import UnderKonstruksjonView from "@/views/diverse/error/under-konstruksjon.vue"
-import PageNotFoundView from "@/views/diverse/error/404.vue"
+import PageNotFoundView from "@/views/diverse/error/nabla-404.vue"
 
 import { groupPageGuard, groupAdminPageGuard } from "./guards"
 
