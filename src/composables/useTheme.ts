@@ -1,15 +1,5 @@
 import { ref, watch, onMounted, onUnmounted } from "vue"
-
-export enum StyleTheme {
-    Classic = "classic",
-    Modern = "modern",
-}
-
-export enum ColorTheme {
-    Light = "light",
-    Dark = "dark",
-    System = "system",
-}
+import { ColorTheme, StyleTheme } from "@/lib/types/frontend.types"
 
 // User-defined theme and style
 export const chosenTheme = ref<ColorTheme>()
@@ -28,6 +18,9 @@ function setSystemTheme() {
 }
 
 const systemTheme = ref<ColorTheme>(getSystemTheme())
+
+// Website colour theme logic
+const metaThemeColour = document.querySelector("meta[name='theme-color']")
 
 // Local storage logic
 function getLocalTheme() {
@@ -60,42 +53,44 @@ function getLocalTheme() {
     }
 }
 
+function updateTheme() {
+    if (chosenTheme.value == ColorTheme.System) {
+        document.documentElement.style.colorScheme = systemTheme.value
+        document.documentElement.setAttribute("theme", systemTheme.value)
+    } else {
+        document.documentElement.style.colorScheme = chosenTheme.value!
+        document.documentElement.setAttribute("theme", chosenTheme.value!)
+    }
+    localStorage.setItem("theme", chosenTheme.value!)
+}
+
+function updateStyle() {
+    document.documentElement.setAttribute("style", chosenStyle.value!)
+    localStorage.setItem("style", chosenStyle.value!)
+
+    // Fix meta tag (for explicit browser window chrome colouring (very pretty))
+    const currentStyleSheet = window.getComputedStyle(document.body)
+    const newPrimaryColor = currentStyleSheet.getPropertyValue("--primary")
+    metaThemeColour?.setAttribute("content", newPrimaryColor)
+}
+
+function updateThemeStyle() {
+    updateTheme()
+    updateStyle()
+}
+
 export function useTheme() {
     // Only allow this to run once
     if (chosenTheme.value || chosenStyle.value) return
 
-    // Get the theme and listen to changes
     onMounted(() => {
         getLocalTheme()
         isDarkModeQuery.addEventListener("change", setSystemTheme)
     })
 
-    // Stop listening to changes
     onUnmounted(() => {
         isDarkModeQuery.removeEventListener("change", setSystemTheme)
     })
 
-    // Update theme with system if system is chosen
-    watch(systemTheme, (newTheme) => {
-        if (chosenTheme.value == ColorTheme.System) {
-            document.documentElement.setAttribute("theme", newTheme)
-        }
-    })
-
-    // Update chosen theme when requested
-    watch(chosenTheme, (newTheme) => {
-        if (newTheme == ColorTheme.System) {
-            document.documentElement.setAttribute("theme", systemTheme.value)
-        } else {
-            document.documentElement.setAttribute("theme", newTheme!)
-        }
-        localStorage.setItem("theme", newTheme!)
-    })
-
-    // Update style when requested
-    watch(chosenStyle, (newStyle) => {
-        // Set meta tag to updated header/footer colour
-        document.documentElement.setAttribute("style", newStyle!)
-        localStorage.setItem("style", newStyle!)
-    })
+    watch([systemTheme, chosenStyle, chosenTheme], updateThemeStyle)
 }

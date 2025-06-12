@@ -1,8 +1,8 @@
 // null: defined to be null in db
-// undefined: not fetched from db
+// undefined: not yet fetched from db. Can write class that fetches unfetched data if we want.
 
 export type NablaGroup = {
-    id: string        // Also the URL of the group
+    id: string // Also the URL of the group
     name?: string
     members?: GroupMember[]
     kind?: GroupKind
@@ -10,15 +10,15 @@ export type NablaGroup = {
     mailList?: string | null
     leaderMailList?: string | null
     leader?: GroupMember
-    about?: string  
-    groupPhoto?: URL    
-    date?: Date 
+    about?: string
+    groupPhoto?: URL
+    date?: Date
     isActive?: boolean
 }
 
 export enum GroupKind {
     InterestGroup = "Interest group",
-    Committee = "Committee"
+    Committee = "Committee",
 }
 
 export type GroupMember = {
@@ -35,7 +35,7 @@ export type NablaUser = {
     profilePicture?: URL
     isActive?: boolean
     class?: string
-    memberOf?: NablaGroup[] 
+    memberOf?: NablaGroup[]
     ntnuEmail?: string
     listEmail?: string
     publicEmail?: string
@@ -44,5 +44,13 @@ export type NablaUser = {
     website?: URL
 }
 
-// Other types needed
-//  - 
+export enum StyleTheme {
+    Classic = "classic",
+    Modern = "modern",
+}
+
+export enum ColorTheme {
+    Light = "light",
+    Dark = "dark",
+    System = "system",
+}
