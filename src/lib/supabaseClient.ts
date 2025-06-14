@@ -1,14 +1,24 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@/lib/types/database.types'
+import { createClient } from "@supabase/supabase-js"
+import type { Database } from "@/lib/types/database.types"
 
-// Defined in a .env.local for dev, can explore what makes sense for prod
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+const isDev = import.meta.env.DEV
+const devURL = `http://${window.location.hostname}:54321`
+const envURL = import.meta.env.VITE_SUPABASE_URL as string
+const supabaseURL = isDev ? devURL : envURL
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    '[supabaseClient] Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables'
-  )
+const envAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseAnonKey = envAnonKey as string
+
+if (!envAnonKey) {
+    throw new Error(
+        "[supabaseClient] Missing VITE_SUPABASE_ANON_KEY environment variable. Make sure it is set in the env file",
+    )
 }
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+if (!envURL) {
+    throw new Error(
+        "[supabaseClient] Missing VITE_SUPABASE_URL environment variable. Make sure it is set in the env file",
+    )
+}
+
+export const supabase = createClient<Database>(supabaseURL, supabaseAnonKey)
