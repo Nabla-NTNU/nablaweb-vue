@@ -1,16 +1,18 @@
-import { supabase } from '@/lib/supabaseClient'
-import { QueryData } from '@supabase/supabase-js'
-import { Ref, ref, onMounted, watch} from 'vue'
-import { nablaUser, nablaGroup, groupMember } from '@/lib/types/frontend.types'
-import { useGroups } from './useNablaGroup' 
+import { supabase } from "@/lib/supabaseClient"
+import { QueryData } from "@supabase/supabase-js"
+import { Ref, ref, onMounted } from "vue"
+import { NablaUser, NablaGroup, GroupMember } from "@/lib/types/frontend.types"
+import { useGroups } from "./useNablaGroup"
 
-let { groups } = useGroups()
+const { groups } = useGroups()
 
-
-async function getUserData (username: string) {
+async function getUserData(username: string) {
     try {
-        const userQuery = supabase.schema("nablaweb_vue").from("nabla_users")
-            .select(`
+        const userQuery = supabase
+            .schema("nablaweb_vue")
+            .from("nabla_users")
+            .select(
+                `
                 username,
                 first_name,
                 last_name,
@@ -23,36 +25,35 @@ async function getUserData (username: string) {
                 about,
                 website,
                 birthday
-            `).eq("username", username)
+            `,
+            )
+            .eq("username", username)
             .single()
-        
+
         type userData = QueryData<typeof userQuery>
-        const { data, error } = await userQuery;
+        const { data, error } = await userQuery
         if (error) throw error
         const queryResult: userData = data
         return queryResult
-    }
-    catch (error) {
+    } catch (error) {
         console.error(`[useNablaGroup] error: failed to get user data:`, error)
     }
     return null
 }
 
-
-
-export function useUser (username: string){
-    const user:    Ref<nablaUser | undefined> = ref()
+export function useUser(username: string) {
+    const user: Ref<NablaUser | undefined> = ref()
     const isLoading: Ref<boolean> = ref(true)
-    const error:   Ref<boolean> = ref(false)
+    const error: Ref<boolean> = ref(false)
 
-    onMounted(async() => {
+    onMounted(async () => {
         const userData = await getUserData(username)
         if (userData != null) {
-           user.value = {
+            user.value = {
                 username: userData.username,
                 firstName: userData.first_name,
                 lastName: userData.last_name,
-                profilePicture: userData.profile_picture,
+                profilePicture: new URL(userData.profile_picture),
                 isActive: userData.is_active,
                 class: userData.class,
                 memberOf: [],
@@ -60,29 +61,29 @@ export function useUser (username: string){
                 listEmail: userData.list_email,
                 publicEmail: userData.public_email,
                 about: userData.about,
-                birthday: userData.birthday,
-                website: userData.website
+                birthday: userData.birthday
+                    ? new Date(userData.birthday)
+                    : null,
+                website: new URL(userData.website),
             }
         }
         await updateGroupMembership()
         isLoading.value = false
     })
 
-
-    async function updateGroupMembership () {
+    async function updateGroupMembership() {
         if (user.value) {
-            let memberships: nablaGroup[] = []
+            let memberships: NablaGroup[] = []
 
             isLoading.value = true
 
-            memberships = groups.value.filter((group: nablaGroup) => {
-
-                if (group && group.members){
-                    const memberNames = group.members.map((member) => member.user.username)
-                    console.log(memberNames)
+            memberships = groups.value.filter((group: NablaGroup) => {
+                if (group && group.members) {
+                    const memberNames = group.members.map(
+                        (member: GroupMember) => member.user.username,
+                    )
                     return memberNames.includes(username)
-                }
-                else {
+                } else {
                     console.error("Group or group.members is undefined")
                 }
             })
@@ -94,8 +95,7 @@ export function useUser (username: string){
             console.error("User is undefined")
             return false
         }
-
     }
 
-    return {user, isLoading, error, updateGroupMembership}
+    return { user, isLoading, error, updateGroupMembership }
 }
