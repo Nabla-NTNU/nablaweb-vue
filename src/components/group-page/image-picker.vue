@@ -61,8 +61,8 @@
         />
 
         <input
-            type="file"
             id="fileInput"
+            type="file"
             accept="image/*"
             class="hidden"
             @change="handleFileUpload"

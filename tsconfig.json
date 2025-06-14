@@ -34,8 +34,9 @@
     // Define what files to actually compile to js (to ignore )
     "include": [
         "src/**/*.ts",
-        "src/**/*.vue"
+        "src/**/*.vue",
         // "src/**/*.js"    // not included as hopefully we only use TS ;))
+        "supabase/seedDatabase.ts"
     ],
     "exclude": ["node_modules", "dist"]
 }
