@@ -94,7 +94,7 @@ async function addUsersToDB(users: NablaUserDict) {
         .select("username")
     console.log(`Inserted ${data?.length} users into nabla_users`)
     if (error) console.log("Error inserting users to nabla_users")
-    console.log(error)
+    if (error) console.log(error)
 }
 
 function getRandomElement(array: string[]) {
@@ -112,14 +112,15 @@ usersLocal[admin.username] = admin
 usersLocal[user.username] = user
 
 const users = await addUsersToSupabase(usersLocal)
-addUsersToDB(users)
+await addUsersToDB(users)
 
-console.log("Other tasks...")
+console.log("Making admin an admin...")
 await supabase.schema("nablaweb_vue").from("nabladmins").insert({
     user: "admin",
     reason: "Administration",
 })
 
+console.log("Making groups...")
 const groups: NablaGroupDict = {
     webkom: {
         id: "webkom",
@@ -181,17 +182,23 @@ if (error1) {
     console.log(error1)
 }
 
+console.log("Populating groups with members...")
 const memberships: NablaGroupMember[] = []
-for (let i = 0; i < 20; i++) {
+const usedPairs = new Set<string>()
+while (memberships.length < Object.keys(groups).length * 15) {
     const user = getRandomElement(Object.keys(users))
     const group = getRandomElement(Object.keys(groups))
-    console.log(`Trying to put ${user} into ${group}`)
+    if (usedPairs.has(`${user}:${group}`)) {
+        continue
+    }
+    usedPairs.add(`${user}:${group}`)
+
     const membership: NablaGroupMember = {
         user: user,
         group: group,
         member_role: faker.company.catchPhrase(),
         is_active: true,
-        order: i,
+        order: memberships.length,
     }
     memberships.push(membership)
 }
@@ -201,4 +208,4 @@ const { error } = await supabase
     .from("nabla_group_members")
     .upsert(memberships)
 
-console.log(error)
+if (error) console.log(error)

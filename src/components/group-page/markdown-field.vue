@@ -30,6 +30,7 @@
         <div class="flex flex-1 flex-col gap-4">
             <textarea
                 v-model="localText"
+                aria-label="Edit text "
                 class="m-1 w-full grow resize-none rounded-xl bg-neutralish p-3 text-fg"
                 :placeholder="t('placeholder')"
             ></textarea>
@@ -50,8 +51,8 @@
         </button>
         <button
             class="mt-auto rounded-lg bg-secondary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
-            @click="$emit('saveText', localText)"
             :disabled="localText === text"
+            @click="$emit('saveText', localText)"
         >
             {{ t("lagre-ny-tekst") }}
         </button>
