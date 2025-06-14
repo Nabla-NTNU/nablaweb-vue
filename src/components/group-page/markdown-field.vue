@@ -30,7 +30,7 @@
         <div class="flex flex-1 flex-col gap-4">
             <textarea
                 v-model="localText"
-                aria-label="Edit text "
+                aria-label="Edit text"
                 class="m-1 w-full grow resize-none rounded-xl bg-neutralish p-3 text-fg"
                 :placeholder="t('placeholder')"
             ></textarea>

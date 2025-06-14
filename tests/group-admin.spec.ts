@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test"
 
 test.describe.configure({ mode: "serial" })
 
-// This test risks failing when multiple runners mess with the database simultanously
+// This test risks failing when multiple runners mess with the database simultaneously
 test("Groups are editable by an admin", async ({ page }) => {
     // Log in as admin
     await page.goto("http://localhost:5173/profil")
