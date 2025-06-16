@@ -248,7 +248,8 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/koreolis_logo.jpg.250x250_q85_crop-smart.jpg",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
+        group_photo:
+            "https://nabla.no/media/uploads/content/koreolis-2025.jpeg",
     },
     kultkom: {
         id: "kultkom",
