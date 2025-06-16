@@ -1,12 +1,15 @@
-import { ref, computed, readonly, onUnmounted } from "vue"
+import { ref, computed, readonly } from "vue"
 import { supabase } from "@/lib/supabaseClient"
 import type { User, Session } from "@supabase/supabase-js"
 
 const user = ref<User | null>(null)
-const username = ref<string | null>(null)
 const session = ref<Session | null>(null)
-const isLoading = ref(true)
+export const username = ref<string | null>(null)
+export const isLoading = ref<boolean>(true)
+const isInitialised = ref<boolean>(false)
 
+// In the future: this can be stored as meta-data in Supabase! Probably should too.
+// https://supabase.com/docs/guides/auth/managing-user-data
 async function getUsername(): Promise<void> {
     if (user.value?.id) {
         try {
@@ -23,18 +26,16 @@ async function getUsername(): Promise<void> {
                 `[useAuth] error finding username for user ${user.value.id}`,
                 e,
             )
-        } finally {
-            isLoading.value = false
         }
     } else {
         username.value = null
     }
 }
 
-async function isUserAdmin(): Promise<boolean> {
+// Rewrite for granular admin access issue. Probably fetch user permissions or sumfin
+export async function isUserAdmin(): Promise<boolean> {
     try {
         if (!username.value) {
-            // broken for when user accesses page via link
             await getUsername()
         }
 
@@ -43,6 +44,7 @@ async function isUserAdmin(): Promise<boolean> {
             .from("nabladmins")
             .select("user")
             .eq("user", username.value!)
+
         if (data) {
             return data.length > 0
         }
@@ -68,27 +70,26 @@ async function initialize(): Promise<void> {
     } catch (e) {
         console.error("[useAuth] init error", e)
     } finally {
+        // Make global listener to auth state change
+        const authListener = supabase.auth.onAuthStateChange(
+            (_event, newSession) => {
+                session.value = newSession
+                user.value = newSession?.user ?? null
+                getUsername()
+            },
+        )
+        // And clear the memory manually if app is left
+        window.onbeforeunload = () =>
+            authListener.data.subscription.unsubscribe()
         isLoading.value = false
+        isInitialised.value = true
     }
 }
 
-// Since we don't run this every time a page loads we need to listen for state changes
-const { data: authListener } = supabase.auth.onAuthStateChange(
-    (_event, newSession) => {
-        session.value = newSession
-        user.value = newSession?.user ?? null
-        getUsername()
-    },
-)
-
-initialize()
+// Initialise if havent yet. Must be awaited for guards to work.
+if (!isInitialised.value) await initialize()
 
 export function useAuth() {
-    // Save memory when a page requiering auth dissapears
-    onUnmounted(() => {
-        authListener.subscription.unsubscribe()
-    })
-
     const isAuthenticated = computed(() => !!user.value)
 
     async function signIn(email: string, password: string) {

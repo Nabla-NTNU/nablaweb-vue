@@ -1,11 +1,11 @@
 import type { RouteLocationNormalized, NavigationGuardNext } from "vue-router"
 
-import { useAuth } from "@/composables/useAuth"
+import { username, isUserAdmin } from "@/composables/useAuth"
 import { doesGroupExist } from "@/composables/useNablaGroup"
 import { isUserGroupLeader } from "@/composables/useNablaGroup"
 
-const { username, isUserAdmin } = useAuth()
-
+// Makes sure group page exists before sending folks away.
+// In the future it'd be nice to show in frontend.
 export async function groupPageGuard(
     to: RouteLocationNormalized,
     from: RouteLocationNormalized,
