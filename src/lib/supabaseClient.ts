@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js"
 import type { Database } from "@/lib/types/database.types"
 
 const isDev = import.meta.env.DEV
-const devURL = `http://${window.location.hostname}:54321`
+const devURL = `http://${window.location.hostname}:54321` // for making dev-database work both in localhost and over the network
 const envURL = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseURL = isDev ? devURL : envURL
 

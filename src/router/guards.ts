@@ -1,6 +1,8 @@
 import type { RouteLocationNormalized, NavigationGuardNext } from "vue-router"
 
-import { username, isUserAdmin } from "@/composables/useAuth"
+import { useAuth } from "@/composables/useAuth"
+const { username, isUserAdmin } = useAuth()
+
 import { doesGroupExist } from "@/composables/useNablaGroup"
 import { isUserGroupLeader } from "@/composables/useNablaGroup"
 
