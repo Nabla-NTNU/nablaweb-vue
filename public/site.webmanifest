@@ -3,17 +3,37 @@
     "short_name": "Nabla",
     "icons": [
         {
-            "src": "/favicon-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
+            "src": "/favicon-16.ico",
+            "sizes": "16x16",
+            "type": "image/ico"
+        }
         {
-            "src": "/android-chrome-512x512.png",
+            "src": "/favicon-32.ico",
+            "sizes": "32x32",
+            "type": "image/ico"
+        }
+        {
+            "src": "/favicon-180.ico",
+            "sizes": "180x180",
+            "type": "image/ico"
+        }
+        {
+            "src": "/favicon-192.ico",
+            "sizes": "192x192",
+            "type": "image/ico"
+        }
+        {
+            "src": "/favicon-228.ico",
+            "sizes": "228x228",
+            "type": "image/ico"
+        }
+        {
+            "src": "/favicon-512.ico",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/ico"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#014676",
+    "background_color": "#fcfcfd",
     "display": "standalone"
 }
