@@ -5,8 +5,8 @@
     useAuth()
 
     import Header from "@/components/nabla-header.vue"
-    import MainContent from "@/components/main-content.vue"
-    import Footer from "@/components/nabla-footer.vue"
+    import MainContent from "@/components/MainContent.vue"
+    import Footer from "@/components/NablaFooter.vue"
 </script>
 
 <template>

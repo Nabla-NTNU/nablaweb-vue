@@ -8,10 +8,10 @@
     import { useGroup } from "@/composables/useNablaGroup"
     import { useGroupImageUpload } from "@/composables/useImageUpload"
 
-    import ImagePicker from "@/components/group-page/image-picker.vue"
-    import MarkdownField from "@/components/group-page/markdown-field.vue"
-    import MemberAdminTable from "@/components/group-page/member-admin-table.vue"
-    import UserPicker from "@/components/group-page/user-picker.vue"
+    import ImagePicker from "@/components/group-page/ImagePicker.vue"
+    import MarkdownField from "@/components/group-page/MarkdownField.vue"
+    import MemberAdminTable from "@/components/group-page/MemberAdminTable.vue"
+    import UserPicker from "@/components/group-page/UserPicker.vue"
     import { GroupMember, NablaUser } from "@/lib/types/frontend.types"
 
     const route = useRoute()
