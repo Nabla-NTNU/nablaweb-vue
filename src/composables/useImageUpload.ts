@@ -38,7 +38,7 @@ export function useGroupImageUpload(groupURL: string) {
     async function upload(file: File) {
         const date: Date = new Date()
         const fileExtention = file.name.split(".").pop()
-        const filepath = `group-images/${groupURL}/${date.toISOString()}.${fileExtention}`
+        const filepath = `group-photos/${groupURL}/${date.toISOString()}.${fileExtention}`
 
         return uploadFile(file, filepath, "images", uploading, error, publicURL)
     }
