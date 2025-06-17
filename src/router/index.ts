@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"
 import HjemView from "@/views/hjem/nabla-hjem.vue"
-import NyStudentView from "@/views/ny-student/ny-student.vue"
+// import NyStudentView from "@/views/ny-student/ny-student.vue"
 import ProfilView from "@/views/profil/nabla-profil.vue"
 // import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
 import GroupPage from "@/views/for-studenter/undergrupper/nabla-group.vue"
@@ -94,21 +94,21 @@ const routes = [
     },
 
     // Annet
-    { path: "/ny-student", component: NyStudentView },
+    // { path: "/ny-student", component: NyStudentView },
     { path: "/joulekalender", component: UnderKonstruksjonView },
     { path: "/profil", component: ProfilView },
-    { path: "/sok", component: UnderKonstruksjonView },
-    { path: "/admin", component: UnderKonstruksjonView },
+    // { path: "/sok", component: UnderKonstruksjonView },
+    // { path: "/admin", component: UnderKonstruksjonView },
 
     // Diverse
-    { path: "/kontortider", component: UnderKonstruksjonView },
-    { path: "/nabladet", component: UnderKonstruksjonView },
-    { path: "/SKE", component: UnderKonstruksjonView },
-    { path: "/skraattcast", component: UnderKonstruksjonView },
-    { path: "/soknad", component: UnderKonstruksjonView },
-    { path: "/tilbakemeldinger", component: UnderKonstruksjonView },
+    // { path: "/kontortider", component: UnderKonstruksjonView },
+    // { path: "/nabladet", component: UnderKonstruksjonView },
+    // { path: "/SKE", component: UnderKonstruksjonView },
+    // { path: "/skraattcast", component: UnderKonstruksjonView },
+    // { path: "/soknad", component: UnderKonstruksjonView },
+    // { path: "/tilbakemeldinger", component: UnderKonstruksjonView },
 
-    { path: "/404", component: PageNotFoundView },
+    { path: "/:catchAll(.*)*", component: PageNotFoundView, props: true },
 ]
 
 // Create a router instance

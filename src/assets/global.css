@@ -603,9 +603,9 @@
     --primary-900: #042949;
     --primary-950: #051c33;
 
-    --primary-light: #042949;
+    --primary-light: #45a4d3;
     --primary: #014676;
-    --primary-dark: #45a4d3;
+    --primary-dark: #042949;
 
     /* Secondary */
     --secondary-25: #fffbf3;
@@ -621,9 +621,9 @@
     --secondary-900: #723f08;
     --secondary-950: #4e2c09;
 
-    --secondary-light: #be6704;
+    --secondary-light: #fdba61;
     --secondary: #f08709;
-    --secondary-dark: #fdba61;
+    --secondary-dark: #be6704;
 
     /* Gray */
     --gray-25: #fcfcfd;
