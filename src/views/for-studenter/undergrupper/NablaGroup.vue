@@ -7,7 +7,7 @@
 
     import { useGroup, useGroups } from "@/composables/useNablaGroup"
     import { useAuth } from "@/composables/useAuth"
-    import UserCard from "@/components/general/user-card.vue"
+    import UserCard from "@/components/general/UserCard.vue"
     // import GroupCard from '@/components/group-page/group-card.vue' // implement for big screens
 
     const route = useRoute()

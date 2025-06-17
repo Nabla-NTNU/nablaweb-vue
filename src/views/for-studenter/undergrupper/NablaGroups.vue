@@ -4,7 +4,7 @@
     const { t } = useI18n()
 
     import { useGroups } from "@/composables/useNablaGroup"
-    import GroupCard from "@/components/group-page/group-card.vue"
+    import GroupCard from "@/components/group-page/GroupCard.vue"
     import { GroupKind } from "@/lib/types/frontend.types"
 
     // useGroups also has an error and a loading that can be used in frontend

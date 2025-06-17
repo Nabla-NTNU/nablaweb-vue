@@ -1,5 +1,3 @@
-<!-- Very temporary. Please make sure this doesn't end up in prod -->
-
 <script setup lang="ts">
     import { ref } from "vue"
     import { supabase } from "@/lib/supabaseClient"
@@ -9,6 +7,7 @@
 
     // Supabase only allows email + password, not username + password We
     //  therefore add an "@stud.ntnu.no" to avoid any awkward clashes.
+    //  Unsure of what the final solution here should be.
     async function handleLogin() {
         const { error } = await supabase.auth.signInWithPassword({
             email: username.value + "@stud.ntnu.no",

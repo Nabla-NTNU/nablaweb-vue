@@ -4,8 +4,7 @@ import type { User, Session } from "@supabase/supabase-js"
 
 const user = ref<User | null>(null)
 const session = ref<Session | null>(null)
-export const username = ref<string | null>(null)
-export const isLoading = ref<boolean>(true)
+const username = ref<string | null>(null)
 const isInitialised = ref<boolean>(false)
 
 // In the future: this can be stored as meta-data in Supabase! Probably should too.
@@ -33,7 +32,7 @@ async function getUsername(): Promise<void> {
 }
 
 // Rewrite for granular admin access issue. Probably fetch user permissions or sumfin
-export async function isUserAdmin(): Promise<boolean> {
+async function isUserAdmin(): Promise<boolean> {
     try {
         if (!username.value) {
             await getUsername()
@@ -81,7 +80,6 @@ async function initialize(): Promise<void> {
         // And clear the memory manually if app is left
         window.onbeforeunload = () =>
             authListener.data.subscription.unsubscribe()
-        isLoading.value = false
         isInitialised.value = true
     }
 }
@@ -89,34 +87,31 @@ async function initialize(): Promise<void> {
 // Initialise if havent yet. Must be awaited for guards to work.
 if (!isInitialised.value) await initialize()
 
+async function signIn(email: string, password: string) {
+    const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    })
+    if (error) throw error
+    return data
+}
+
+async function signUp(email: string, password: string) {
+    const { error } = await supabase.auth.signUp({ email, password })
+    if (error) throw error
+}
+
+async function signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+    location.reload()
+}
+
 export function useAuth() {
     const isAuthenticated = computed(() => !!user.value)
 
-    async function signIn(email: string, password: string) {
-        const { error, data } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
-        if (error) throw error
-        return data
-    }
-
-    async function signUp(email: string, password: string) {
-        const { error } = await supabase.auth.signUp({ email, password })
-        if (error) throw error
-    }
-
-    async function signOut() {
-        const { error } = await supabase.auth.signOut()
-        if (error) throw error
-        location.reload()
-    }
-
     return {
-        user: readonly(user),
         username: readonly(username),
-        session: readonly(session),
-        isLoading: readonly(isLoading),
         isAuthenticated,
 
         signIn,

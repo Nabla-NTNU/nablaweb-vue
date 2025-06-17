@@ -3,16 +3,14 @@
     const { locale } = useI18n()
 
     import { useAuth } from "@/composables/useAuth"
-    import LoginCard from "@/components/general/login-card.vue"
-    import ThemeToggler from "@/components/buttons/ThemeToggler.vue"
+    import LoginCard from "@/components/general/LoginCard.vue"
+    import ThemeToggler from "@/components/depricated/ThemeToggler.vue"
 
-    const { isLoading, isAuthenticated, signOut } = useAuth()
+    const { isAuthenticated, signOut } = useAuth()
 </script>
 
 <template>
-    <div v-if="isLoading" style="margin: 40pt">Loading…</div>
-
-    <div v-else-if="isAuthenticated" style="margin: 40pt">
+    <div v-if="isAuthenticated" style="margin: 40pt">
         <button
             class="rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
             @click="signOut"
