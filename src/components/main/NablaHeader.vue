@@ -48,63 +48,63 @@
 
     const headerItems: HeaderItem[] = [
         {
-            text: t("om-nabla"),
+            text: "om-nabla",
             link: "/om",
             dropdownItems: [
                 {
-                    text: t("styret"),
+                    text: "styret",
                     link: "/om/styret",
                 },
                 {
-                    text: t("undergrupper"),
+                    text: "undergrupper",
                     link: "/om/grupper",
                 },
                 {
-                    text: "Nabladet",
+                    text: "nabladet",
                     link: "/om/nabladet",
                 },
                 {
-                    text: "Skråttcast",
+                    text: "skråttcast",
                     link: "/om/skråttcast",
                 },
                 {
-                    text: t("kjelleren"),
+                    text: "kjelleren",
                     link: "/om/kjelleren",
                 },
                 {
-                    text: t("kontakt"),
+                    text: "kontakt",
                     link: "/om/kontakt-og-varsling",
                 },
             ],
         },
         {
-            text: t("kalender"),
+            text: "kalender",
             link: "/kalender",
             dropdownItems: [
                 {
-                    text: t("arrangement"),
+                    text: "arrangement",
                     link: "/kalender",
                 },
                 {
-                    text: t("bedpres"),
+                    text: "bedpres",
                     link: "/kalender",
                 },
                 {
-                    text: t("regelmessig"),
+                    text: "regelmessig",
                     link: "/kalender",
                 },
             ],
         },
         {
-            text: t("karriere"),
+            text: "karriere",
             link: "/karriere",
             dropdownItems: [
                 {
-                    text: t("for-bedrifter"),
+                    text: "for-bedrifter",
                     link: "/for-bedrifter",
                 },
                 {
-                    text: t("jobb"),
+                    text: "jobb",
                     link: "/jobb",
                 },
             ],
@@ -149,9 +149,13 @@
             <nav class="hidden flex-row m:flex">
                 <div v-for="item in headerItems" :key="item.link" class="">
                     <NavigationLink
-                        :link-text="item.text"
+                        :link-text="t(item.text)"
                         :link-to="item.link"
-                        :dropdown-items="item.dropdownItems"
+                        :dropdown-items="
+                            item.dropdownItems?.map((item) => {
+                                return { text: t(item.text), link: item.link }
+                            })
+                        "
                         class="m:flex"
                     />
                 </div>
@@ -190,6 +194,8 @@ nb:
     for-bedrifter: For Bedrifter
     styret: Styret
     undergrupper: Undergrupper
+    nabladet: Nabladet
+    skråttcast: Skråttcast
     kjelleren: Kjelleren
     kontakt: Kontakt og varsling
     arrangement: Arrangement
@@ -204,8 +210,10 @@ en:
     for-bedrifter: For Businesses
     styret: The Council
     undergrupper: Groups
+    nabladet: Nabladet
+    skråttcast: Skråttcast
     kjelleren: The Cellar
-    kontakt: Contact or warn
+    kontakt: Contact
     arrangement: Events
     bedpres: Business presentations
     regelmessig: Regular

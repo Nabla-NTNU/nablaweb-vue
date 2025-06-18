@@ -570,13 +570,6 @@ export default {
             240: "960px",
             280: "1120px",
         },
-        opacity: {
-            65: ".65",
-        },
-        aspectRatio: {
-            "4/3": "4 / 3",
-            "21/9": "21 / 9",
-        },
         borderWidth: {
             1: "1px",
             2: "2px",
