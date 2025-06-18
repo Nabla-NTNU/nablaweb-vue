@@ -23,6 +23,7 @@ CREATE TABLE nablaweb_vue.nabla_users (
     website         text                NOT NULL DEFAULT '',
     public_email    text                NOT NULL DEFAULT '',
     is_active       BOOLEAN             NOT NULL DEFAULT true,
+    NTNU_card_id    text,
     birthday        DATE,
     first_name_last_name_username TEXT  GENERATED ALWAYS AS
         (first_name || ' ' || last_name || ' ' || username) STORED

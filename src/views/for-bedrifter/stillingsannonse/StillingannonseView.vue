@@ -1,6 +1,5 @@
 <script setup>
-    import "../../../style.css"
-    import "../../../assets/fonts/fonts.css"
+    //
 </script>
 
 <template>
@@ -35,9 +34,3 @@
         </div>
     </div>
 </template>
-
-<script>
-    export default {
-        name: "StillingsannonseView",
-    }
-</script>

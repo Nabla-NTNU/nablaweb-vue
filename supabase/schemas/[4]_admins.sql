@@ -2,7 +2,7 @@
 CREATE TABLE nablaweb_vue.nabladmins (
     "user"      TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     reason      TEXT NOT NULL,
-    "date"      TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT now(),
+    "date"      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     
     -- Constraints
     PRIMARY KEY ("user")

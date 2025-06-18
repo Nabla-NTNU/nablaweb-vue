@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "seed": "tsx src/lib/seedDatabase.ts",
+        "seed": "tsx supabase/seed.ts",
         "gen-types": "supabase gen types typescript --local > src/lib/database.types.ts",
         "dev": "vite",
         "build": "vite build",
@@ -26,9 +26,11 @@
     "devDependencies": {
         "@eslint/js": "^9.28.0",
         "@faker-js/faker": "^9.8.0",
+        "@playwright/test": "^1.53.0",
         "@tailwindcss/aspect-ratio": "^0.4.2",
         "@tailwindcss/forms": "^0.5.10",
         "@tailwindcss/typography": "^0.5.16",
+        "@types/node": "^24.0.1",
         "@typescript-eslint/eslint-plugin": "^8.34.0",
         "@vitejs/plugin-vue": "^5.1.2",
         "autoprefixer": "^10.4.20",
@@ -37,6 +39,7 @@
         "eslint-plugin-vue": "^10.2.0",
         "husky": "^9.1.7",
         "lint-staged": "^16.1.0",
+        "p-limit": "^6.2.0",
         "postcss": "^8.4.47",
         "prettier": "^3.5.3",
         "prettier-plugin-tailwindcss": "^0.6.12",
@@ -53,7 +56,7 @@
         ]
     },
     "lint-staged": {
-        "*.{js,ts,css,md,vue}": [
+        "*.{js,ts,css,md,vue,json}": [
             "eslint",
             "prettier --write"
         ]

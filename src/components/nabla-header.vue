@@ -259,8 +259,8 @@
                 </router-link>
             </nav>
             <button
-                @click="mobileNavVisible = !mobileNavVisible"
                 class="hover:text-secondary m:hidden"
+                @click="mobileNavVisible = !mobileNavVisible"
             >
                 nav
             </button>

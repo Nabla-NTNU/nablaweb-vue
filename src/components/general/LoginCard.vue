@@ -1,5 +1,3 @@
-<!-- Very temporary. Please make sure this doesn't end up in prod -->
-
 <script setup lang="ts">
     import { ref } from "vue"
     import { useAuth } from "@/composables/useAuth"

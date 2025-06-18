@@ -2,12 +2,19 @@ import { supabase } from "@/lib/supabaseClient"
 import { Ref, ref, onMounted } from "vue"
 import { NablaGroup, GroupMember, GroupKind } from "@/lib/types/frontend.types"
 
+function makeURL(str: string): URL | undefined {
+    try {
+        return new URL(str)
+    } catch (error) {
+        console.log(`[useNablaGroups] Invalid URL: ${str}`, error)
+        return undefined
+    }
+}
+
 async function getGroupWithoutMembers(
     groupID: string,
 ): Promise<NablaGroup | undefined> {
     try {
-        // recreate the database type here pls
-        // then fix up the map in-place
         const { data, error } = await supabase
             .schema("nablaweb_vue")
             .from("nabla_groups")
@@ -32,11 +39,11 @@ async function getGroupWithoutMembers(
             id: data.id,
             name: data.name,
             kind: data.kind in GroupKind ? (data.kind as GroupKind) : undefined, // Will fail silently for unknown GroupKinds
-            logo: new URL(data.logo),
+            logo: makeURL(data.logo),
             mailList: data.mailList,
             leader: { user: { username: data.leader! } },
             about: data.about,
-            groupPhoto: new URL(data.groupPhoto),
+            groupPhoto: makeURL(data.groupPhoto),
             date: new Date(data.dateBegan),
             isActive: data.isActive,
         }
@@ -84,7 +91,7 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
                     username: member.user.username,
                     firstName: member.user.firstName,
                     lastName: member.user.lastName,
-                    profilePicture: new URL(member.user.profilePicture),
+                    profilePicture: makeURL(member.user.profilePicture),
                     class: member.user.class,
                 },
             }
@@ -125,17 +132,16 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
             return {
                 id: group.id,
                 name: group.name,
-                kind:
-                    group.kind in GroupKind
-                        ? (group.kind as GroupKind)
-                        : undefined,
-                logo: new URL(group.logo),
+                kind: Object.values(GroupKind).includes(group.kind as GroupKind)
+                    ? (group.kind as GroupKind)
+                    : undefined,
+                logo: makeURL(group.logo),
                 mailList: group.mailList,
                 leader: group.leader
                     ? { user: { username: group.leader } }
                     : undefined,
                 about: group.about,
-                groupPhoto: new URL(group.groupPhoto),
+                groupPhoto: makeURL(group.groupPhoto),
                 dateBegan: new Date(group.dateBegan),
             }
         })

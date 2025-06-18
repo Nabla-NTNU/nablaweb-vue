@@ -3,8 +3,6 @@
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
 
-    import InlineButton from "@/components/buttons/inline-button.vue"
-
     const props = defineProps<{
         imageUrl: string
         uploadImage: (file: File) => Promise<string | null>
@@ -22,7 +20,6 @@
         },
     )
 
-    // ChatGPT code tbh - pls do look over
     async function handleFileUpload(e: DragEvent | Event) {
         let files: FileList | null = null
 
@@ -39,8 +36,15 @@
 
         if (!files?.length) return
 
+        if (files.length != 1) {
+            console.error(
+                "[ImagePicker.vue] Attempted upload of surprising number of images. Ignored.",
+            )
+            return
+        }
+
         const file = files[0]
-        // Optional: early MIME or size validation here
+
         const url = await props.uploadImage(file)
         if (url) {
             localImageURL.value = url // update preview in child
@@ -61,8 +65,8 @@
         />
 
         <input
-            type="file"
             id="fileInput"
+            type="file"
             accept="image/*"
             class="hidden"
             @change="handleFileUpload"
@@ -75,18 +79,22 @@
             {{ t("last-opp") }}
         </label>
 
-        <InlineButton
+        <button
             v-if="localImageURL !== imageUrl"
-            :text="t('avbryt')"
-            @on-click="localImageURL = imageUrl"
-        />
+            class="m-auto items-center text-nowrap rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
+            :disabled="false"
+            @click="localImageURL = imageUrl"
+        >
+            {{ t("avbryt") }}
+        </button>
 
-        <InlineButton
-            :text="t('lagre-endring')"
-            :color="'bg-secondary'"
-            :disable-condition="localImageURL === imageUrl"
-            @on-click="$emit('saveImage', localImageURL)"
-        />
+        <button
+            class="m-auto items-center text-nowrap rounded-lg bg-secondary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
+            :disabled="localImageURL === imageUrl"
+            @click="$emit('saveImage', localImageURL)"
+        >
+            {{ t("lagre-endring") }}
+        </button>
     </div>
     <div>
         <img
