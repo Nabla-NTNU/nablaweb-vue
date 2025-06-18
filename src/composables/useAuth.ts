@@ -1,6 +1,6 @@
 import { ref, computed, readonly } from "vue"
 import { supabase } from "@/lib/supabaseClient"
-import type { User, Session } from "@supabase/supabase-js"
+import type { User, Session, AuthError } from "@supabase/supabase-js"
 
 const user = ref<User | null>(null)
 const session = ref<Session | null>(null)
@@ -87,13 +87,22 @@ async function initialize(): Promise<void> {
 // Initialise if havent yet. Must be awaited for guards to work.
 if (!isInitialised.value) await initialize()
 
-async function signIn(email: string, password: string) {
-    const { error, data } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-    })
-    if (error) throw error
-    return data
+async function signIn(
+    email: string,
+    password: string,
+): Promise<null | AuthError> {
+    try {
+        const { error, data } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+        if (error) throw error
+        user.value = data.user
+        return error
+    } catch (error) {
+        console.error("[useAuth] Error signing in", error)
+        return error as AuthError
+    }
 }
 
 async function signUp(email: string, password: string) {

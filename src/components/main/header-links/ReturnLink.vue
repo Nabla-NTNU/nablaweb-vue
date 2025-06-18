@@ -1,12 +1,12 @@
-<script setup></script>
+<script setup lang="ts">
+    //
+</script>
 
 <template>
     <svg
         id="Nabla Logo"
         xmlns="http://www.w3.org/2000/svg"
         xml:space="preserve"
-        width="133.333"
-        height="119.041"
         x="0"
         y="0"
         version="1.1"

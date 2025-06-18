@@ -1,8 +1,8 @@
 /* Classic Light Theme */
 [style="classic"][theme="light"] {
     /* Background */
-    --neutral: #fcfcfd;
-    --off-neutral: #ffffff;
+    --neutral: #ffffff;
+    --off-neutral: #f2f2f2;
 
     /* Text and foreground */
     --fg: #0b0f19;
@@ -195,7 +195,7 @@
 /* Modern Light Theme */
 [style="modern"][theme="light"] {
     /* Background */
-    --neutral: #fcfcfd;
+    --neutral: #f2f2f2;
     --off-neutral: #ffffff;
 
     /* Text and foreground */

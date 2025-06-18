@@ -32,8 +32,8 @@ function getLocalTheme() {
         chosenTheme.value = ColorTheme.System
     }
     if (localStyle == null || !(localStyle in StyleTheme)) {
-        localStorage.setItem("style", StyleTheme.Classic)
-        chosenStyle.value = StyleTheme.Classic
+        localStorage.setItem("style", StyleTheme.Modern)
+        chosenStyle.value = StyleTheme.Modern
     }
     if (localTheme != null && localStyle != null) {
         try {
@@ -46,10 +46,10 @@ function getLocalTheme() {
             )
             // Reset to defaut settings
             chosenTheme.value = ColorTheme.System
-            chosenStyle.value = StyleTheme.Classic
+            chosenStyle.value = StyleTheme.Modern
             // Overwrite whatever data was bad
             localStorage.setItem("theme", ColorTheme.System)
-            localStorage.setItem("style", StyleTheme.Classic)
+            localStorage.setItem("style", StyleTheme.Modern)
         }
     }
 }

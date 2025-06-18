@@ -1,10 +1,10 @@
 <script setup lang="ts">
     import { ref, onMounted } from "vue"
-    // import { useI18n } from "vue-i18n"
-    import NablaLogo from "./NablaLogo.vue"
-    import NablaNavLink from "./NablaNavLink.vue"
-    import NablaProfileLink from "./NablaProfileLink.vue"
-    // const { t } = useI18n()
+    import { useI18n } from "vue-i18n"
+    import NablaLogo from "./header-links/ReturnLink.vue"
+    import NavigationLink from "./header-links/NavigationLink.vue"
+    import NablaProfileLink from "./header-links/ProfileLink.vue"
+    const { t } = useI18n()
 
     const mobileNavVisible = ref(false)
 
@@ -36,6 +36,81 @@
         "Fredagsquiz ❔",
     ]
 
+    type HeaderItem = {
+        text: string
+        link: string
+        // Could be recursive, but multiple dropdown layers is bad UX
+        dropdownItems?: {
+            text: string
+            link: string
+        }[]
+    }
+
+    const headerItems: HeaderItem[] = [
+        {
+            text: t("om-nabla"),
+            link: "/om",
+            dropdownItems: [
+                {
+                    text: t("styret"),
+                    link: "/om/styret",
+                },
+                {
+                    text: t("undergrupper"),
+                    link: "/om/undergrupper",
+                },
+                {
+                    text: "Nabladet",
+                    link: "/om/nabladet",
+                },
+                {
+                    text: t("kjelleren"),
+                    link: "/om/kjelleren",
+                },
+                {
+                    text: t("kontakt"),
+                    link: "/om/kontakt-og-varsling",
+                },
+            ],
+        },
+        {
+            text: t("kalender"),
+            link: "/kalender",
+            dropdownItems: [
+                {
+                    text: t("arrangement"),
+                    link: "/kalender",
+                },
+                {
+                    text: t("bedpres"),
+                    link: "/kalender",
+                },
+                {
+                    text: t("regelmessig"),
+                    link: "/kalender",
+                },
+            ],
+        },
+        {
+            text: t("karriere"),
+            link: "/karriere",
+            dropdownItems: [
+                {
+                    text: t("for-bedrifter"),
+                    link: "/for-bedrifter",
+                },
+                {
+                    text: t("jobb"),
+                    link: "/jobb",
+                },
+            ],
+        },
+        {
+            text: "Wiki",
+            link: "/wiki",
+        },
+    ]
+
     const currentQuote = ref("")
 
     onMounted(() => {
@@ -46,9 +121,11 @@
 
 <template>
     <header
-        class="top-0 h-max-header sticky h-header grid-rows-1 content-center bg-primary font-poppins text-title-6 text-gray-25 transition duration-300 ease-in-out"
+        class="top-0 h-max-header sticky z-10 h-header grid-rows-1 content-center font-poppins text-title-6 text-gray-25"
     >
-        <div class="flex flex-row items-center justify-between pl-4 pr-6">
+        <div
+            class="flex flex-row items-center justify-between bg-primary pl-4 pr-6 transition duration-300 ease-in-out"
+        >
             <!-- Tips & tricks -->
             <div
                 v-if="!mobileNavVisible"
@@ -65,15 +142,15 @@
             </router-link>
 
             <!-- Links in header: desktop -->
-            <nav v-if="!mobileNavVisible" class="hidden flex-row m:flex">
-                <NablaNavLink link-text="Om nabla" link-to="/om-nabla" />
-                <NablaNavLink link-text="Kalender" link-to="/kalender" />
-                <NablaNavLink link-text="Karriere" link-to="/karriere" />
-                <NablaNavLink link-text="Wiki" link-to="/wiki" />
-                <NablaNavLink
-                    link-text="For Bedrifter"
-                    link-to="/for-bedrifter"
-                />
+            <nav class="hidden flex-row m:flex">
+                <div v-for="item in headerItems" :key="item.link" class="">
+                    <NavigationLink
+                        :link-text="item.text"
+                        :link-to="item.link"
+                        :dropdown-items="item.dropdownItems"
+                        class="m:flex"
+                    />
+                </div>
                 <NablaProfileLink class="h-header w-header" />
             </nav>
 
@@ -104,16 +181,29 @@
 <i18n lang="yaml">
 nb:
     om-nabla: Om Nabla
-    for-komponenter: For Komponenter
+    kalender: Kalender
+    karriere: Karriere
     for-bedrifter: For Bedrifter
-    ny-student: Ny student?
-    profil: Profil/pålogging
+    styret: Styret
     undergrupper: Undergrupper
+    kjelleren: Kjelleren
+    kontakt: Kontakt og varsling
+    arrangement: Arrangement
+    bedpres: BedPres
+    regelmessig: Regelmessige
+    jobb: Jobbannonser
+
 en:
     om-nabla: About Nabla
-    for-komponenter: For Members
+    kalender: Calendar
+    karriere: Carreer
     for-bedrifter: For Businesses
-    ny-student: New student?
-    profil: Profile/login
-    undergrupper: Subgroups
+    styret: The Council
+    undergrupper: Groups
+    kjelleren: The Cellar
+    kontakt: Contact or warn
+    arrangement: Events
+    bedpres: Business presentations
+    regelmessig: Regular
+    jobb: Jobs
 </i18n>
