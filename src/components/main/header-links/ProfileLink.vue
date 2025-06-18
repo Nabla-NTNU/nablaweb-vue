@@ -94,26 +94,27 @@
                 <!-- Those who have the right to request funding should see it here -->
                 <router-link
                     to="/refusjon"
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                    class="hover:bg-primary-green mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-green px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-green-light hover:text-secondary-light"
                 >
                     {{ t("refusjon") }}
                 </router-link>
 
                 <!-- User admin. Every other kind of admin should be *on their respective pages* -->
                 <router-link
-                    to="/refusjon"
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                    to="/admin"
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-warning px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-warning-light hover:bg-warning-dark hover:text-secondary-light"
                 >
                     {{ t("admin") }}
                 </router-link>
 
                 <!-- Would be nice to have a *privacy-preserving* dashboard to see health of Hemmer, supabase, etc -->
                 <router-link
-                    to="/refusjon"
+                    to="/dashboard"
                     class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
                 >
                     Dashboard
                 </router-link>
+                <!-- Some others to consider: We need a place to put the fadderuke control panel, and the votes. This could be a good spot! -->
 
                 <!-- And an easy-to-reach logout button -->
                 <button

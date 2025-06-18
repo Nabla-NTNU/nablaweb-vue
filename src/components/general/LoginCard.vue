@@ -20,6 +20,7 @@
             v-model="username"
             class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
             :placeholder="t('NTNU-brukernavn')"
+            required
         />
         <br />
         <input
@@ -27,6 +28,7 @@
             class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
             :placeholder="t('passord')"
             type="password"
+            required
         />
         <br />
         <button
