@@ -47,7 +47,7 @@
                 >
                     404:
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-1 flex-col">
                     <div
                         v-if="quote"
                         class="px-4 py-10 text-center font-zilla text-title-6 m:text-left m:text-title-2"

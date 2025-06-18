@@ -57,11 +57,15 @@
                 },
                 {
                     text: t("undergrupper"),
-                    link: "/om/undergrupper",
+                    link: "/om/grupper",
                 },
                 {
                     text: "Nabladet",
                     link: "/om/nabladet",
+                },
+                {
+                    text: "Skråttcast",
+                    link: "/om/skråttcast",
                 },
                 {
                     text: t("kjelleren"),

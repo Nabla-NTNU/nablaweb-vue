@@ -1,19 +1,42 @@
 <script setup lang="ts">
-    import { ref } from "vue"
     import LoginCard from "@/components/general/LoginCard.vue"
+
+    import { ref } from "vue"
+    import { useRouter } from "vue-router"
+    const router = useRouter()
+    import { useI18n } from "vue-i18n"
+    const { t } = useI18n()
+
     import { useAuth } from "@/composables/useAuth"
+    const { isAuthenticated, signOut } = useAuth()
 
-    const { isAuthenticated } = useAuth()
+    const dropdownIsVisible = ref(false)
 
-    const isVisible = ref(false)
+    async function handleSignOut() {
+        dropdownIsVisible.value = false
+        await signOut()
+        router.push({ path: "/" })
+    }
 </script>
 
 <template>
-    <div class="relative">
-        <div class="h-header w-header content-center" @click="isVisible = true">
+    <div
+        class="relative"
+        @mouseenter="
+            () => {
+                if (isAuthenticated && !dropdownIsVisible) {
+                    dropdownIsVisible = true
+                }
+            }
+        "
+    >
+        <div
+            class="h-header w-header content-center"
+            @click="dropdownIsVisible = true"
+        >
             <div
                 class="flex h-4/5 w-4/5 overflow-hidden rounded-full border-2 border-primary bg-primary-dark fill-white transition duration-200 hover:border-primary-light hover:fill-secondary"
-                @click="isVisible = !isVisible"
+                @click="() => (dropdownIsVisible = !dropdownIsVisible)"
             >
                 <svg
                     v-if="!isAuthenticated"
@@ -31,28 +54,92 @@
             </div>
         </div>
 
+        <!-- Unauthenticated -->
         <transition
+            v-if="!isAuthenticated"
             enter-from-class="translate-y-[-120%]"
             leave-to-class="translate-y-[-120%]"
             enter-active-class="transition duration-300"
             leave-active-class="transition duration-300"
-            leave-from-class="translate-y-0"
-            enter-to-class="translate-y-0"
         >
             <div
-                v-if="isVisible"
+                v-if="dropdownIsVisible"
                 class="absolute right-4 top-20 -z-10 w-[512px] origin-top-right rounded-[10px] border-2 border-primary-light bg-neutralish p-4"
-                @mouseleave="isVisible = false"
+                @mouseleave="dropdownIsVisible = false"
             >
-                <LoginCard v-if="!isAuthenticated" class="w-full" />
-                <div v-else class="text-fg">
-                    <router-link :to="'/profil'"> Profil </router-link>
-                </div>
+                <LoginCard class="w-full" />
+            </div>
+        </transition>
+
+        <!-- User menu -->
+        <transition
+            v-if="isAuthenticated"
+            enter-from-class="translate-y-[-150%] opacity-[0]"
+            leave-to-class="translate-y-[-150%] opacity-[0]"
+            enter-active-class="transition duration-300"
+            leave-active-class="transition duration-300"
+        >
+            <div
+                v-if="dropdownIsVisible"
+                class="absolute right-[0%] top-[80%] -z-10 flex origin-top-right flex-col content-center p-4 text-center text-fg"
+                @mouseleave="dropdownIsVisible = false"
+            >
+                <router-link
+                    to="/profil"
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                >
+                    {{ t("profil") }}
+                </router-link>
+
+                <!-- Those who have the right to request funding should see it here -->
+                <router-link
+                    to="/refusjon"
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                >
+                    {{ t("refusjon") }}
+                </router-link>
+
+                <!-- User admin. Every other kind of admin should be *on their respective pages* -->
+                <router-link
+                    to="/refusjon"
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                >
+                    {{ t("admin") }}
+                </router-link>
+
+                <!-- Would be nice to have a *privacy-preserving* dashboard to see health of Hemmer, supabase, etc -->
+                <router-link
+                    to="/refusjon"
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                >
+                    Dashboard
+                </router-link>
+
+                <!-- And an easy-to-reach logout button -->
+                <button
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-red px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-red-light hover:bg-red-dark hover:text-secondary-light"
+                    :onclick="
+                        async () => {
+                            handleSignOut()
+                        }
+                    "
+                >
+                    {{ t("logg-ut") }}
+                </button>
             </div>
         </transition>
     </div>
-
-    <!-- If logged in -->
-    <!-- If not logged in () -->
-    <!-- Both (loan) -->
 </template>
+
+<i18n lang="yaml">
+nb:
+    profil: "Profil"
+    refusjon: "Refusjon"
+    admin: "Adminpanel"
+    logg-ut: "Logg ut"
+en:
+    profil: "Profile"
+    refusjon: "Reimbursements"
+    admin: "User Admin"
+    logg-ut: "Sign out"
+</i18n>

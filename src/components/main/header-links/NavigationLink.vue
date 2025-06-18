@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { ref } from "vue"
-    const props = defineProps<{
+    defineProps<{
         linkText: string
         linkTo: string
         dropdownItems?: {
@@ -10,15 +10,16 @@
     }>()
 
     const dropdownIsVisible = ref(false)
-    console.log(props)
 </script>
 
 <template>
-    <div class="relative content-center text-center">
+    <div
+        class="group: relative inline-block content-center text-center"
+        @mouseenter="dropdownIsVisible = dropdownItems ? true : false"
+    >
         <router-link
-            class="mx-2 my-2 rounded-full border-2 border-transparent px-4 py-2 transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+            class="my-2 rounded-full border-2 border-transparent px-4 py-2 transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
             :to="linkTo"
-            @mouseenter="dropdownIsVisible = dropdownItems ? true : false"
         >
             {{ linkText }}
         </router-link>
@@ -31,16 +32,17 @@
         >
             <div
                 v-if="dropdownIsVisible"
-                class="absolute left-1/2 top-[80%] -z-10 origin-top -translate-x-1/2 content-center p-4 text-fg"
+                class="absolute left-1/2 top-[80%] -z-10 flex origin-top -translate-x-1/2 flex-col content-center bg-primary pt-4 text-fg"
                 @mouseleave="dropdownIsVisible = false"
             >
-                <div
+                <router-link
                     v-for="item in dropdownItems"
                     :key="item.text"
-                    class="mx-2 my-2 rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                    :to="item.link"
+                    class="rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
                 >
-                    <router-link :to="item.link"> {{ item.text }} </router-link>
-                </div>
+                    {{ item.text }}
+                </router-link>
             </div>
         </transition>
     </div>

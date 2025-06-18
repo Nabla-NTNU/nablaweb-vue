@@ -98,6 +98,8 @@ async function signIn(
         })
         if (error) throw error
         user.value = data.user
+        session.value = data.session
+        getUsername()
         return error
     } catch (error) {
         console.error("[useAuth] Error signing in", error)
@@ -105,15 +107,23 @@ async function signIn(
     }
 }
 
+async function signOut() {
+    try {
+        const { error } = await supabase.auth.signOut()
+        if (error) throw error
+        user.value = null
+        session.value = null
+        username.value = null
+        return error
+    } catch (error) {
+        console.error("[useAuth] Error signing out", error)
+        return error as AuthError
+    }
+}
+
 async function signUp(email: string, password: string) {
     const { error } = await supabase.auth.signUp({ email, password })
     if (error) throw error
-}
-
-async function signOut() {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-    location.reload()
 }
 
 export function useAuth() {
