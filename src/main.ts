@@ -2,6 +2,7 @@ import { createApp } from "vue"
 import { createI18n } from "vue-i18n"
 
 import "@/style.css"
+import "@/assets/fonts/fonts.css"
 import App from "./App.vue"
 import router from "@/router/"
 
