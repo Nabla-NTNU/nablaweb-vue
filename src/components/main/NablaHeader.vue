@@ -110,7 +110,7 @@
             ],
         },
         {
-            text: "Wiki",
+            text: "wiki",
             link: "/wiki",
         },
     ]
@@ -202,6 +202,7 @@ nb:
     bedpres: BedPres
     regelmessig: Regelmessige
     jobb: Jobbannonser
+    wiki: Wiki
 
 en:
     om-nabla: About Nabla
@@ -218,4 +219,5 @@ en:
     bedpres: Business presentations
     regelmessig: Regular
     jobb: Jobs
+    wiki: Wiki
 </i18n>
