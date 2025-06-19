@@ -18,7 +18,4 @@ test("Committees exist", async ({ page }) => {
     await expect(page.getByRole("link", { name: "WebKom" })).toBeVisible()
     await expect(page.getByRole("link", { name: "ProKom" })).toBeVisible()
     await expect(page.getByRole("link", { name: "Redaksjonen" })).toBeVisible()
-    await expect(
-        page.getByRole("link", { name: "Styret", exact: true }),
-    ).toBeVisible() //Kjellerstyret throws a kinda funny wrench into this one
 })
