@@ -45,7 +45,6 @@ async function getMembershipData(username: string) {
             .from("nabla_group_members")
             .select(
                 `
-                user,
                 group: nabla_groups(
                     id,
                     name,
@@ -58,8 +57,7 @@ async function getMembershipData(username: string) {
                     group_photo,
                     date_began,
                     is_active
-                ),
-                is_active
+                )
             `,
             )
             .eq("user", username)

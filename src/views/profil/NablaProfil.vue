@@ -5,12 +5,15 @@
     import { useAuth } from "@/composables/useAuth"
     import LoginCard from "@/components/general/LoginCard.vue"
     import ThemeToggler from "@/components/depricated/ThemeToggler.vue"
+    import ProfilePage from "@/components/profile-components/profile-page.vue"
 
-    const { isAuthenticated, signOut } = useAuth()
+    const { isAuthenticated, signOut, username } = useAuth()
 </script>
 
 <template>
     <div v-if="isAuthenticated" style="margin: 40pt">
+        <ProfilePage v-if="username" :username="username" />
+
         <button
             class="rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
             @click="signOut"
