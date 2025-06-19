@@ -17,7 +17,10 @@
 <template>
     <form class="h-full w-full p-4" @submit.prevent="handleLogin">
         <input
+            id="username"
             v-model="username"
+            type="text"
+            name="username"
             class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
             :placeholder="t('NTNU-brukernavn')"
             required
@@ -25,15 +28,17 @@
         <br />
         <input
             v-model="password"
+            type="password"
+            name="password"
             class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
             :placeholder="t('passord')"
-            type="password"
             required
         />
         <br />
         <button
             class="m-4 rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
             type="submit"
+            name="log in"
             @click="handleLogin"
         >
             {{ t("logg-in") }}

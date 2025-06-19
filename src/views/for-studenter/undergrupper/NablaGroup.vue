@@ -56,7 +56,6 @@
                         </h1>
                         <RouterLink
                             v-if="userIsAdmin"
-                            aria-label="Adminpanel"
                             :to="`/for-komponenter/komiteer/${groupID}/admin`"
                             class="rounded-lg bg-primary px-4 py-2 text-center font-semibold text-white transition-all duration-300"
                             style="white-space: pre-line"
