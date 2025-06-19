@@ -5,25 +5,36 @@ import type { User, Session, AuthError } from "@supabase/supabase-js"
 const user = ref<User | null>(null)
 const session = ref<Session | null>(null)
 const username = ref<string | null>(null)
+const profilePicture = ref<URL | null>(null)
 const isInitialised = ref<boolean>(false)
 
 // In the future: this can be stored as meta-data in Supabase! Probably should too.
 // https://supabase.com/docs/guides/auth/managing-user-data
-async function getUsername(): Promise<void> {
+async function getUser(): Promise<void> {
     if (user.value?.id) {
         try {
             const { data, error } = await supabase
                 .schema("nablaweb_vue")
                 .from("nabla_users")
-                .select("username")
+                .select(
+                    `username, first_name, last_name, profilePicture: profile_picture`,
+                )
                 .eq("supabase_id", user.value.id)
                 .single()
             if (error) throw error
             username.value = data.username
-        } catch (e) {
+            try {
+                profilePicture.value = new URL(data.profilePicture)
+            } catch (error) {
+                console.error(
+                    `[useAuth] user had a non-URL profile picture ${user.value.id}`,
+                    error,
+                )
+            }
+        } catch (error) {
             console.error(
                 `[useAuth] error finding username for user ${user.value.id}`,
-                e,
+                error,
             )
         }
     } else {
@@ -35,7 +46,7 @@ async function getUsername(): Promise<void> {
 async function isUserAdmin(): Promise<boolean> {
     try {
         if (!username.value) {
-            await getUsername()
+            await getUser()
         }
 
         const { data, error } = await supabase
@@ -65,7 +76,7 @@ async function initialize(): Promise<void> {
         if (error) throw error
         session.value = data.session
         user.value = data.session?.user ?? null
-        await getUsername()
+        await getUser()
     } catch (e) {
         console.error("[useAuth] init error", e)
     } finally {
@@ -74,7 +85,7 @@ async function initialize(): Promise<void> {
             (_event, newSession) => {
                 session.value = newSession
                 user.value = newSession?.user ?? null
-                getUsername()
+                getUser()
             },
         )
         // And clear the memory manually if app is left
@@ -99,7 +110,7 @@ async function signIn(
         if (error) throw error
         user.value = data.user
         session.value = data.session
-        getUsername()
+        getUser()
         return error
     } catch (error) {
         console.error("[useAuth] Error signing in", error)
@@ -131,6 +142,7 @@ export function useAuth() {
 
     return {
         username: readonly(username),
+        profilePicture: readonly(profilePicture),
         isAuthenticated,
 
         signIn,

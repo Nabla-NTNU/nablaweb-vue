@@ -8,7 +8,7 @@
     const { t } = useI18n()
 
     import { useAuth } from "@/composables/useAuth"
-    const { isAuthenticated, signOut } = useAuth()
+    const { isAuthenticated, signOut, profilePicture } = useAuth()
 
     const dropdownIsVisible = ref(false)
 
@@ -31,26 +31,29 @@
         "
     >
         <div
-            class="h-header w-header content-center"
+            class="mx-2 h-header w-header content-center"
             @click="dropdownIsVisible = true"
         >
             <div
-                class="flex h-4/5 w-4/5 overflow-hidden rounded-full border-2 border-primary bg-primary-dark fill-white transition duration-200 hover:border-primary-light hover:fill-secondary"
+                class="flex h-4/5 w-4/5 overflow-hidden rounded-full border-2 border-white bg-primary-dark fill-white transition duration-200 hover:border-primary-light hover:fill-secondary"
                 @click="() => (dropdownIsVisible = !dropdownIsVisible)"
             >
-                <svg
-                    v-if="!isAuthenticated"
-                    class="h-header w-header content-center align-middle"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
+                <transition>
+                    <svg
+                        v-if="!isAuthenticated"
+                        class="h-header w-header content-center align-middle"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            fill-rule="evenodd"
+                            d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
+                            clip-rule="evenodd"
+                        />
+                    </svg>
+                    <img v-else :src="profilePicture?.href" />
+                </transition>
             </div>
         </div>
 
@@ -94,7 +97,7 @@
                 <!-- Those who have the right to request funding should see it here -->
                 <router-link
                     to="/refusjon"
-                    class="hover:bg-primary-green mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-green px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-green-light hover:text-secondary-light"
+                    class="hover:bg-primary-green-dark mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-green px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-green-light hover:text-secondary-light"
                 >
                     {{ t("refusjon") }}
                 </router-link>

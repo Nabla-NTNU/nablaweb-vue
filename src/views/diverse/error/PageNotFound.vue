@@ -17,7 +17,7 @@
 <template>
     <div class="overflow relative h-full w-full">
         <div
-            class="absolute z-0 h-full w-full overflow-hidden fill-neutralish p-10 blur-[1px]"
+            class="absolute z-0 h-full w-full overflow-hidden fill-neutralish p-10 blur-[10px] transition duration-200 ease-in-out"
         >
             <svg
                 id="Nabla Logo"
