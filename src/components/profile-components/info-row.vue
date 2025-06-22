@@ -12,7 +12,7 @@
 </script>
 
 <template>
-    <tr v-if="show" class="odd:bg-white even:bg-gray-50">
+    <tr v-if="show" class="odd:bg-neutral even:bg-neutralish">
         <td class="p-4">
             {{ props.label }}
         </td>
