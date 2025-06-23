@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router"
 
-import HjemView from "@/views/hjem/NablaHjem.vue"
+import HjemView from "@/views/NablaHome.vue"
 // import NyStudentView from "@/views/ny-student/NyStudent.vue"
-import ProfilView from "@/views/profil/NablaProfil.vue"
+import ProfilView from "@/views/NablaProfile.vue"
 // import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
-import GroupPage from "@/views/for-studenter/undergrupper/NablaGroup.vue"
-import GroupAdminPage from "@/views/for-studenter/undergrupper/NablaGroupAdmin.vue"
-import GroupsPage from "@/views/for-studenter/undergrupper/NablaGroups.vue"
-import UnderKonstruksjonView from "@/views/diverse/error/UnderKontruksjon.vue"
-import PageNotFoundView from "@/views/diverse/error/PageNotFound.vue"
+import GroupPage from "@/views/about/NablaGroup.vue"
+import GroupAdminPage from "@/views/about/NablaGroupAdmin.vue"
+import GroupsPage from "@/views/about/NablaGroups.vue"
+// import UnderKonstruksjonView from "@/views/error/UnderKontruksjon.vue"
+import PageNotFoundView from "@/views/error/PageNotFound.vue"
 
 import { groupPageGuard, groupAdminPageGuard } from "./guards"
 
@@ -17,101 +17,57 @@ const routes = [
     { path: "/", component: HjemView },
 
     // Om Nabla
-    { path: "/om", component: UnderKonstruksjonView },
-    { path: "/om/fond", component: UnderKonstruksjonView },
-    { path: "/om/forretningsorden", component: UnderKonstruksjonView },
-    { path: "/om/lover-og-forskrifter", component: UnderKonstruksjonView },
-    { path: "/om/nabla", component: UnderKonstruksjonView },
-    { path: "/om/retningslinjer", component: UnderKonstruksjonView },
-    { path: "/om/stillingsbeskrivelser", component: UnderKonstruksjonView },
-    { path: "/om/tillitsvalgte", component: UnderKonstruksjonView },
-
-    // For komponenter
-    { path: "/for-komponenter", component: UnderKonstruksjonView },
+    // { path: "/om", component: AboutNabla },
+    // { path: "/styret", component: NablaCouncil },
+    { path: "/undergrupper", component: GroupsPage },
     {
-        path: "/for-komponenter/arrangementer",
-        component: UnderKonstruksjonView,
-    },
-    { path: "/for-komponenter/blogg", component: UnderKonstruksjonView },
-    {
-        path: "/for-komponenter/faglig-innhold",
-        component: UnderKonstruksjonView,
-    },
-    {
-        path: "/for-komponenter/interessegrupper",
-        component: UnderKonstruksjonView,
-    },
-    { path: "/for-komponenter/kjellern", component: UnderKonstruksjonView },
-    { path: "/for-komponenter/komiteer", component: GroupsPage },
-    {
-        path: "/for-komponenter/komiteer/:id",
+        path: "/undergrupper/:id",
         component: GroupPage,
         props: true,
         beforeEnter: groupPageGuard,
     },
     {
-        path: "/for-komponenter/komiteer/:id/admin",
+        path: "/undergrupper/:id/admin",
         component: GroupAdminPage,
         props: true,
         beforeEnter: groupAdminPageGuard,
     },
-    { path: "/for-komponenter/kontakt", component: UnderKonstruksjonView },
-    {
-        path: "/for-komponenter/motereferater",
-        component: UnderKonstruksjonView,
-    },
-    {
-        path: "/for-komponenter/okonomisk-stotte",
-        component: UnderKonstruksjonView,
-    },
-    {
-        path: "/for-komponenter/stillingsannonser",
-        component: UnderKonstruksjonView,
-    },
-    { path: "/for-komponenter/styret", component: UnderKonstruksjonView },
-    { path: "/for-komponenter/tjenester", component: UnderKonstruksjonView },
-    {
-        path: "/for-komponenter/utleggsskjema",
-        component: UnderKonstruksjonView,
-    },
-    { path: "/for-komponenter/varsling", component: UnderKonstruksjonView },
+    // { path: "/nabladet", component: NablaNabladet },
+    // { path: "/skraattcast", component: NablaPodcast },
+    // { path: "/kjelleren", component: NablaCellar },
+    // { path: "/kontakt-og-varsling", component: NablaContact },
 
-    // For bedrifter
-    { path: "/for-bedrifter", component: UnderKonstruksjonView },
-    { path: "/for-bedrifter/bedriftsbesok", component: UnderKonstruksjonView },
-    {
-        path: "/for-bedrifter/bedriftspresentasjon",
-        component: UnderKonstruksjonView,
-    },
-    { path: "/for-bedrifter/eureka", component: UnderKonstruksjonView },
-    { path: "/for-bedrifter/kurs", component: UnderKonstruksjonView },
-    {
-        path: "/for-bedrifter/screeningintervju",
-        component: UnderKonstruksjonView,
-    },
-    {
-        path: "/for-bedrifter/stillingsannonse",
-        component: UnderKonstruksjonView,
-    },
+    // Calendar (filtering could be nice)
+    // { path: "/kalender", component: NablaCalendar },
+    // { path: "/kalender?arr", component: NablaCalendar },
+    // { path: "/kalender?bedpres", component: NablaCalendar },
+    // { path: "/kalender?kontor", component: NablaCalendar },
+
+    // Career
+    // { path: "/karriere", component: NablaCareer },
+    // { path: "/for-bedrifter", component: ForCompanies },
+    // { path: "/jobb", component: NablaJobs },
+    // { path: "/eureka", component: AboutEureka },
+
+    // Wiki
+    // { path: "/wiki", component: NablaWiki },
+    // { path: "/wiki/historie", component: NablaWiki },
+    // { path: "/wiki/fag", component: NablaWiki },
+
+    // Logged in utilities
+    { path: "/profil", component: ProfilView },
+    // { path: "/refusjon", component: NablaRefund },
+    // { path: "/user-admin", component: UnderKonstruksjonView },
+    // { path: "/dashboard", component: UnderKonstruksjonView },
 
     // Annet
-    // { path: "/ny-student", component: NyStudentView },
-    { path: "/joulekalender", component: UnderKonstruksjonView },
-    { path: "/profil", component: ProfilView },
-    // { path: "/sok", component: UnderKonstruksjonView },
-    // { path: "/admin", component: UnderKonstruksjonView },
-
-    // Diverse
-    // { path: "/kontortider", component: UnderKonstruksjonView },
-    // { path: "/nabladet", component: UnderKonstruksjonView },
-    // { path: "/SKE", component: UnderKonstruksjonView },
-    // { path: "/skraattcast", component: UnderKonstruksjonView },
-    // { path: "/soknad", component: UnderKonstruksjonView },
-    // { path: "/tilbakemeldinger", component: UnderKonstruksjonView },
-
+    // { path: "/login", component: NablaLogin },
     { path: "/:catchAll(.*)*", component: PageNotFoundView, props: true },
+    // { path: "/sok", component: UnderKonstruksjonView },
+    // { path: "/ny-student", component: NyStudentView },
+    // { path: "/joulekalender", component: UnderKonstruksjonView },
+    // { path: "/soknad", component: UnderKonstruksjonView },
 ]
-
 // Create a router instance
 const router = createRouter({
     history: createWebHistory(), // Uses HTML5 History API
