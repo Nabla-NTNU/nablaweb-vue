@@ -6,27 +6,27 @@
             "src": "/favicon-16.ico",
             "sizes": "16x16",
             "type": "image/ico"
-        }
+        },
         {
             "src": "/favicon-32.ico",
             "sizes": "32x32",
             "type": "image/ico"
-        }
+        },
         {
             "src": "/favicon-180.ico",
             "sizes": "180x180",
             "type": "image/ico"
-        }
+        },
         {
             "src": "/favicon-192.ico",
             "sizes": "192x192",
             "type": "image/ico"
-        }
+        },
         {
             "src": "/favicon-228.ico",
             "sizes": "228x228",
             "type": "image/ico"
-        }
+        },
         {
             "src": "/favicon-512.ico",
             "sizes": "512x512",

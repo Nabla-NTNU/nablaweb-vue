@@ -4,9 +4,9 @@
     import { useAuth } from "@/composables/useAuth" // fetch username and status immediatly
     useAuth()
 
-    import Header from "@/components/nabla-header.vue"
-    import MainContent from "@/components/MainContent.vue"
-    import Footer from "@/components/NablaFooter.vue"
+    import Header from "@/components/main/NablaHeader.vue"
+    import MainContent from "@/components/main/MainContent.vue"
+    import Footer from "@/components/main/NablaFooter.vue"
 </script>
 
 <template>

@@ -134,7 +134,7 @@
                         {{ t("adminsida-for") }} {{ group.name }}
                     </h1>
                     <RouterLink
-                        :to="`/for-komponenter/komiteer/${groupID}`"
+                        :to="`/undergrupper/${groupID}`"
                         class="m-auto items-center text-nowrap rounded-lg bg-primary px-4 py-2 text-center font-semibold text-white transition-all duration-300"
                         style="white-space: pre-line"
                     >
@@ -206,7 +206,7 @@
 
                 <!-- Incredibly ugly tbh - there's definetly a neater way of doing this -->
                 <RouterLink
-                    :to="`/for-komponenter/komiteer/${groupID}`"
+                    :to="`/undergrupper/${groupID}`"
                     class="rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
                 >
                     &lt;-

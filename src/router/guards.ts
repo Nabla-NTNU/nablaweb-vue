@@ -1,7 +1,7 @@
 import type { RouteLocationNormalized, NavigationGuardNext } from "vue-router"
 
 import { useAuth } from "@/composables/useAuth"
-const { username, isUserAdmin } = useAuth()
+const { username, isAdmin } = useAuth()
 
 import { doesGroupExist } from "@/composables/useNablaGroup"
 import { isUserGroupLeader } from "@/composables/useNablaGroup"
@@ -29,8 +29,7 @@ export async function groupAdminPageGuard(
     next: NavigationGuardNext,
 ) {
     // Allow access to admins (also refreshes username)
-    const userIsAdmin = await isUserAdmin()
-    if (userIsAdmin) {
+    if (isAdmin.value) {
         return next(true)
     }
 

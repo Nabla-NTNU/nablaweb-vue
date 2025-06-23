@@ -1,12 +1,12 @@
 <script setup lang="ts">
     import { useI18n } from "vue-i18n"
+    import ThemeToggle from "../depricated/ThemeToggle.vue"
+    import LangToggle from "../depricated/LangToggle.vue"
     const { t } = useI18n()
 </script>
 
 <template>
-    <footer
-        class="mx-6 bg-primary p-6 text-gray-25 transition duration-300 ease-in-out"
-    >
+    <footer class="mx-6 p-6 text-gray-25 transition duration-300 ease-in-out">
         <div
             class="mx-auto w-full max-w-240 items-start justify-between text-center m:flex m:text-left"
         >
@@ -90,6 +90,11 @@
                         </svg>
                     </a>
                 </div>
+            </div>
+            <div class="m-3 font-lato text-m">
+                <h4 class="mb-4 text-l">;))</h4>
+                <ThemeToggle />
+                <LangToggle />
             </div>
         </div>
     </footer>

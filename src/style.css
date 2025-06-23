@@ -1,4 +1,4 @@
-@import "./assets/global.css"; /* Import CSS variables */
+@import "./assets/colors.css"; /* Import CSS variables */
 
 @tailwind base;
 @tailwind components;

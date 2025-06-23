@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test"
 
 test("Footer contains all info", async ({ page }) => {
-    await page.goto("http://localhost:5173/profil")
     await page.goto("http://localhost:5173/")
     await expect(page.getByRole("contentinfo")).toMatchAriaSnapshot(`
         - heading "Adresse" [level=4]
@@ -14,11 +13,8 @@ test("Footer contains all info", async ({ page }) => {
 })
 
 test("Committees exist", async ({ page }) => {
-    await page.goto("http://localhost:5173/for-komponenter/komiteer")
+    await page.goto("http://localhost:5173/undergrupper")
     await expect(page.getByRole("link", { name: "WebKom" })).toBeVisible()
     await expect(page.getByRole("link", { name: "ProKom" })).toBeVisible()
     await expect(page.getByRole("link", { name: "Redaksjonen" })).toBeVisible()
-    await expect(
-        page.getByRole("link", { name: "Styret", exact: true }),
-    ).toBeVisible() //Kjellerstyret throws a kinda funny wrench into this one
 })

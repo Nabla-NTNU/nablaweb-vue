@@ -24,7 +24,7 @@
 </script>
 
 <template>
-    <div class="flex flex-col items-center space-y-4 p-4">
+    <div class="flex flex-col items-center">
         <!-- Toggle Classic/Modern Button -->
         <button
             v-if="chosenStyle == StyleTheme.Classic"
