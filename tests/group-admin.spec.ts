@@ -11,7 +11,7 @@ test("Groups are editable by an admin", async ({ page }) => {
     await page.locator("[type=submit]").click()
     await expect(page.getByRole("button", { name: "Sign Out" })).toBeVisible()
     // Enter admin panel of a totally random group anyone could've chosen
-    await page.goto("http://localhost:5173/for-komponenter/komiteer/webkom")
+    await page.goto("http://localhost:5173/undergrupper/webkom")
     await expect(
         page.getByRole("link", { name: "Hemmelige Saker (Adminpanel)" }),
     ).toBeVisible()
@@ -31,7 +31,7 @@ test("Groups are editable by an admin", async ({ page }) => {
         await expect(page.getByText("Waaaa", { exact: true })).toBeVisible()
     }
     // // Check if saved about text is actually saved
-    await page.goto("http://localhost:5173/for-komponenter/komiteer/webkom")
+    await page.goto("http://localhost:5173/undergrupper/webkom")
     await expect(page.getByRole("link", { name: "Adminpanel" })).toBeVisible() // wait until loaded
     await expect(page.getByText("Waaaa", { exact: true })).toBeVisible()
 })

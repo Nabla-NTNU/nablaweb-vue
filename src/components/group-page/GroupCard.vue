@@ -12,10 +12,7 @@
 
 <template>
     <div style="padding: 20pt">
-        <RouterLink
-            v-if="props.id"
-            :to="`/for-komponenter/komiteer/${props.id}`"
-        >
+        <RouterLink v-if="props.id" :to="`/undergrupper/${props.id}`">
             <div class="text-center">
                 <img
                     :src="image.href"

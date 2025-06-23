@@ -56,7 +56,7 @@
                         </h1>
                         <RouterLink
                             v-if="userIsAdmin"
-                            :to="`/for-komponenter/komiteer/${groupID}/admin`"
+                            :to="`/undergrupper/${groupID}/admin`"
                             class="rounded-lg bg-primary px-4 py-2 text-center font-semibold text-white transition-all duration-300"
                             style="white-space: pre-line"
                         >
@@ -114,7 +114,7 @@
                     <li v-for="groupListed in groups" :key="groupListed.id">
                         <RouterLink
                             v-if="groupListed.id"
-                            :to="`/for-komponenter/komiteer/${groupListed.id}`"
+                            :to="`/undergrupper/${groupListed.id}`"
                         >
                             {{ groupListed.name }}
                         </RouterLink>
