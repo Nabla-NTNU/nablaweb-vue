@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { defaultGroupLogo } from "@/lib/defaultImages.ts"
+    import { defaultGroupLogo } from "@/lib/defaultImages"
 
     const props = defineProps<{
         id: string
