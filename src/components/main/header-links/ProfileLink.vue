@@ -90,6 +90,7 @@
 
                 <!-- Those who have the right to request funding should see it here -->
                 <router-link
+                    v-if="isAdmin == true"
                     to="/refusjon"
                     class="hover:bg-primary-green-dark mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-green px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-green-light hover:text-secondary-light"
                 >

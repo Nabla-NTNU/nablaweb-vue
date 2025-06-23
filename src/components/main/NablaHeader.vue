@@ -53,27 +53,27 @@
             dropdownItems: [
                 {
                     text: "styret",
-                    link: "/om/styret",
+                    link: "/styret",
                 },
                 {
                     text: "undergrupper",
-                    link: "/om/grupper",
+                    link: "/undergrupper",
                 },
                 {
                     text: "nabladet",
-                    link: "/om/nabladet",
+                    link: "/nabladet",
                 },
                 {
                     text: "skråttcast",
-                    link: "/om/skråttcast",
+                    link: "/skraattcast",
                 },
                 {
                     text: "kjelleren",
-                    link: "/om/kjelleren",
+                    link: "/kjelleren",
                 },
                 {
                     text: "kontakt",
-                    link: "/om/kontakt-og-varsling",
+                    link: "/kontakt-og-varsling",
                 },
             ],
         },
@@ -107,11 +107,25 @@
                     text: "jobb",
                     link: "/jobb",
                 },
+                {
+                    text: "eureka",
+                    link: "/eureka",
+                },
             ],
         },
         {
             text: "wiki",
             link: "/wiki",
+            dropdownItems: [
+                {
+                    text: "historie",
+                    link: "/wiki/historie",
+                },
+                {
+                    text: "fag",
+                    link: "/fag",
+                },
+            ],
         },
     ]
 
@@ -138,11 +152,13 @@
             </div>
 
             <!-- Logo -->
-            <router-link class="h-header w-header content-center" to="/">
-                <NablaLogo
-                    class="h-4/5 w-4/5 fill-secondary transition-all duration-200 hover:fill-secondary-dark"
-                />
-            </router-link>
+            <div class="h-header w-screen content-center s:w-header">
+                <router-link class="h-header w-header" to="/">
+                    <NablaLogo
+                        class="m-auto h-4/5 w-4/5 fill-secondary transition-all duration-200 hover:fill-secondary-dark"
+                    />
+                </router-link>
+            </div>
 
             <!-- Links in header: desktop -->
             <nav class="hidden flex-row s:flex">
@@ -184,21 +200,23 @@
         >
             <div v-for="item in headerItems" :key="item.link" class="">
                 <div
-                    class="w-fill h-fill my-[1px] flex bg-primary py-2 transition duration-300 hover:bg-primary-dark hover:text-secondary"
+                    class="w-fill h-fill my-[1px] flex bg-primary transition duration-300 hover:bg-primary-dark hover:text-secondary"
                 >
                     <router-link
-                        to="/for-komponenter/komiteer"
-                        class="h-full w-full"
+                        :to="item.link"
+                        class="h-full w-full py-2"
                         @click="mobileNavVisible = false"
                     >
                         {{ t(item.text) }}
                     </router-link>
                 </div>
             </div>
-            <div class="mt-[1px] w-full bg-primary py-2">
+            <div
+                class="w-fill h-fill my-[1px] flex bg-primary py-2 transition duration-300 hover:bg-primary-dark hover:text-secondary"
+            >
                 <router-link
                     to="/for-komponenter/komiteer"
-                    class="w-full transition duration-300 ease-in-out hover:bg-secondary"
+                    class="h-full w-full"
                     @click="mobileNavVisible = false"
                 >
                     Log in
@@ -229,7 +247,7 @@ nb:
 en:
     om-nabla: About Nabla
     kalender: Calendar
-    karriere: Carreer
+    karriere: Career
     for-bedrifter: For Businesses
     styret: The Council
     undergrupper: Groups
