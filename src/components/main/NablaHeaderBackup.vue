@@ -267,7 +267,7 @@
         </div>
         <div
             id="dropdown-box"
-            class="opacity-0 invisible absolute top-full z-1 w-full transition-all duration-300 ease-in-out"
+            class="z-1 invisible absolute top-full w-full opacity-0 transition-all duration-300 ease-in-out"
         >
             <div
                 class="relative grid grid-cols-2 gap-4 rounded-[8px] bg-neutralish p-6 font-poppins text-m"

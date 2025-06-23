@@ -21,6 +21,7 @@
             v-model="username"
             type="text"
             name="username"
+            autocomplete="username"
             class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
             :placeholder="t('NTNU-brukernavn')"
             required
@@ -30,6 +31,7 @@
             v-model="password"
             type="password"
             name="password"
+            autocomplete="current-password"
             class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
             :placeholder="t('passord')"
             required
@@ -39,7 +41,6 @@
             class="m-4 rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
             type="submit"
             name="log in"
-            @click="handleLogin"
         >
             {{ t("logg-in") }}
         </button>

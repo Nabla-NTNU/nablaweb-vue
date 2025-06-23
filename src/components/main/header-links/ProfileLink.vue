@@ -2,20 +2,16 @@
     import LoginCard from "@/components/general/LoginCard.vue"
 
     import { ref } from "vue"
-    import { useRouter } from "vue-router"
-    const router = useRouter()
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
 
     import { useAuth } from "@/composables/useAuth"
-    const { isAuthenticated, signOut, profilePicture } = useAuth()
-
+    const { isAuthenticated, signOut, profilePicture, isAdmin } = useAuth()
     const dropdownIsVisible = ref(false)
 
     async function handleSignOut() {
         dropdownIsVisible.value = false
         await signOut()
-        router.push({ path: "/" })
     }
 </script>
 
@@ -38,22 +34,20 @@
                 class="flex h-4/5 w-4/5 overflow-hidden rounded-full border-2 border-white bg-primary-dark fill-white transition duration-200 hover:border-primary-light hover:fill-secondary"
                 @click="() => (dropdownIsVisible = !dropdownIsVisible)"
             >
-                <transition>
-                    <svg
-                        v-if="!isAuthenticated"
-                        class="h-header w-header content-center align-middle"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            fill-rule="evenodd"
-                            d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                    <img v-else :src="profilePicture?.href" />
-                </transition>
+                <svg
+                    v-if="!isAuthenticated"
+                    class="h-header w-header content-center align-middle"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+                <img v-else :src="profilePicture?.href" />
             </div>
         </div>
 
@@ -104,6 +98,7 @@
 
                 <!-- User admin. Every other kind of admin should be *on their respective pages* -->
                 <router-link
+                    v-if="isAdmin == true"
                     to="/admin"
                     class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-warning px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-warning-light hover:bg-warning-dark hover:text-secondary-light"
                 >
@@ -112,6 +107,7 @@
 
                 <!-- Would be nice to have a *privacy-preserving* dashboard to see health of Hemmer, supabase, etc -->
                 <router-link
+                    v-if="isAdmin == true"
                     to="/dashboard"
                     class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
                 >
@@ -122,11 +118,7 @@
                 <!-- And an easy-to-reach logout button -->
                 <button
                     class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-red px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-red-light hover:bg-red-dark hover:text-secondary-light"
-                    :onclick="
-                        async () => {
-                            handleSignOut()
-                        }
-                    "
+                    @click="handleSignOut"
                 >
                     {{ t("logg-ut") }}
                 </button>

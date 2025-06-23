@@ -132,8 +132,7 @@
         >
             <!-- Tips & tricks -->
             <div
-                v-if="!mobileNavVisible"
-                class="absolute -bottom-6 left-14 flex rounded-ee-xl rounded-es-xl rounded-se-xl border-2 border-primary-400 bg-primary-800 px-2 py-1 font-zilla text-s font-semibold tracking-[0.5px]"
+                class="absolute -bottom-6 left-14 hidden rounded-ee-xl rounded-es-xl rounded-se-xl border-2 border-primary-400 bg-primary-800 px-2 py-1 font-zilla text-s font-semibold tracking-[0.5px] s:flex"
             >
                 {{ currentQuote }}
             </div>
@@ -146,7 +145,7 @@
             </router-link>
 
             <!-- Links in header: desktop -->
-            <nav class="hidden flex-row m:flex">
+            <nav class="hidden flex-row s:flex">
                 <div v-for="item in headerItems" :key="item.link" class="">
                     <NavigationLink
                         :link-text="t(item.text)"
@@ -156,34 +155,57 @@
                                 return { text: t(item.text), link: item.link }
                             })
                         "
-                        class="m:flex"
+                        class="s:flex"
                     />
                 </div>
                 <NablaProfileLink class="h-header w-header" />
             </nav>
-
-            <!-- Shitty mobile menu to begin process -->
-            <nav
-                v-if="mobileNavVisible"
-                class="flex flex-col space-y-4 bg-primary pb-4 m:hidden"
+            <!-- Toggle for stuff -->
+            <button
+                class="hover:text-secondary s:hidden"
+                @click="mobileNavVisible = !mobileNavVisible"
             >
-                <router-link
-                    to="/for-komponenter/komiteer"
-                    class="m-4 block rounded-xl p-4 transition duration-300 ease-in-out hover:bg-secondary"
-                    @click="mobileNavVisible = false"
-                >
-                    Undergrupper
-                </router-link>
-                <router-link
-                    to="/profil"
-                    class="m-4 block rounded-xl p-4 transition duration-300 ease-in-out hover:bg-secondary"
-                    @click="mobileNavVisible = false"
-                >
-                    Profil
-                </router-link>
-            </nav>
+                nav
+            </button>
         </div>
     </header>
+    <!-- Shitty mobile menu to begin process -->
+    <Transition
+        enter-from-class="max-h-[0px]"
+        enter-to-class="max-h-[1000px]"
+        enter-active-class="overflow-hidden transition-all duration-300 ease-in-out"
+        leave-from-class="max-h-[1000px]"
+        leave-to-class="max-h-[0px]"
+        leave-active-class="overflow-hidden transition-all duration-300 ease-in-out"
+    >
+        <nav
+            v-show="mobileNavVisible"
+            class="flex w-full flex-col bg-primary-dark pt-[1px] text-center font-poppins text-title-6 text-gray-25 s:hidden"
+        >
+            <div v-for="item in headerItems" :key="item.link" class="">
+                <div
+                    class="w-fill h-fill my-[1px] flex bg-primary py-2 transition duration-300 hover:bg-primary-dark hover:text-secondary"
+                >
+                    <router-link
+                        to="/for-komponenter/komiteer"
+                        class="h-full w-full"
+                        @click="mobileNavVisible = false"
+                    >
+                        {{ t(item.text) }}
+                    </router-link>
+                </div>
+            </div>
+            <div class="mt-[1px] w-full bg-primary py-2">
+                <router-link
+                    to="/for-komponenter/komiteer"
+                    class="w-full transition duration-300 ease-in-out hover:bg-secondary"
+                    @click="mobileNavVisible = false"
+                >
+                    Log in
+                </router-link>
+            </div>
+        </nav>
+    </Transition>
 </template>
 
 <i18n lang="yaml">
