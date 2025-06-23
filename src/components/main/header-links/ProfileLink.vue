@@ -88,6 +88,13 @@
                     {{ t("profil") }}
                 </router-link>
 
+                <router-link
+                    to="/golf"
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                >
+                    {{ t("kodegolf") }}
+                </router-link>
+
                 <!-- Those who have the right to request funding should see it here -->
                 <router-link
                     v-if="isAdmin == true"
@@ -110,7 +117,7 @@
                 <router-link
                     v-if="isAdmin == true"
                     to="/dashboard"
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-warning px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-warning-light hover:bg-warning-dark hover:text-secondary-light"
                 >
                     Dashboard
                 </router-link>
@@ -131,11 +138,13 @@
 <i18n lang="yaml">
 nb:
     profil: "Profil"
+    kodegolf: "Kodegolf"
     refusjon: "Refusjon"
     admin: "Adminpanel"
     logg-ut: "Logg ut"
 en:
     profil: "Profile"
+    kodegolf: "Code golf"
     refusjon: "Reimbursements"
     admin: "User Admin"
     logg-ut: "Sign out"

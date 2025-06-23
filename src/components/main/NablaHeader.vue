@@ -215,11 +215,11 @@
                 class="w-fill h-fill my-[1px] flex bg-primary py-2 transition duration-300 hover:bg-primary-dark hover:text-secondary"
             >
                 <router-link
-                    to="/for-komponenter/komiteer"
+                    to="/login"
                     class="h-full w-full"
                     @click="mobileNavVisible = false"
                 >
-                    Log in
+                    {{ t("logg-inn") }}
                 </router-link>
             </div>
         </nav>
@@ -242,7 +242,11 @@ nb:
     bedpres: BedPres
     regelmessig: Regelmessige
     jobb: Jobbannonser
+    eureka: Eureka
     wiki: Wiki
+    historie: Historie
+    fag: Emner
+    logg-inn: "Logg inn"
 
 en:
     om-nabla: About Nabla
@@ -259,5 +263,9 @@ en:
     bedpres: Business presentations
     regelmessig: Regular
     jobb: Jobs
+    eureka: Eureka
     wiki: Wiki
+    historie: History
+    fag: Subjects
+    logg-inn: "Log in"
 </i18n>
