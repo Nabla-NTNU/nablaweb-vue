@@ -4,7 +4,7 @@
 
     const { t } = useI18n()
 
-    const quotes = ["union", "takeon", "limit", "null", "waveform"]
+    const quotes = ["union", "takeon", "limit", "null", "waveform", "set"]
 
     const quote = ref()
 
@@ -71,12 +71,15 @@ nb:
     limit: "Det fins et epsilon større enn null som peker denne sida mot en delta som går mot null."
     "null": "Segmentation fault (core dumped)"
     waveform: "Nettsida kollapset da du observerte et sted nesstedet ikke var."
+    set: "En universal mengde av alle mengder som ikke inneholder seg selv inneholder ikke denne siden."
     message: "Stemmer dette ittj? Gjerne gi WebKom en beskjed!"
+
 en:
     union: "The union of our pages and the URL leads to an empty set."
     takeon: "Your browser used technology so advanced the bits travelled back in time. The page doesn't exist yet!"
     limit: "There exists an epsilon greater than zero that goes towards a delta pointing this page towards zero"
     "null": "Segmentation fault (core dumped)"
     waveform: "The website collapsed upon your observation of a place it could not be."
+    set: "A universal set cannot contain this page, as it does not exist."
     message: "Is this a mistake? Please let WebKom know!"
 </i18n>
