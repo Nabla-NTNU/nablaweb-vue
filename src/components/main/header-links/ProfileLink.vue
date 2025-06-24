@@ -78,19 +78,19 @@
         >
             <div
                 v-if="dropdownIsVisible"
-                class="absolute right-[0%] top-[80%] -z-10 flex origin-top-right flex-col content-center bg-primary p-4 text-center text-fg"
+                class="align-right absolute top-[100%] -z-10 flex translate-x-[-50%] flex-col content-center rounded-b-[30px] bg-primary px-2 pb-2 text-center text-fg"
                 @mouseleave="dropdownIsVisible = false"
             >
                 <router-link
                     to="/profil"
-                    class="my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                    class="whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
                 >
                     {{ t("profil") }}
                 </router-link>
 
                 <router-link
                     to="/golf"
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                    class="whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
                 >
                     {{ t("kodegolf") }}
                 </router-link>
@@ -99,7 +99,7 @@
                 <router-link
                     v-if="isAdmin == true"
                     to="/refusjon"
-                    class="hover:bg-primary-green-dark mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-green px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-green-light hover:text-secondary-light"
+                    class="whitespace-nowrap rounded-full border-2 border-transparent px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-green-light hover:bg-green-dark hover:text-secondary-light"
                 >
                     {{ t("refusjon") }}
                 </router-link>
@@ -108,7 +108,7 @@
                 <router-link
                     v-if="isAdmin == true"
                     to="/admin"
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-warning px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-warning-light hover:bg-warning-dark hover:text-secondary-light"
+                    class="whitespace-nowrap rounded-full border-2 border-transparent px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-warning-light hover:bg-warning-dark hover:text-secondary-light"
                 >
                     {{ t("admin") }}
                 </router-link>
@@ -117,15 +117,17 @@
                 <router-link
                     v-if="isAdmin == true"
                     to="/dashboard"
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-warning px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-warning-light hover:bg-warning-dark hover:text-secondary-light"
+                    class="whitespace-nowrap rounded-full border-2 border-transparent px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-warning-light hover:bg-warning-dark hover:text-secondary-light"
                 >
                     Dashboard
                 </router-link>
                 <!-- Some others to consider: We need a place to put the fadderuke control panel, and the votes. This could be a good spot! -->
 
+                <hr class="bg-primary-darker my-2" />
+
                 <!-- And an easy-to-reach logout button -->
                 <button
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-red px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-red-light hover:bg-red-dark hover:text-secondary-light"
+                    class="whitespace-nowrap rounded-full border-2 border-transparent bg-red px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-red-light hover:bg-red-dark hover:text-secondary-light"
                     @click="handleSignOut"
                 >
                     {{ t("logg-ut") }}
