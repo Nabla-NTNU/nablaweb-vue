@@ -36,7 +36,7 @@
             >
                 <svg
                     v-if="!isAuthenticated"
-                    class="h-header w-header content-center align-middle"
+                    class="h-[65px]"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -78,12 +78,12 @@
         >
             <div
                 v-if="dropdownIsVisible"
-                class="absolute right-[0%] top-[80%] -z-10 flex origin-top-right flex-col content-center p-4 text-center text-fg"
+                class="absolute right-[0%] top-[80%] -z-10 flex origin-top-right flex-col content-center bg-primary p-4 text-center text-fg"
                 @mouseleave="dropdownIsVisible = false"
             >
                 <router-link
                     to="/profil"
-                    class="mx-2 my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+                    class="my-2 whitespace-nowrap rounded-full border-2 border-transparent bg-primary px-4 py-2 text-white shadow-[20px] transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
                 >
                     {{ t("profil") }}
                 </router-link>

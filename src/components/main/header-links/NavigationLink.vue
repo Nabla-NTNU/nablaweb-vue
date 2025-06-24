@@ -10,9 +10,9 @@
 </script>
 
 <template>
-    <div class="group relative inline-block content-center text-center">
+    <div class="group relative h-header items-center">
         <router-link
-            class="my-2 rounded-full border-2 border-transparent px-4 py-2 transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
+            class="box h-4/5 content-center rounded-full border-2 border-transparent px-4 transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
             :to="linkTo"
         >
             {{ linkText }}
