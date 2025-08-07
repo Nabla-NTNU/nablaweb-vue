@@ -201,6 +201,8 @@
                 <ProfileLink
                     class="h-header w-header"
                     :is-focused="focusedLink == '/profile'"
+                    @mouseenter="focusedLink = '/profile'"
+                    @mouseleave="focusedLink = null"
                 />
             </nav>
             <!-- Toggle for stuff -->

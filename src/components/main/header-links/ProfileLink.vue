@@ -1,42 +1,29 @@
 <script setup lang="ts">
-    import LoginCard from "@/components/general/LoginCard.vue"
+    // import LoginCard from "@/components/general/LoginCard.vue"
 
-    import { ref } from "vue"
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
 
     import { useAuth } from "@/composables/useAuth"
     const { isAuthenticated, signOut, profilePicture, isAdmin } = useAuth()
-    const dropdownIsVisible = ref(false)
 
     defineProps<{
         isFocused: boolean
     }>()
 
     async function handleSignOut() {
-        dropdownIsVisible.value = false
         await signOut()
     }
 </script>
 
 <template>
-    <div
-        class="relative mx-2"
-        @mouseenter="
-            () => {
-                if (isAuthenticated && !dropdownIsVisible) {
-                    dropdownIsVisible = true
-                }
-            }
-        "
-    >
-        <div
-            class="mx-2 h-header w-header content-center"
-            @click="dropdownIsVisible = true"
+    <div class="relative mx-2">
+        <router-link
+            class="mx-2 block h-header w-header content-center"
+            :to="isAuthenticated ? '/profil' : '/profil'"
         >
             <div
                 class="flex h-4/5 w-4/5 overflow-hidden rounded-full border-2 border-white bg-primary-dark fill-white transition duration-200 hover:border-primary-light hover:fill-secondary"
-                @click="() => (dropdownIsVisible = !dropdownIsVisible)"
             >
                 <svg
                     v-if="!isAuthenticated"
@@ -53,10 +40,10 @@
                 </svg>
                 <img v-else :src="profilePicture?.href" />
             </div>
-        </div>
+        </router-link>
 
         <!-- Unauthenticated -->
-        <transition
+        <!-- <transition
             v-if="!isAuthenticated"
             enter-from-class="translate-y-[-120%]"
             leave-to-class="translate-y-[-120%]"
@@ -64,13 +51,12 @@
             leave-active-class="transition duration-300"
         >
             <div
-                v-if="dropdownIsVisible"
+                v-if="isFocused"
                 class="absolute right-4 top-20 -z-10 w-[512px] origin-top-right rounded-[10px] border-2 border-primary-light bg-neutralish p-4"
-                @mouseleave="dropdownIsVisible = false"
             >
                 <LoginCard class="w-full" />
             </div>
-        </transition>
+        </transition> -->
 
         <!-- User menu -->
         <transition
@@ -81,9 +67,8 @@
             leave-active-class="transition duration-300"
         >
             <div
-                v-if="dropdownIsVisible"
+                v-if="isFocused"
                 class="absolute -right-2 top-[100%] -z-10 flex flex-col content-center rounded-b-[30px] bg-primary px-2 pb-2 text-center text-fg"
-                @mouseleave="dropdownIsVisible = false"
             >
                 <router-link
                     to="/profil"
