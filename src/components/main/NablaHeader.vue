@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, onMounted } from "vue"
+    import { ref, onMounted, onBeforeUnmount } from "vue"
     import { useI18n } from "vue-i18n"
     import NablaLogo from "./header-links/ReturnLink.vue"
     import NavigationLink from "./header-links/NavigationLink.vue"
@@ -129,11 +129,32 @@
         },
     ]
 
+    // Keep track of link by the URL it sends to, as this is unique
+    const focusedLink = ref<string | null>(null)
     const currentQuote = ref("")
+    const isTouch = ref(false)
 
     onMounted(() => {
         const randomIndex = Math.floor(Math.random() * quotes.length)
         currentQuote.value = quotes[randomIndex]
+
+        // Logic to detect presses to close all dropdowns. AI-GENERATED
+        isTouch.value = window.matchMedia("(hover: none)").matches
+        const handleClickOutside = (e: MouseEvent) => {
+            if (!isTouch.value || !focusedLink.value) return
+
+            const target = e.target as HTMLElement
+            // Skip if click happened inside any dropdown or navigation
+            if (target.closest(".navigation-link")) return
+
+            // Otherwise, click was outside — reset
+            focusedLink.value = null
+        }
+
+        document.addEventListener("click", handleClickOutside)
+        onBeforeUnmount(() => {
+            document.removeEventListener("click", handleClickOutside)
+        })
     })
 </script>
 
@@ -160,10 +181,11 @@
                 </router-link>
             </div>
 
-            <!-- Links in header: desktop -->
+            <!-- Links in header-->
             <nav class="hidden flex-row s:flex">
-                <div v-for="item in headerItems" :key="item.link" class="">
+                <div v-for="item in headerItems" :key="item.link">
                     <NavigationLink
+                        class="s:flex"
                         :link-text="t(item.text)"
                         :link-to="item.link"
                         :dropdown-items="
@@ -171,10 +193,15 @@
                                 return { text: t(item.text), link: item.link }
                             })
                         "
-                        class="s:flex"
+                        :is-focused="focusedLink === item.link"
+                        @mouseenter="focusedLink = item.link"
+                        @mouseleave="focusedLink = null"
                     />
                 </div>
-                <ProfileLink class="h-header w-header" />
+                <ProfileLink
+                    class="h-header w-header"
+                    :is-focused="focusedLink == '/profile'"
+                />
             </nav>
             <!-- Toggle for stuff -->
             <button

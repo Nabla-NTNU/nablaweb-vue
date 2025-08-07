@@ -9,6 +9,10 @@
     const { isAuthenticated, signOut, profilePicture, isAdmin } = useAuth()
     const dropdownIsVisible = ref(false)
 
+    defineProps<{
+        isFocused: boolean
+    }>()
+
     async function handleSignOut() {
         dropdownIsVisible.value = false
         await signOut()
