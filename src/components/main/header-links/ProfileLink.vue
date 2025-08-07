@@ -17,7 +17,7 @@
 
 <template>
     <div
-        class="relative"
+        class="relative mx-2"
         @mouseenter="
             () => {
                 if (isAuthenticated && !dropdownIsVisible) {
@@ -78,7 +78,7 @@
         >
             <div
                 v-if="dropdownIsVisible"
-                class="align-right absolute top-[100%] -z-10 flex translate-x-[-50%] flex-col content-center rounded-b-[30px] bg-primary px-2 pb-2 text-center text-fg"
+                class="absolute -right-2 top-[100%] -z-10 flex flex-col content-center rounded-b-[30px] bg-primary px-2 pb-2 text-center text-fg"
                 @mouseleave="dropdownIsVisible = false"
             >
                 <router-link

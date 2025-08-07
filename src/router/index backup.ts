@@ -4,9 +4,9 @@ import HjemView from "@/views/NablaHome.vue"
 // import NyStudentView from "@/views/ny-student/NyStudent.vue"
 import ProfilView from "@/views/NablaProfile.vue"
 // import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
-import GroupPage from "@/views/about/groups/NablaGroup.vue"
-import GroupAdminPage from "@/views/about/groups/NablaGroupAdmin.vue"
-import GroupsPage from "@/views/about/groups/NablaGroups.vue"
+import GroupPage from "@/views/about/NablaGroup.vue"
+import GroupAdminPage from "@/views/about/NablaGroupAdmin.vue"
+import GroupsPage from "@/views/about/NablaGroups.vue"
 import UnderKonstruksjonView from "@/views/error/UnderKontruksjon.vue"
 import PageNotFoundView from "@/views/error/PageNotFound.vue"
 

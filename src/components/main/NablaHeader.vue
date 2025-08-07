@@ -3,7 +3,7 @@
     import { useI18n } from "vue-i18n"
     import NablaLogo from "./header-links/ReturnLink.vue"
     import NavigationLink from "./header-links/NavigationLink.vue"
-    import NablaProfileLink from "./header-links/ProfileLink.vue"
+    import ProfileLink from "./header-links/ProfileLink.vue"
     const { t } = useI18n()
 
     const mobileNavVisible = ref(false)
@@ -142,7 +142,7 @@
         class="top-0 h-max-header sticky z-10 h-header grid-rows-1 content-center font-poppins text-title-6 text-gray-25"
     >
         <div
-            class="flex flex-row items-center justify-between bg-primary pl-4 pr-6 transition duration-300 ease-in-out"
+            class="flex flex-row items-center justify-between bg-primary transition duration-300 ease-in-out"
         >
             <!-- Tips & tricks -->
             <div
@@ -152,7 +152,7 @@
             </div>
 
             <!-- Logo -->
-            <div class="h-header w-screen content-center s:w-header">
+            <div class="mx-4 h-header w-screen content-center s:w-header">
                 <router-link class="h-header w-header" to="/">
                     <NablaLogo
                         class="m-auto h-4/5 w-4/5 fill-secondary transition-all duration-200 hover:fill-secondary-dark"
@@ -174,7 +174,7 @@
                         class="s:flex"
                     />
                 </div>
-                <NablaProfileLink class="h-header w-header" />
+                <ProfileLink class="h-header w-header" />
             </nav>
             <!-- Toggle for stuff -->
             <button

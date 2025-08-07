@@ -620,4 +620,7 @@ export default {
         },
         plugins: [typography, forms, aspectRatio],
     },
+    future: {
+        hoverOnlyWhenSupported: true,
+    },
 }
