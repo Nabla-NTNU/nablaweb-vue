@@ -17,9 +17,9 @@
 </script>
 
 <template>
-    <div class="relative mx-2">
+    <div class="relative">
         <router-link
-            class="mx-2 block h-header w-header content-center"
+            class="block h-header w-header content-center align-middle"
             :to="isAuthenticated ? '/profil' : '/profil'"
         >
             <div
@@ -42,7 +42,7 @@
             </div>
         </router-link>
 
-        <!-- Unauthenticated -->
+        <!-- Show login card when unauthenticated -->
         <!-- <transition
             v-if="!isAuthenticated"
             enter-from-class="translate-y-[-120%]"
