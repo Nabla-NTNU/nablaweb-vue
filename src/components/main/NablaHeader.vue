@@ -134,7 +134,8 @@
     />
 </template>
 
-<i18n lang="yaml">
+<!-- Setting a global scope for desktop and mobile headers to see these -->
+<i18n lang="yaml" global="true">
 nb:
     om-nabla: Om Nabla
     kalender: Kalender

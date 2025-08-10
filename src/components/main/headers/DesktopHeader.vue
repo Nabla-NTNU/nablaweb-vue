@@ -4,7 +4,9 @@
     import NablaLogo from "@/components/main/header-links/ReturnLink.vue"
     import NavigationLink from "@/components/main/header-links/NavigationLink.vue"
     import ProfileLink from "@/components/main/header-links/ProfileLink.vue"
-    const { t } = useI18n()
+
+    // Global scope to translate from NablaHeader.vue
+    const { t } = useI18n({ useScope: "global" })
 
     type HeaderItem = {
         text: string
@@ -100,47 +102,3 @@
         </div>
     </header>
 </template>
-
-<i18n lang="yaml">
-nb:
-    om-nabla: Om Nabla
-    kalender: Kalender
-    karriere: Karriere
-    for-bedrifter: For Bedrifter
-    styret: Styret
-    undergrupper: Undergrupper
-    nabladet: Nabladet
-    skråttcast: Skråttcast
-    kjelleren: Kjelleren
-    kontakt: Kontakt og varsling
-    arrangement: Arrangement
-    bedpres: BedPres
-    regelmessig: Regelmessige
-    jobb: Jobbannonser
-    eureka: Eureka
-    wiki: Wiki
-    historie: Historie
-    fag: Emner
-    logg-inn: "Logg inn"
-
-en:
-    om-nabla: About Nabla
-    kalender: Calendar
-    karriere: Career
-    for-bedrifter: For Businesses
-    styret: The Council
-    undergrupper: Groups
-    nabladet: Nabladet
-    skråttcast: Skråttcast
-    kjelleren: The Cellar
-    kontakt: Contact
-    arrangement: Events
-    bedpres: Business presentations
-    regelmessig: Regular
-    jobb: Jobs
-    eureka: Eureka
-    wiki: Wiki
-    historie: History
-    fag: Subjects
-    logg-inn: "Log in"
-</i18n>

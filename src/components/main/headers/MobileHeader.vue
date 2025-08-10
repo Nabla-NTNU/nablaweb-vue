@@ -3,7 +3,9 @@
     import { useI18n } from "vue-i18n"
     import NablaLogo from "@/components/main/header-links/ReturnLink.vue"
     import ProfileLink from "@/components/main/header-links/ProfileLink.vue"
-    const { t } = useI18n()
+
+    // Global scope to translate from NablaHeader.vue
+    const { t } = useI18n({ useScope: "global" })
 
     const mobileNavVisible = ref(false)
 
@@ -27,18 +29,13 @@
     onMounted(() => {
         // Logic to detect presses to close all dropdowns. AI-GENERATED
         const handleClickOutside = (e: MouseEvent) => {
-            if (!mobileNavVisible.value) {
-                console.log("a")
-                return
-            }
+            if (!mobileNavVisible.value) return
 
             const target = e.target as HTMLElement
             // Skip if click happened inside any dropdown or navigation
-            if (target.closest(".router-link") || target.closest("button")) {
-                console.log("b")
+            if (target.closest(".router-link") || target.closest("button"))
                 return
-            }
-            console.log("c")
+
             // Otherwise, click was outside — reset
             focusedLink.value = null
             mobileNavVisible.value = false
@@ -131,47 +128,3 @@
         </Transition>
     </header>
 </template>
-
-<i18n lang="yaml">
-nb:
-    om-nabla: Om Nabla
-    kalender: Kalender
-    karriere: Karriere
-    for-bedrifter: For Bedrifter
-    styret: Styret
-    undergrupper: Undergrupper
-    nabladet: Nabladet
-    skråttcast: Skråttcast
-    kjelleren: Kjelleren
-    kontakt: Kontakt og varsling
-    arrangement: Arrangement
-    bedpres: BedPres
-    regelmessig: Regelmessige
-    jobb: Jobbannonser
-    eureka: Eureka
-    wiki: Wiki
-    historie: Historie
-    fag: Emner
-    logg-inn: "Logg inn"
-
-en:
-    om-nabla: About Nabla
-    kalender: Calendar
-    karriere: Career
-    for-bedrifter: For Businesses
-    styret: The Council
-    undergrupper: Groups
-    nabladet: Nabladet
-    skråttcast: Skråttcast
-    kjelleren: The Cellar
-    kontakt: Contact
-    arrangement: Events
-    bedpres: Business presentations
-    regelmessig: Regular
-    jobb: Jobs
-    eureka: Eureka
-    wiki: Wiki
-    historie: History
-    fag: Subjects
-    logg-inn: "Log in"
-</i18n>
