@@ -68,7 +68,7 @@
         >
             <div
                 v-if="isFocused"
-                class="absolute -right-2 top-[100%] -z-10 flex flex-col content-center rounded-b-[30px] bg-primary px-2 pb-2 text-center text-fg"
+                class="absolute -right-[0%] top-[100%] -z-10 flex flex-col content-center rounded-b-[30px] bg-primary px-2 pb-2 text-center text-fg"
             >
                 <router-link
                     to="/profil"
