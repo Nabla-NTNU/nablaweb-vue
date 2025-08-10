@@ -4,7 +4,7 @@
 
     import { useAuth } from "@/composables/useAuth"
     import LoginCard from "@/components/general/LoginCard.vue"
-    import ThemeToggler from "@/components/depricated/ThemeToggler.vue"
+    import ThemeToggler from "@/components/depricated/ThemeToggle.vue"
 
     const { isAuthenticated, signOut } = useAuth()
 </script>
