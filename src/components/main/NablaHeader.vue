@@ -1,6 +1,8 @@
 <script setup lang="ts">
     import MobileHeader from "@/components/main/headers/MobileHeader.vue"
     import DesktopHeader from "@/components/main/headers/DesktopHeader.vue"
+    import { useI18n } from "vue-i18n"
+    useI18n()
 
     const quotes = [
         "Du kan nå endre fargetema i profilen din 🎨",
