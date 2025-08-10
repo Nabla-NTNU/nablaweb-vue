@@ -53,11 +53,11 @@
         class="top-0 h-max-header sticky z-10 h-header grid-rows-1 content-center font-poppins text-title-6 text-gray-25"
     >
         <div
-            class="reltive flex w-screen items-center transition duration-300 ease-in-out"
+            class="reltive flex h-header w-screen items-center transition duration-300 ease-in-out"
         >
             <!-- Toggle for stuff -->
             <button
-                class="mx-2 h-header w-header px-4 hover:text-secondary"
+                class="mx-2 h-4/5 w-header rounded-full px-4 duration-300 hover:bg-primary-dark hover:text-secondary"
                 @click="mobileNavVisible = !mobileNavVisible"
             >
                 <svg
