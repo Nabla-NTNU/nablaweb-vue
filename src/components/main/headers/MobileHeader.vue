@@ -23,20 +23,25 @@
 
     // Keep track of link by the URL it sends to, as this is unique
     const focusedLink = ref<string | null>(null)
-    const isTouch = ref(false)
 
     onMounted(() => {
         // Logic to detect presses to close all dropdowns. AI-GENERATED
-        isTouch.value = window.matchMedia("(hover: none)").matches
         const handleClickOutside = (e: MouseEvent) => {
-            if (!isTouch.value || !focusedLink.value) return
+            if (!mobileNavVisible.value) {
+                console.log("a")
+                return
+            }
 
             const target = e.target as HTMLElement
             // Skip if click happened inside any dropdown or navigation
-            if (target.closest(".navigation-link")) return
-
+            if (target.closest(".router-link") || target.closest("button")) {
+                console.log("b")
+                return
+            }
+            console.log("c")
             // Otherwise, click was outside — reset
             focusedLink.value = null
+            mobileNavVisible.value = false
         }
 
         document.addEventListener("click", handleClickOutside)
@@ -83,12 +88,7 @@
                 </router-link>
             </div>
             <div class="mx-2 w-header">
-                <ProfileLink
-                    class="h-header w-header"
-                    :is-focused="false"
-                    @mouseenter="focusedLink = '/profile'"
-                    @mouseleave="focusedLink = null"
-                />
+                <ProfileLink class="h-header w-header" :is-focused="false" />
             </div>
         </div>
         <Transition
