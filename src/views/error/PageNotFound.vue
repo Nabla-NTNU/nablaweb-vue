@@ -66,7 +66,7 @@
 
 <i18n lang="yaml">
 nb:
-    union: "Union av sidene våre og søknaden er et tomt sett."
+    union: "Snittet av sidene våre og søknaden er en tomt mengde."
     takeon: "Der var browseren din raskere enn lyset. Siden fins ikke enda, jo!"
     limit: "Det fins et epsilon større enn null som peker denne sida mot en delta som går mot null."
     "null": "Segmentation fault (core dumped)"
@@ -75,7 +75,7 @@ nb:
     message: "Stemmer dette ittj? Gjerne gi WebKom en beskjed!"
 
 en:
-    union: "The union of our pages and the URL leads to an empty set."
+    union: "The intersection of our pages and the URL leads to an empty set."
     takeon: "Your browser used technology so advanced the bits travelled back in time. The page doesn't exist yet!"
     limit: "There exists an epsilon greater than zero that goes towards a delta pointing this page towards zero"
     "null": "Segmentation fault (core dumped)"

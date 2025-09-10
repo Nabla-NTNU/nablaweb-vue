@@ -47,10 +47,6 @@
             link: "/om",
             dropdownItems: [
                 {
-                    text: "styret",
-                    link: "/styret",
-                },
-                {
                     text: "undergrupper",
                     link: "/undergrupper",
                 },
@@ -143,7 +139,6 @@ nb:
     kalender: Kalender
     karriere: Karriere
     for-bedrifter: For Bedrifter
-    styret: Styret
     undergrupper: Undergrupper
     nabladet: Nabladet
     skråttcast: Skråttcast
@@ -164,7 +159,6 @@ en:
     kalender: Calendar
     karriere: Career
     for-bedrifter: For Businesses
-    styret: The Council
     undergrupper: Groups
     nabladet: Nabladet
     skråttcast: Skråttcast

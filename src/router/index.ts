@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import HjemView from "@/views/NablaHome.vue"
 // import NyStudentView from "@/views/ny-student/NyStudent.vue"
 import ProfilView from "@/views/NablaProfile.vue"
+import NablaAboutPage from "@/views/about/NablaAboutPage.vue"
 // import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
 import GroupPage from "@/views/about/NablaGroup.vue"
 import GroupAdminPage from "@/views/about/NablaGroupAdmin.vue"
@@ -17,8 +18,7 @@ const routes = [
     { path: "/", component: HjemView },
 
     // Om Nabla
-    // { path: "/om", component: AboutNabla },
-    // { path: "/styret", component: NablaCouncil },
+    { path: "/om", component: NablaAboutPage },
     { path: "/undergrupper", component: GroupsPage },
     {
         path: "/undergrupper/:id",
