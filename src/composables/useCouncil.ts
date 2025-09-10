@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabaseClient"
 import { Ref, ref, onMounted } from "vue"
-import { NablaGroup, GroupKind } from "@/lib/types/frontend.types"
+import { NablaGroup, GroupKind, GroupMember } from "@/lib/types/frontend.types"
 
 function makeURL(str: string): URL | undefined {
     try {
