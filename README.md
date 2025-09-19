@@ -11,6 +11,31 @@ git clone https://github.com/Nabla-NTNU/nablaweb-vue.git
 ```
 
 Please do not commit to main, but please do send pull requests when they're ready.
+Everything below should be excecuted from the directory you just downloaded. Please enter it via
+
+```shell
+cd nablweb-vue
+```
+
+### Node
+
+Mase sure you have the node package manager `npm` on your system. On macOS the easiest is to install `node` from homebrew. Then, you can install the node packages we use by
+
+```shell
+npm install
+```
+
+When complete, a quick
+
+```shell
+npm run dev
+```
+
+will start up the server, and you'll see this beautiful thing we're working on on [http://localhost:5173/](http://localhost:5173/)!
+
+When seeding we add user `admin` with password `admin` who has all the privillages us other WebKom devs do, and user `user` with password `user` who has regular nablauser access.
+
+However - the website will look very empty. This is because the database isn't set up. For this end, we rely on `supabase`.
 
 ### Supabase
 
@@ -18,7 +43,7 @@ You'll need to install the [Supabase CLI](https://supabase.com/docs/guides/local
 
 Note that Docker is a dependancy for running the supabase server without interferring with your machine. As of May 2025, supabase requires Windows and MacOS users to have [Docker Desktop](https://docs.docker.com/desktop/) (yes, including the GUI unfortunately), available both as an app from the linked website, as well as a [homebrew cask](https://formulae.brew.sh/cask/docker). On linux you'll find Docker in your favourite package repository.
 
-Then you can run the following to start the database server:
+Then you can run the following to start the database server from within the `nablaweb-vue` directory:
 
 ```shell
 supabase start
@@ -43,24 +68,6 @@ supabase db reset
 ```shell
 supabase stop --no-backup
 ```
-
-### Node
-
-Mase sure you have the node package manager `npm` on your system. Then, you can install the node packages we use by
-
-```shell
-npm install
-```
-
-When complete, a quick
-
-```shell
-npm run dev
-```
-
-will start up the server, and you'll see this beautiful thing we're working on on [http://localhost:5173/](http://localhost:5173/)!
-
-When seeding we add user `admin` with password `admin` who has all the privillages us other WebKom devs do, and user `user` with password `user` who has regular nablauser access.
 
 # repoet for Farger og fonter til Nabla
 
@@ -90,11 +97,10 @@ TODO
         - Button success state
         - Text banner on non-local error
     - Group admin page enhancements
-      -  place to edit group name / group logo?
+      - place to edit group name / group logo?
       - choose tilitsvalgt
       - animation for changing leader would be lit
         - mby a thank you for your service meme gif?
+      - Edit relevant mail list (must be done on server)
     - actually implement and respect loading & states
-    - Unit tests :((
-    - Update header/footer/router
 -->
