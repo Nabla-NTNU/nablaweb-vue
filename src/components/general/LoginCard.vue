@@ -1,8 +1,8 @@
 <script setup lang="ts">
     import { ref } from "vue"
+    import { useI18n } from "vue-i18n"
+    const { t } = useI18n()
     import { useAuth } from "@/composables/useAuth"
-    import { AuthApiError } from "@supabase/supabase-js"
-
     const { signIn } = useAuth()
 
     const username = ref("")
@@ -13,41 +13,40 @@
     const hideMessage = () => (errorMessage.value = null)
 
     async function handleLogin() {
-        try {
-            await signIn(username.value + "@stud.ntnu.no", password.value)
-        } catch (error: unknown) {
-            if (error instanceof AuthApiError) {
-                errorMessage.value =
-                    "Vennligst oppgi korrekt brukernavn og passord."
-            } else {
-                errorMessage.value = "En ukjent feil oppsto"
-                console.log(error)
-            }
-        }
+        const email = username.value + "@stud.ntnu.no"
+        await signIn(email, password.value)
     }
 </script>
 
 <template>
-    <form @submit.prevent="handleLogin">
+    <form class="h-full w-full p-4" @submit.prevent="handleLogin">
         <input
+            id="username"
             v-model="username"
-            class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
-            placeholder="NTNU Username"
+            type="text"
+            name="username"
+            autocomplete="username"
+            class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
+            :placeholder="t('NTNU-brukernavn')"
+            required
         />
         <br />
         <input
             v-model="password"
-            class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
-            placeholder="Password"
             type="password"
+            name="password"
+            autocomplete="current-password"
+            class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
+            :placeholder="t('passord')"
+            required
         />
         <br />
         <button
-            class="rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
+            class="m-4 rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
             type="submit"
-            @click="handleLogin"
+            name="log in"
         >
-            Log in
+            {{ t("logg-in") }}
         </button>
         <br />
         <div
@@ -68,3 +67,14 @@
         </div>
     </form>
 </template>
+
+<i18n lang="yaml">
+nb:
+    NTNU-brukernavn: NTNU Brukernavn
+    passord: Passord
+    logg-in: Logg inn
+en:
+    NTNU-brukernavn: NTNU Username
+    passord: Password
+    logg-in: Sign in
+</i18n>
