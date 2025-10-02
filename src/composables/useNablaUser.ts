@@ -45,6 +45,7 @@ async function getMembershipData(username: string) {
             .from("nabla_group_members")
             .select(
                 `
+                is_active,
                 group: nabla_groups(
                     id,
                     name,
@@ -61,7 +62,6 @@ async function getMembershipData(username: string) {
             `,
             )
             .eq("user", username)
-            .eq("is_active", true)
         type userData = QueryData<typeof membershipQuery>
         const { data, error } = await membershipQuery
         if (error) throw error
@@ -137,10 +137,24 @@ export function useUser(username: string) {
                 return group
             })
 
-            user.value.memberOf = groups
+            const activeGroupIds = memberData
+                .filter((m) => m.is_active)
+                .map((m) => m.group.id)
+
+            const activeGroups = groups.filter((group) =>
+                activeGroupIds.includes(group.id),
+            )
+
+            const inactiveGroups = groups.filter((group) => {
+                return activeGroups.indexOf(group) == -1
+            })
+
+            user.value.memberOf = activeGroups
+            user.value.pastMemberOf = inactiveGroups
         } else {
             console.error("[NablaUser] User or membership data is not defined")
         }
+
         isLoading.value = false
     }
 

@@ -47,6 +47,16 @@
                         </li>
                     </ul>
                 </InfoRow>
+                <InfoRow :label="t('medlemskap')" :show="!!user?.pastMemberOf">
+                    <ul>
+                        <li
+                            v-for="(group, index) in user?.pastMemberOf"
+                            :key="index"
+                        >
+                            {{ group.name }}
+                        </li>
+                    </ul>
+                </InfoRow>
             </tbody>
         </table>
     </div>
@@ -58,16 +68,19 @@ nb:
     epost: Epost
     heimeside: Hjemmeside
     medlemskap: Medlem av
+    tidlegareMedlemskap: Var i
 
 nn:
     brukarnamn: Brukarnamn
     epost: Epost
     heimeside: Heimeside
     medlemskap: Medlem av
+    tidlegareMedlemskap: Var i
 
 en:
     brukarnamn: username
     epost: Email
     heimeside: Homepage
     medlemskap: Member of
+    tidlegareMedlemskap: Was in
 </i18n>
