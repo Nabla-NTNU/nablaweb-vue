@@ -9,12 +9,20 @@
     const username = ref("")
     const password = ref("")
 
+    const errorMessage = ref<null | string>(null)
+
+    const hideMessage = () => (errorMessage.value = null)
+
     // Supabase only allows email + password, not username + password We
     //  therefore add an "@stud.ntnu.no" to avoid any awkward clashes.
     //  Unsure of what the final solution here should be.
     async function handleLogin() {
         const email = username.value + "@stud.ntnu.no"
-        await signIn(email, password.value)
+        const error = await signIn(email, password.value)
+        if (error && error.name == "AuthApiError") {
+            errorMessage.value =
+                "Vennligst oppgi korrekt brukernavn og passord."
+        }
 
         // Sends user to homepage after logging in, might want to change later
         if (isAuthenticated.value) router.push({ path: "/" })
@@ -51,6 +59,23 @@
         >
             {{ t("logg-in") }}
         </button>
+        <br />
+        <div
+            v-if="errorMessage"
+            class="m-4 flex flex-row rounded-xl border-2 border-error-300 bg-error-200 p-4"
+        >
+            <p class="basis-3/4">
+                {{ errorMessage }}
+            </p>
+            <div class="mr-5 basis-1/4 place-content-center">
+                <button
+                    class="float-right text-error-500 hover:text-error-900"
+                    @click="hideMessage"
+                >
+                    x
+                </button>
+            </div>
+        </div>
     </form>
 </template>
 
