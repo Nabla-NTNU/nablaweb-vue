@@ -11,14 +11,14 @@ async function getUserData(username: string) {
             .select(
                 `
                 username,
-                first_name,
-                last_name,
-                profile_picture,
-                is_active,
+                firstName: first_name,
+                lastName: last_name,
+                profilePicture: profile_picture,
+                isActive: is_active,
                 class,
-                list_email,
-                public_email,
-                ntnu_email,
+                listEmail: list_email,
+                publicEmail: public_email,
+                ntnuEmail: ntnu_email,
                 about,
                 website,
                 birthday
@@ -45,19 +45,19 @@ async function getMembershipData(username: string) {
             .from("nabla_group_members")
             .select(
                 `
-                is_active,
+                isActive: is_active,
                 group: nabla_groups(
                     id,
                     name,
                     kind,
                     logo,
-                    mail_list,
-                    leader_mail,
+                    mailList: mail_list,
+                    leaderMail: leader_mail,
                     leader,
                     about,
-                    group_photo,
-                    date_began,
-                    is_active
+                    groupPhoto: group_photo,
+                    dateBegan: date_began,
+                    isActive: is_active
                 )
             `,
             )
@@ -85,17 +85,17 @@ export function useUser(username: string) {
         if (userData != null) {
             user.value = {
                 username: userData.username,
-                firstName: userData.first_name,
-                lastName: userData.last_name,
-                profilePicture: userData.profile_picture
-                    ? new URL(userData.profile_picture)
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                profilePicture: userData.profilePicture
+                    ? new URL(userData.profilePicture)
                     : undefined,
-                isActive: userData.is_active,
+                isActive: userData.isActive,
                 class: userData.class,
                 memberOf: [],
-                ntnuEmail: userData.ntnu_email,
-                listEmail: userData.list_email,
-                publicEmail: userData.public_email,
+                ntnuEmail: userData.ntnuEmail,
+                listEmail: userData.listEmail,
+                publicEmail: userData.publicEmail,
                 about: userData.about,
                 birthday: userData.birthday
                     ? new Date(userData.birthday)
@@ -127,18 +127,18 @@ export function useUser(username: string) {
                             ? (data.kind as GroupKind)
                             : undefined, // Will fail silently for unknown GroupKinds
                     logo: new URL(data.logo),
-                    mailList: data.mail_list,
+                    mailList: data.mailList,
                     leader: { user: { username: data.leader! } },
                     about: data.about,
-                    groupPhoto: new URL(data.group_photo),
-                    date: new Date(data.date_began),
-                    isActive: data.is_active,
+                    groupPhoto: new URL(data.groupPhoto),
+                    date: new Date(data.dateBegan),
+                    isActive: data.isActive,
                 }
                 return group
             })
 
             const activeGroupIds = memberData
-                .filter((m) => m.is_active)
+                .filter((m) => m.isActive)
                 .map((m) => m.group.id)
 
             const activeGroups = groups.filter((group) =>
