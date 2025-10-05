@@ -12,6 +12,9 @@
 
     const hideMessage = () => (errorMessage.value = null)
 
+    // Supabase only allows email + password, not username + password We
+    //  therefore add an "@stud.ntnu.no" to avoid any awkward clashes.
+    //  Unsure of what the final solution here should be.
     async function handleLogin() {
         const email = username.value + "@stud.ntnu.no"
         const error = await signIn(email, password.value)
