@@ -67,7 +67,7 @@
                     link: "/kjelleren",
                 },
                 {
-                    text: "kontakt",
+                    text: "kontakt-og-varsling",
                     link: "/kontakt-og-varsling",
                 },
             ],
@@ -148,7 +148,7 @@ nb:
     nabladet: Nabladet
     skråttcast: Skråttcast
     kjelleren: Kjelleren
-    kontakt: Kontakt og varsling
+    kontakt-og-varsling: Kontakt og varsling
     arrangement: Arrangement
     bedpres: BedPres
     regelmessig: Regelmessige
@@ -169,7 +169,7 @@ en:
     nabladet: Nabladet
     skråttcast: Skråttcast
     kjelleren: The Cellar
-    kontakt: Contact
+    kontakt-og-varsling: Contact
     arrangement: Events
     bedpres: Business presentations
     regelmessig: Regular

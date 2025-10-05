@@ -7,6 +7,9 @@ import ProfilView from "@/views/NablaProfile.vue"
 import GroupPage from "@/views/about/NablaGroup.vue"
 import GroupAdminPage from "@/views/about/NablaGroupAdmin.vue"
 import GroupsPage from "@/views/about/NablaGroups.vue"
+
+import NablaContact from "@/views/about/NablaContact.vue"
+
 // import UnderKonstruksjonView from "@/views/error/UnderKontruksjon.vue"
 import PageNotFoundView from "@/views/error/PageNotFound.vue"
 
@@ -35,7 +38,7 @@ const routes = [
     // { path: "/nabladet", component: NablaNabladet },
     // { path: "/skraattcast", component: NablaPodcast },
     // { path: "/kjelleren", component: NablaCellar },
-    // { path: "/kontakt-og-varsling", component: NablaContact },
+    { path: "/kontakt-og-varsling", component: NablaContact },
 
     // Calendar (filtering could be nice)
     // { path: "/kalender", component: NablaCalendar },
