@@ -18,9 +18,6 @@
     <div class="border overflow-hidden rounded-lg border-black">
         <table class="border w-full table-auto">
             <tbody>
-                <InfoRow :label="t('brukarnamn')" :show="!!user?.username">
-                    {{ user?.username }}
-                </InfoRow>
                 <InfoRow :label="t('epost')" :show="!!user?.publicEmail">
                     <a
                         class="text-primary hover:text-primary-500"
@@ -29,6 +26,7 @@
                         {{ user?.publicEmail }}
                     </a>
                 </InfoRow>
+
                 <InfoRow :label="t('heimeside')" :show="!!user?.website">
                     <a
                         class="text-primary hover:text-primary-500"
@@ -37,6 +35,11 @@
                         {{ user?.website }}
                     </a>
                 </InfoRow>
+
+                <InfoRow :label="t('bursdag')" :show="!!user?.birthday">
+                    {{ user?.birthday }}
+                </InfoRow>
+
                 <InfoRow :label="t('medlemskap')" :show="!!user?.memberOf">
                     <ul>
                         <li
@@ -47,7 +50,11 @@
                         </li>
                     </ul>
                 </InfoRow>
-                <InfoRow :label="t('medlemskap')" :show="!!user?.pastMemberOf">
+
+                <InfoRow
+                    :label="t('tidelegareMedlemskap')"
+                    :show="!!user?.pastMemberOf"
+                >
                     <ul>
                         <li
                             v-for="(group, index) in user?.pastMemberOf"
@@ -65,22 +72,25 @@
 <i18n lang="yaml">
 nb:
     brukarnamn: Brukernavn
+    bursdag: Bursdag
     epost: Epost
     heimeside: Hjemmeside
     medlemskap: Medlem av
-    tidlegareMedlemskap: Var i
+    tidelegareMedlemskap: Var i
 
 nn:
     brukarnamn: Brukarnamn
+    bursdag: Bursdag
     epost: Epost
     heimeside: Heimeside
     medlemskap: Medlem av
     tidlegareMedlemskap: Var i
 
 en:
-    brukarnamn: username
+    brukarnamn: Username
+    bursdag: Birthday
     epost: Email
     heimeside: Homepage
     medlemskap: Member of
-    tidlegareMedlemskap: Was in
+    tidelegareMedlemskap: Was in
 </i18n>
