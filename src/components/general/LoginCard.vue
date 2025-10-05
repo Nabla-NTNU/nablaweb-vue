@@ -14,7 +14,11 @@
 
     async function handleLogin() {
         const email = username.value + "@stud.ntnu.no"
-        await signIn(email, password.value)
+        const error = await signIn(email, password.value)
+        if (error && error.name == "AuthApiError") {
+            errorMessage.value =
+                "Vennligst oppgi korrekt brukernavn og passord."
+        }
     }
 </script>
 
