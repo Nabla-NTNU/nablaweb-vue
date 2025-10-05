@@ -3,7 +3,8 @@
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
     import { useAuth } from "@/composables/useAuth"
-    const { signIn } = useAuth()
+    import router from "@/router"
+    const { isAuthenticated, signIn } = useAuth()
 
     const username = ref("")
     const password = ref("")
@@ -14,6 +15,9 @@
     async function handleLogin() {
         const email = username.value + "@stud.ntnu.no"
         await signIn(email, password.value)
+
+        // Sends user to homepage after logging in, might want to change later
+        if (isAuthenticated.value) router.push({ path: "/" })
     }
 </script>
 
