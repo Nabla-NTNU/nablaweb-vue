@@ -20,6 +20,7 @@
     <div class="relative">
         <router-link
             class="block h-header w-header content-center align-middle"
+            aria-label="Profil"
             :to="isAuthenticated ? '/profil' : '/login'"
         >
             <div
