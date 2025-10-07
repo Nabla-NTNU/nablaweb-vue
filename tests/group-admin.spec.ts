@@ -36,6 +36,6 @@ test("Groups are editable by an admin", async ({ page }) => {
     }
     // Check if saved about text is actually saved
     await page.goto("http://localhost:5173/undergrupper/webkom")
-    await expect(page.getByRole("link", { name: "Adminpanel" })).toBeVisible() // wait until loaded
+    await expect(page.getByRole("link", { name: "Adminpanel" })).toBeVisible()
     await expect(page.getByText("Waaaa", { exact: true })).toBeVisible()
 })
