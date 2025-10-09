@@ -20,7 +20,8 @@
     <div class="relative">
         <router-link
             class="block h-header w-header content-center align-middle"
-            :to="isAuthenticated ? '/profil' : '/profil'"
+            aria-label="Profil"
+            :to="isAuthenticated ? '/profil' : '/login'"
         >
             <div
                 class="flex h-4/5 w-4/5 overflow-hidden rounded-full border-2 border-white bg-primary-dark fill-white transition duration-200 hover:border-primary-light hover:fill-secondary"
