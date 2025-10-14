@@ -5,14 +5,14 @@
     import { useAuth } from "@/composables/useAuth"
     import LoginCard from "@/components/general/LoginCard.vue"
     import ThemeToggler from "@/components/depricated/ThemeToggle.vue"
-    import InfoTable from "@/components/profile-components/info-table.vue"
+    import MobileProfile from "@/components/profile-components/MobileProfile.vue"
 
     const { isAuthenticated, signOut, username } = useAuth()
 </script>
 
 <template>
     <div v-if="isAuthenticated" style="margin: 40pt">
-        <InfoTable v-if="username" :username="username" />
+        <MobileProfile v-if="username" :username="username" />
 
         <button
             class="rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
