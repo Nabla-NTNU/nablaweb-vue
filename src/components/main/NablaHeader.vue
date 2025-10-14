@@ -127,7 +127,7 @@
 
 <template>
     <!-- Show mobile header up until size small  -->
-    <MobileHeader class="bliock s:hidden" :header-items="headerItems" />
+    <MobileHeader class="block s:hidden" :header-items="headerItems" />
     <!-- At greater sizes show desktop header -->
     <DesktopHeader
         class="hidden s:block"
