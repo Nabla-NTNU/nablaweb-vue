@@ -3,7 +3,8 @@
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
     import { useAuth } from "@/composables/useAuth"
-    const { signIn } = useAuth()
+    import router from "@/router"
+    const { isAuthenticated, signIn } = useAuth()
 
     const username = ref("")
     const password = ref("")
@@ -22,6 +23,9 @@
             errorMessage.value =
                 "Vennligst oppgi korrekt brukernavn og passord."
         }
+
+        // Sends user to homepage after logging in, might want to change later
+        if (isAuthenticated.value) router.push({ path: "/" })
     }
 </script>
 
