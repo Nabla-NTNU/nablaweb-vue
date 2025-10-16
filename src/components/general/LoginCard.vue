@@ -24,8 +24,13 @@
                 "Vennligst oppgi korrekt brukernavn og passord."
         }
 
-        // Sends user to homepage after logging in, might want to change later
-        if (isAuthenticated.value) router.push({ path: "/" })
+        if (isAuthenticated.value) {
+            if (window.history.length > 1) {
+                router.back()
+            } else {
+                router.push({ path: "/" })
+            }
+        }
     }
 </script>
 
