@@ -10,6 +10,7 @@ export type NablaGroup = {
     mailList?: string | null
     leaderMailList?: string | null
     leader?: GroupMember
+    trustedMember?: GroupMember
     about?: string
     groupPhoto?: URL
     date?: Date
