@@ -33,17 +33,17 @@
                     </router-link>
                 </h2>
                 <div v-if="group.leaderMailList">
-                    {{ t("gruppeleder") }} : {{ group.leader?.user.firstName }}
+                    {{ t("gruppeleder") }}: {{ group.leader?.user.firstName }}
                     {{ group.leader?.user.lastName }} {{ t("mail") }} :
                     {{ group.leaderMailList }}
                 </div>
                 <div v-if="group.mailList">
-                    {{ t("gruppemail") }} : {{ group.mailList }}
+                    {{ t("gruppemail") }}: {{ group.mailList }}
                 </div>
                 <div v-if="group.trustedMember">
-                    {{ t("tillitsvalgt") }} :
+                    {{ t("tillitsvalgt") }}:
                     {{ group.trustedMember?.user.firstName }}
-                    {{ group.trustedMember?.user.lastName }} {{ t("mail") }} :
+                    {{ group.trustedMember?.user.lastName }} {{ t("mail") }}:
                     {{ group.trustedMember?.user.username }}@student.ntnu.no
                 </div>
             </div>

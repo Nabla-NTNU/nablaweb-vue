@@ -127,6 +127,8 @@ const groups: NablaGroupDict = {
         id: "arrkom",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/IMG_0306_HcJuzGf.jpg.250x250_q85_crop-smart.jpg",
+        mail_list: "arrkom@nabla.no",
+        leader_mail: "arrsjef@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -137,6 +139,8 @@ const groups: NablaGroupDict = {
         id: "bedkom",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Ny_BN-logo-2_FLQ8NVr.jpg.250x250_q85_crop-smart.png",
+        mail_list: "bedkom@nabla.no",
+        leader_mail: "bedriftskontakt@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
@@ -146,6 +150,7 @@ const groups: NablaGroupDict = {
         id: "educom",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/edukom.jpg.250x250_q85_crop-smart.jpg",
+        leader_mail: "ambassador@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -166,6 +171,8 @@ const groups: NablaGroupDict = {
         id: "kjellerstyret",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/kjellerstyret_dDWDFE9.png.250x250_q85_crop-smart.png.250x250_q85_crop-smart.png",
+        mail_list: "kjellern.hk18@nabla.no",
+        leader_mail: "kjellersjef@nabla.no",
         about: faker.lorem.paragraphs(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -176,6 +183,8 @@ const groups: NablaGroupDict = {
         id: "kontorkom",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kontorkom_Logo.jpg.250x250_q85_crop-smart.jpg",
+        mail_list: "kontorkom@nabla.no",
+        leader_mail: "leder.kontorkom@nabla.no",
         about: faker.lorem.paragraph(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -186,6 +195,8 @@ const groups: NablaGroupDict = {
         name: "ProKom",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Prokom-ikon-monokrom.jpg.250x250_q85_crop-smart.jpg",
+        mail_list: "prokom@nabla.no",
+        leader_mail: "leder.prokom@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -196,6 +207,8 @@ const groups: NablaGroupDict = {
         name: "Redaksjonen",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/redaksjonen_logo.jpg.250x250_q85_crop-smart.jpg",
+        mail_list: "nabladet@nabla.no",
+        leader_mail: "redaktor@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -206,6 +219,7 @@ const groups: NablaGroupDict = {
         id: "sportskom",
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/sportskom.png.250x250_q85_crop-smart.png",
+        leader_mail: "sportskom@nabla.no",
         about: faker.person.bio(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -226,6 +240,7 @@ const groups: NablaGroupDict = {
         kind: "Committee",
         logo: "https://nabla.no/media/thumbnails/uploads/news_pictures/webkom-logo_cd43LtI.png.250x250_q85_crop-smart.png",
         mail_list: "webkom@nabla.no",
+        leader_mail: "websjef@nabla.no",
         about: faker.lorem.text(),
         group_photo:
             "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg",
@@ -246,6 +261,8 @@ const groups: NablaGroupDict = {
         id: "koreolis",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/koreolis_logo.jpg.250x250_q85_crop-smart.jpg",
+        mail_list: "koreolis@nabla.no",
+        leader_mail: "koreolis.kraften@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -284,6 +301,7 @@ const groups: NablaGroupDict = {
         name: "Maxwells Muntre Musikanter",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Maxwells_logo_1ob4IqE.png.250x250_q85_crop-smart.png",
+        leader_mail: "maxwells.muntre@nabla.no",
         about: faker.lorem.paragraphs(5),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -295,6 +313,8 @@ const groups: NablaGroupDict = {
         name: "Nablarevyen",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/revyen.jpg.250x250_q85_crop-smart.jpg",
+        mail_list: "revy-alle@nabla.no",
+        leader_mail: "revy@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/HU5A9343.jpg",
@@ -350,6 +370,7 @@ const groups: NablaGroupDict = {
         name: "Nablas Ølbryggerlaug",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lauget.jpg.250x250_q85_crop-smart.jpg",
+        leader_mail: "bryggemester@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -360,6 +381,7 @@ const groups: NablaGroupDict = {
         name: "PostKom",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/PostKom_logo.png.250x250_q85_crop-smart.jpg",
+        mail_list: "postkom@nabla.no",
         about: faker.lorem.paragraphs(5),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -370,6 +392,7 @@ const groups: NablaGroupDict = {
         name: "QuizKom",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Quizkom-logo.png.250x250_q85_crop-smart.jpg",
+        leader_mail: "quizkom@nabla.no",
         about: faker.lorem.sentence(2),
         leader: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/quizkom-102.jpg",
@@ -379,6 +402,7 @@ const groups: NablaGroupDict = {
         name: "ReKa",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
+        leader_mail: "reka@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/Reka.JPG",
@@ -388,6 +412,7 @@ const groups: NablaGroupDict = {
         name: "ReVen",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
+        leader_mail: "reven@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/reven-2025.jpg",
@@ -397,6 +422,7 @@ const groups: NablaGroupDict = {
         name: "Skråttcast",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/skråttcast2_zxdIEaA.jpg.250x250_q85_crop-smart.jpg",
+        leader_mail: "skraattcast@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -407,6 +433,7 @@ const groups: NablaGroupDict = {
         name: "The Gravitones",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/GravSvart_NpvzpPp.png.250x250_q85_crop-smart.png",
+        mail_list: "gravitones@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
         group_photo:
@@ -417,6 +444,8 @@ const groups: NablaGroupDict = {
         name: "The Stokes",
         kind: "Interest group",
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Stokes_logo.PNG.250x250_q85_crop-smart.png",
+        mail_list: "thestokes@nabla.no",
+        leader_mail: "lederstokes@nabla.no",
         about: `<img src: "https://nabla.no/media/uploads/content/TheStokes.jpg" width="100%"> <br> ${faker.lorem.text()}`,
         group_photo: "https://nabla.no/media/uploads/content/TheStokes.jpg",
         leader: getRandomElement(Object.keys(users)),
@@ -426,6 +455,7 @@ const groups: NablaGroupDict = {
         name: "Utfluks",
         kind: "Interest group",
         logo: "https://nabla.no/static/img/nabla-black.svg",
+        mail_list: "utfluks@nabla.no",
         about: faker.lorem.text(),
         group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
         leader: getRandomElement(Object.keys(users)),
