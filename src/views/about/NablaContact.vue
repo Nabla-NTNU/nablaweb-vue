@@ -23,7 +23,7 @@
     </div>
     <div class="mx-100 my-6">
         <div v-for="group in groups" :key="group.id">
-            <div v-if="group.leaderMailList || group.mailList">
+            <div v-if="group.leaderMail || group.mailList">
                 <h2 class="mb-3 text-title-4 font-semibold">
                     <router-link
                         :to="`/undergrupper/${group.id}`"
@@ -32,10 +32,10 @@
                         {{ group.name }}
                     </router-link>
                 </h2>
-                <div v-if="group.leaderMailList">
+                <div v-if="group.leaderMail">
                     {{ t("gruppeleder") }}: {{ group.leader?.user.firstName }}
                     {{ group.leader?.user.lastName }} {{ t("mail") }} :
-                    {{ group.leaderMailList }}
+                    {{ group.leaderMail }}
                 </div>
                 <div v-if="group.mailList">
                     {{ t("gruppemail") }}: {{ group.mailList }}

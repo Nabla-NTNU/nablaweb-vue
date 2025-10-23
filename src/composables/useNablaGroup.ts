@@ -25,6 +25,7 @@ async function getGroupWithoutMembers(
                 kind,
                 logo,
                 mailList: mail_list,
+                leaderMail: leader_mail,
                 leader,
                 about,
                 groupPhoto: group_photo,
@@ -41,6 +42,7 @@ async function getGroupWithoutMembers(
             kind: data.kind in GroupKind ? (data.kind as GroupKind) : undefined, // Will fail silently for unknown GroupKinds
             logo: makeURL(data.logo),
             mailList: data.mailList,
+            leaderMail: data.leaderMail,
             leader: { user: { username: data.leader! } },
             about: data.about,
             groupPhoto: makeURL(data.groupPhoto),
@@ -118,6 +120,7 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                 kind,
                 logo,
                 mailList: mail_list,
+                leaderMail: leader_mail,
                 leader,
                 about,
                 groupPhoto: group_photo,
@@ -140,6 +143,7 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                 leader: group.leader
                     ? { user: { username: group.leader } }
                     : undefined,
+                leaderMail: group.leaderMail,
                 about: group.about,
                 groupPhoto: makeURL(group.groupPhoto),
                 dateBegan: new Date(group.dateBegan),

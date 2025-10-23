@@ -8,7 +8,7 @@ export type NablaGroup = {
     kind?: GroupKind
     logo?: URL
     mailList?: string | null
-    leaderMailList?: string | null
+    leaderMail?: string | null
     leader?: GroupMember
     trustedMember?: GroupMember
     about?: string
