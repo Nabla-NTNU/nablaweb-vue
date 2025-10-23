@@ -21,6 +21,13 @@
             {{ t("for-bedriftshenvendelser") }}
         </router-link>
     </div>
+
+    <div class="mx-100 my-6">
+        <h2 class="mb-3 text-title-4 font-semibold">
+            {{ t("kontaktinfo-til-styret") }}
+        </h2>
+    </div>
+
     <div class="mx-100 my-6">
         <div v-for="group in groups" :key="group.id">
             <div v-if="group.leaderMail || group.mailList">
@@ -33,8 +40,7 @@
                     </router-link>
                 </h2>
                 <div v-if="group.leaderMail">
-                    {{ t("gruppeleder") }}: {{ group.leader?.user.firstName }}
-                    {{ group.leader?.user.lastName }} {{ t("mail") }} :
+                    {{ t("ledermail") }}:
                     {{ group.leaderMail }}
                 </div>
                 <div v-if="group.mailList">
@@ -57,13 +63,17 @@ nb:
     for-bedriftshenvendelser: For bedriftshenvendelser
     gruppeleder: Gruppeleder
     mail: Mail
+    ledermail: Ledermail
     gruppemail: Gruppemail
     tillitsvalgt: Tillitsvalgt
+    kontaktinfo-til-styret: Kontaktinfo til styret
 en:
     kontakt: Contact
     for-bedriftshenvendelser: For bedriftshenvendelser
     gruppeleder: Group leader
     mail: Mail
+    ledermail: Leadermail
     gruppemail: Group mail
     tillitsvalgt: Trusted member
+    kontaktinfo-til-styret: Contact info for the board
 </i18n>
