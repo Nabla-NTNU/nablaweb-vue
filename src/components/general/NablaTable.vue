@@ -1,6 +1,5 @@
 <script setup lang="ts">
     defineProps<{
-        showColumnTitles?: boolean
         columnTitles?: string[]
     }>()
 </script>
@@ -8,16 +7,17 @@
 <template>
     <div class="border overflow-hidden rounded-lg border-black">
         <table class="border w-full table-auto">
-            <thead>
-                <tr v-for="colTitle in columnTitles" :key="colTitle">
-                    <th>
+            <thead v-if="columnTitles">
+                <tr>
+                    <th v-for="colTitle in columnTitles" :key="colTitle">
                         {{ colTitle }}
                     </th>
                 </tr>
             </thead>
 
+            <!-- TODO Change colour after hovering. Should be as simple as adding [&>tr:hover]:!bg-[colour] to the class underneath -->
             <tbody
-                class="[&>tr:hover]:!bg-primary-25 [&>tr:nth-child(even)]:bg-neutralish [&>tr:nth-child(odd)]:bg-neutral [&>tr>td]:p-4"
+                class="text-center [&>tr:nth-child(even)]:bg-neutralish [&>tr:nth-child(odd)]:bg-neutral [&>tr>td]:p-4"
             >
                 <slot />
             </tbody>
