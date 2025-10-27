@@ -4,7 +4,7 @@
     import InfoTable from "@/components/profile-components/info-table.vue"
     import { ref } from "vue"
 
-    const props = defineProps({
+    defineProps({
         username: {
             type: String,
             required: true,
@@ -15,9 +15,13 @@
 </script>
 
 <template>
-    <button class="bg-gray-400" @click="tableShown = !tableShown">test!</button>
+    <div>
+        <button class="bg-gray-400" @click="tableShown = !tableShown">
+            test!
+        </button>
 
-    <div class="bg-fg">
-        <InfoTable v-if="tableShown" :username="props.username" />
+        <div class="bg-fg">
+            <InfoTable v-if="tableShown" :username="username" />
+        </div>
     </div>
 </template>

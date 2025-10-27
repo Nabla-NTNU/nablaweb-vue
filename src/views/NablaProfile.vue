@@ -6,13 +6,24 @@
     import LoginCard from "@/components/general/LoginCard.vue"
     import ThemeToggler from "@/components/depricated/ThemeToggle.vue"
     import MobileProfile from "@/components/profile-components/MobileProfile.vue"
+    import DesktopProfile from "@/components/profile-components/DesktopProfile.vue"
 
     const { isAuthenticated, signOut, username } = useAuth()
 </script>
 
 <template>
     <div v-if="isAuthenticated" style="margin: 40pt">
-        <MobileProfile v-if="username" :username="username" />
+        <MobileProfile
+            v-if="username"
+            class="block s:hidden"
+            :username="username"
+        />
+
+        <DesktopProfile
+            v-if="username"
+            class="hidden s:block"
+            :username="username"
+        />
 
         <button
             class="rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"

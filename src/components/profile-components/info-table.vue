@@ -1,17 +1,13 @@
 <script setup lang="ts">
-    const props = defineProps({
-        username: {
-            type: String,
-            required: true,
-        },
-    })
-
-    import { useUser } from "@/composables/useNablaUser"
+    import type { NablaUser } from "@/lib/types/frontend.types"
     import InfoRow from "./info-row.vue"
     import { useI18n } from "vue-i18n"
 
-    const { user } = useUser(props.username)
     const { t } = useI18n()
+
+    defineProps<{
+        user: NablaUser
+    }>()
 </script>
 
 <template>
