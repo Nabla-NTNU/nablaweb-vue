@@ -5,8 +5,8 @@
 </script>
 
 <template>
-    <div class="border overflow-hidden rounded-lg border-black">
-        <table class="border w-full table-auto">
+    <div class="border overflow-scroll rounded-lg border-black">
+        <table class="border min-w-max w-full table-auto">
             <thead v-if="columnTitles">
                 <tr>
                     <th v-for="colTitle in columnTitles" :key="colTitle">
