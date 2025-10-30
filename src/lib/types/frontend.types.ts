@@ -37,6 +37,7 @@ export type NablaUser = {
     isActive?: boolean
     class?: string
     memberOf?: NablaGroup[]
+    pastMemberOf?: NablaGroup[]
     ntnuEmail?: string
     listEmail?: string
     publicEmail?: string
