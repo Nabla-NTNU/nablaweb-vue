@@ -95,31 +95,41 @@
 
     <div class="mx-120 my-6">
         <div v-for="group in groups" :key="group.id">
-            <div v-if="group.leaderMail || group.mailList">
-                <h2 class="mb-3 text-title-4 font-semibold">
-                    <router-link
-                        :to="`/undergrupper/${group.id}`"
-                        class="text-primary hover:underline"
-                    >
-                        {{ group.name }}
-                    </router-link>
-                </h2>
-                <div v-if="group.leaderMail">
-                    {{ t("ledermail") }}:
-                    {{ group.leaderMail }}
-                </div>
-                <div v-if="group.mailList">
+            <h2 class="mb-3 text-title-4 font-semibold">
+                <router-link
+                    :to="`/undergrupper/${group.id}`"
+                    class="text-primary hover:underline"
+                >
+                    {{ group.name }}
+                </router-link>
+            </h2>
+            <div v-if="group.mailList">
+                <h3 class="text-title-5 font-semibold">
                     {{ t("gruppemail") }}: {{ group.mailList }}
-                </div>
-                <div v-if="group.trustedMember">
-                    {{ t("tillitsvalgt") }}:
-                    {{ group.trustedMember?.user.firstName }}
-                    {{ group.trustedMember?.user.lastName }}
-                    <br />
-                    {{ t("mail") }}:
-                    {{ group.trustedMember?.user.username }}@student.ntnu.no
-                </div>
+                </h3>
             </div>
+            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
+                <div v-if="group.leaderMail || group.mailList">
+                    <tr>
+                        <td>Leder</td>
+                        <td>Tillitsvalgt</td>
+                    </tr>
+
+                    <div v-if="group.leaderMail">
+                        {{ t("ledermail") }}:
+                        {{ group.leaderMail }}
+                    </div>
+
+                    <div v-if="group.trustedMember">
+                        {{ t("tillitsvalgt") }}:
+                        {{ group.trustedMember?.user.firstName }}
+                        {{ group.trustedMember?.user.lastName }}
+                        <br />
+                        {{ t("mail") }}:
+                        {{ group.trustedMember?.user.username }}@student.ntnu.no
+                    </div>
+                </div>
+            </NablaTable>
         </div>
     </div>
 </template>
