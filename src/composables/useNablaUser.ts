@@ -158,5 +158,5 @@ export function useUser(username: string) {
         isLoading.value = false
     }
 
-    return { user, isLoading, error, updateGroupMembership }
+    return { user, isLoading, error }
 }
