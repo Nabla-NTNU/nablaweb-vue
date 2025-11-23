@@ -2,7 +2,6 @@
     // import { useI18n } from "vue-i18n"
     // const { locale } = useI18n()
     import InfoTable from "@/components/profile-components/info-table.vue"
-    import NablaTable from "@/components/general/NablaTable.vue"
 
     const props = defineProps({
         username: {
@@ -13,6 +12,9 @@
 
     import { useUser } from "@/composables/useNablaUser"
     const { user } = useUser(props.username)
+
+    import markdownit from "markdown-it"
+    const md = markdownit()
 </script>
 
 <template>
@@ -31,9 +33,15 @@
                 {{ user.lastName }}
             </h1>
         </div>
+
+        <hr class="m-4 bg-primary-25" />
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <NablaTable test="Hello!"> </NablaTable>
+                <article
+                    v-if="user.about"
+                    class="reset-tailwind flex-1"
+                    v-html="md.render(user.about)"
+                ></article>
             </div>
             <InfoTable :user="user" />
         </div>
