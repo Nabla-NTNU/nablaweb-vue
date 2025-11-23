@@ -15,9 +15,11 @@
                 </tr>
             </thead>
 
-            <!-- TODO Change colour after hovering. Should be as simple as adding [&>tr:hover]:!bg-[colour] to the class underneath -->
+            <!-- TODO: Change colour after hovering. Should be as simple as adding [&>tr:hover]:!bg-[colour] to the class underneath -->
+
+            <!-- To override the default values for padding and background colour, add a "!" before whatever you want to write -->
             <tbody
-                class="text-center [&>tr:nth-child(even)]:bg-neutralish [&>tr:nth-child(odd)]:bg-neutral [&>tr>td]:p-4"
+                class="text-center [&>tr:nth-child(even)]:bg-neutralish [&>tr>td]:p-4"
             >
                 <slot />
             </tbody>
