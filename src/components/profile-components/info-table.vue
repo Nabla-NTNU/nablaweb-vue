@@ -1,9 +1,10 @@
 <script setup lang="ts">
     import type { NablaUser } from "@/lib/types/frontend.types"
-    import InfoRow from "./info-row.vue"
     import { useI18n } from "vue-i18n"
 
-    const { t } = useI18n()
+    import NablaTable from "../general/NablaTable.vue"
+
+    const { t, d } = useI18n()
 
     defineProps<{
         user: NablaUser
@@ -12,31 +13,41 @@
 
 <template>
     <div class="border overflow-hidden rounded-lg border-black">
-        <table class="border w-full table-auto">
-            <tbody>
-                <InfoRow :label="t('epost')" :show="!!user?.publicEmail">
+        <NablaTable>
+            <tr v-if="!!user?.publicEmail">
+                <td>{{ t("epost") }}</td>
+                <td>
                     <a
                         class="text-primary hover:text-primary-500"
                         :href="'mailto:' + user?.publicEmail"
                     >
                         {{ user?.publicEmail }}
                     </a>
-                </InfoRow>
+                </td>
+            </tr>
 
-                <InfoRow :label="t('heimeside')" :show="!!user?.website">
+            <tr v-if="!!user?.website">
+                <td>{{ t("heimeside") }}</td>
+                <td>
                     <a
                         class="text-primary hover:text-primary-500"
                         :href="user?.website?.toString()"
                     >
                         {{ user?.website }}
                     </a>
-                </InfoRow>
+                </td>
+            </tr>
 
-                <InfoRow :label="t('bursdag')" :show="!!user?.birthday">
-                    {{ user?.birthday }}
-                </InfoRow>
+            <tr v-if="!!user?.birthday">
+                <td>{{ t("bursdag") }}</td>
+                <td>
+                    {{ d(user?.birthday) }}
+                </td>
+            </tr>
 
-                <InfoRow :label="t('medlemskap')" :show="!!user?.memberOf">
+            <tr v-if="!!user?.memberOf">
+                <td>{{ t("medlemskap") }}</td>
+                <td>
                     <ul>
                         <li
                             v-for="(group, index) in user?.memberOf"
@@ -45,12 +56,12 @@
                             {{ group.name }}
                         </li>
                     </ul>
-                </InfoRow>
+                </td>
+            </tr>
 
-                <InfoRow
-                    :label="t('tidelegareMedlemskap')"
-                    :show="!!user?.pastMemberOf"
-                >
+            <tr v-if="!!user?.pastMemberOf">
+                <td>{{ t("tidelegareMedlemskap") }}</td>
+                <td>
                     <ul>
                         <li
                             v-for="(group, index) in user?.pastMemberOf"
@@ -59,9 +70,9 @@
                             {{ group.name }}
                         </li>
                     </ul>
-                </InfoRow>
-            </tbody>
-        </table>
+                </td>
+            </tr>
+        </NablaTable>
     </div>
 </template>
 
@@ -72,7 +83,7 @@ nb:
     epost: Epost
     heimeside: Hjemmeside
     medlemskap: Medlem av
-    tidelegareMedlemskap: Var i
+    tidelegareMedlemskap: Har vært i
 
 nn:
     brukarnamn: Brukarnamn
@@ -80,7 +91,7 @@ nn:
     epost: Epost
     heimeside: Heimeside
     medlemskap: Medlem av
-    tidlegareMedlemskap: Var i
+    tidlegareMedlemskap: Har vore i
 
 en:
     brukarnamn: Username
@@ -88,5 +99,5 @@ en:
     epost: Email
     heimeside: Homepage
     medlemskap: Member of
-    tidelegareMedlemskap: Was in
+    tidelegareMedlemskap: Has been in
 </i18n>
