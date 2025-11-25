@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from "vue-router"
 
 import HjemView from "@/views/NablaHome.vue"
 // import NyStudentView from "@/views/ny-student/NyStudent.vue"
-import ProfilView from "@/views/NablaProfile.vue"
+import ProfilView from "@/views/profile/NablaProfile.vue"
+import ProfileEditing from "@/views/profile/ProfileEditing.vue"
 // import StillingsannonseView from '@/views/for-bedrifter/stillingsannonse/stillingsannonse.vue'
 import GroupPage from "@/views/about/NablaGroup.vue"
 import GroupAdminPage from "@/views/about/NablaGroupAdmin.vue"
@@ -57,6 +58,7 @@ const routes = [
 
     // Logged in utilities
     { path: "/profil", component: ProfilView },
+    { path: "/profil/edit", component: ProfileEditing },
     // { path: "/golf", component: NablaGolf },
     // { path: "/refusjon", component: NablaRefund },
     // { path: "/user-admin", component: UnderKonstruksjonView },

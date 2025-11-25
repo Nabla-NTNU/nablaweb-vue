@@ -158,5 +158,74 @@ export function useUser(username: string) {
         isLoading.value = false
     }
 
-    return { user, isLoading, error }
+    function createFieldSetter<T, K extends keyof NablaUser>(
+        fieldName: K,
+        columnName: string,
+        toUser?: (value: T) => NablaUser[K],
+    ) {
+        return async function (newValue: T) {
+            if (!user.value) {
+                throw "User is not defined"
+            }
+            try {
+                const { error } = await supabase
+                    .schema("nablaweb_vue")
+                    .from("nabla_users")
+                    .update({ [columnName]: newValue })
+                    .eq("username", user.value.username)
+
+                if (error) throw error
+                else {
+                    user.value[fieldName] = toUser
+                        ? toUser(newValue)
+                        : (newValue as unknown as NablaUser[K])
+
+                    console.log(
+                        "New value for ",
+                        fieldName,
+                        ": ",
+                        toUser
+                            ? toUser(newValue)
+                            : (newValue as unknown as NablaUser[K]),
+                    )
+                }
+            } catch (error) {
+                console.error(
+                    "[NablaUser] Error setting ",
+                    columnName,
+                    ": ",
+                    error,
+                )
+            }
+        }
+    }
+
+    function getUserSetters() {
+        const setFirstName = createFieldSetter("firstName", "first_name")
+        const setLastName = createFieldSetter("firstName", "last_name")
+        const setProfilePicture = createFieldSetter(
+            "profilePicture",
+            "profile_picture",
+        )
+        const setIsActive = createFieldSetter("isActive", "is_active")
+        const setNTNUEmail = createFieldSetter("ntnuEmail", "ntnu_email")
+        const setListEmail = createFieldSetter("publicEmail", "public_email")
+        const setAbout = createFieldSetter("about", "about")
+        const setBirthday = createFieldSetter("birthday", "birthday")
+        const setWebsite = createFieldSetter("website", "website")
+
+        return {
+            setFirstName,
+            setLastName,
+            setProfilePicture,
+            setIsActive,
+            setNTNUEmail,
+            setListEmail,
+            setAbout,
+            setBirthday,
+            setWebsite,
+        }
+    }
+
+    return { user, isLoading, error, getUserSetters }
 }

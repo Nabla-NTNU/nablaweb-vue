@@ -30,6 +30,21 @@ async function uploadFile(
     return publicURL.value
 }
 
+export function useProfilePictureUpload(username: string) {
+    const uploading = ref(false)
+    const error = ref<string | null>(null)
+    const publicURL = ref<string | null>(null)
+
+    async function upload(file: File) {
+        const fileExtention = file.name.split(".").pop()
+        const filepath = `profile_pictures/${username}.${fileExtention}`
+
+        return uploadFile(file, filepath, "images", uploading, error, publicURL)
+    }
+
+    return { uploading, error, publicURL, upload }
+}
+
 export function useGroupImageUpload(groupURL: string) {
     const uploading = ref(false)
     const error = ref<string | null>(null)
