@@ -83,7 +83,7 @@
                 <td>arrsjef@nabla.no</td>
             </tr>
 
-            <!--       Gjelder kun når det er jubileum
+            <!--       Gjelder kun ved jubileum
             <tr> 
                 <td>Jubileumssjef</td>
                 <td>-</td>
@@ -92,9 +92,14 @@
 -->
         </NablaTable>
     </div>
-
-    <div class="mx-120 my-6">
-        <div v-for="group in groups" :key="group.id">
+    <h1 class="mx-12 text-title-4 font-semibold">
+        {{ t("undergrupper") }}
+    </h1>
+    <div class="flex-rows mx-12 my-10 justify-center">
+        <div
+            v-for="group in groups.filter((g) => g.id !== 'styret')"
+            :key="group.id"
+        >
             <h2 class="mb-3 text-title-4 font-semibold">
                 <router-link
                     :to="`/undergrupper/${group.id}`"
@@ -103,32 +108,42 @@
                     {{ group.name }}
                 </router-link>
             </h2>
-            <div v-if="group.mailList">
-                <h3 class="text-title-5 font-semibold">
-                    {{ t("gruppemail") }}: {{ group.mailList }}
-                </h3>
-            </div>
-            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
-                <div v-if="group.leaderMail || group.mailList">
-                    <tr>
-                        <td>Leder</td>
-                        <td>Tillitsvalgt</td>
-                    </tr>
+            <h2 class="mb-3 text-title-5 font-semibold">
+                <span v-if="group.mailList">
+                    {{ t("gruppemail") }}:
+                    {{ group.mailList }}
+                </span>
+            </h2>
 
-                    <div v-if="group.leaderMail">
-                        {{ t("ledermail") }}:
+            <NablaTable
+                :column-titles="['Stilling', 'Navn', 'Mail']"
+                class="table-fixed"
+            >
+                <tr>
+                    <td>{{ t("leder") }}</td>
+                    <td v-if="group.leader?.user">
+                        {{ group.leader?.user.firstName }}
+                        {{ group.leader?.user.lastName }}
+                    </td>
+                    <td v-else>-</td>
+                    <td v-if="group.leaderMail">
                         {{ group.leaderMail }}
-                    </div>
+                    </td>
+                    <td v-else>-</td>
+                </tr>
 
-                    <div v-if="group.trustedMember">
-                        {{ t("tillitsvalgt") }}:
-                        {{ group.trustedMember?.user.firstName }}
-                        {{ group.trustedMember?.user.lastName }}
-                        <br />
-                        {{ t("mail") }}:
-                        {{ group.trustedMember?.user.username }}@student.ntnu.no
-                    </div>
-                </div>
+                <tr>
+                    <td>{{ t("tillitsvalgt") }}</td>
+                    <td v-if="group.trustedMember">
+                        {{ group.trustedMember.user.firstName }}
+                        {{ group.trustedMember.user.lastName }}
+                    </td>
+                    <td v-else>-</td>
+                    <td v-if="group.trustedMember">
+                        {{ group.trustedMember.user.username }}@student.ntnu.no
+                    </td>
+                    <td v-else>-</td>
+                </tr>
             </NablaTable>
         </div>
     </div>
@@ -137,6 +152,7 @@
 <i18n lang="yaml">
 nb:
     kontakt: Kontakt
+    undergrupper: Undergrupper
     for-bedriftshenvendelser: For bedriftshenvendelser
     gruppeleder: Gruppeleder
     mail: Mail
@@ -152,8 +168,10 @@ nb:
     koordinator: Koordinator
     bedkomsjef: Bedkomsjef
     arrangementsjef: Arrangementsjef
+
 en:
     kontakt: Contact
+    undergrupper: Subgroups
     for-bedriftshenvendelser: For bedriftshenvendelser
     gruppeleder: Group leader
     mail: Mail
