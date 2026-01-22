@@ -31,68 +31,97 @@
             </router-link>
         </div>
     </div>
-    <div class="mx-12 my-12 flex"></div>
 
-    <div class="flex justify-center">
-        <h2 class="mb-3 text-title-4 font-semibold">
-            {{ t("kontaktinfo-til-styret") }}
-        </h2>
-    </div>
-    <div class="w-250 flex justify-center">
-        <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
-            <tr>
-                <td>{{ t("hele-styret") }}</td>
-                <td>-</td>
-                <td>nabla@nabla.no</td>
-            </tr>
+    <div class="m-8 grid grid-cols-3 gap-4">
+        <div class="mb-3 text-title-4 font-semibold">
+            <h2>{{ t("kontaktinfo-til-styret") }}</h2>
+        </div>
+        <div class="..."></div>
+        <div class="mb-3 text-title-4 font-semibold">
+            Nabla - {{ t("kontakt") }}
+        </div>
+        <div class="w-250 col-span-2 flex">
+            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
+                <tr>
+                    <td>{{ t("hele-styret") }}</td>
+                    <td>-</td>
+                    <td>nabla@nabla.no</td>
+                </tr>
 
-            <tr>
-                <td>{{ t("leder") }}</td>
-                <td>Håkon Lindgård Olsen</td>
-                <td>leder@nabla.no</td>
-            </tr>
+                <tr>
+                    <td>{{ t("leder") }}</td>
+                    <td>Håkon Lindgård Olsen</td>
+                    <td>leder@nabla.no</td>
+                </tr>
 
-            <tr>
-                <td>{{ t("nestleder") }}</td>
-                <td>Sigve Runde Barlaug</td>
-                <td>nestleder@nabla.no</td>
-            </tr>
-            <tr>
-                <td>{{ t("faddersjef/sektretær") }}</td>
-                <td>Eirik Rokk Bache</td>
-                <td>sekretaer@nabla.no</td>
-            </tr>
-            <tr>
-                <td>{{ t("økonomiansvarlig") }}</td>
-                <td>Juliane Mundal</td>
-                <td>kasserer@nabla.no</td>
-            </tr>
-            <tr>
-                <td>{{ t("koordinator") }}</td>
-                <td>Ole Marius Green</td>
-                <td>koordinator@nabla.no</td>
-            </tr>
-            <tr>
-                <td>{{ t("bedkomsjef") }}</td>
-                <td>Sondre Tønder Sangolt</td>
-                <td>bedriftskontakt@nabla.no</td>
-            </tr>
-            <tr>
-                <td>{{ t("arrangementsjef") }}</td>
-                <td>Cornelia Fure</td>
-                <td>arrsjef@nabla.no</td>
-            </tr>
+                <tr>
+                    <td>{{ t("nestleder") }}</td>
+                    <td>Sigve Runde Barlaug</td>
+                    <td>nestleder@nabla.no</td>
+                </tr>
+                <tr>
+                    <td>{{ t("faddersjef/sektretær") }}</td>
+                    <td>Eirik Rokk Bache</td>
+                    <td>sekretaer@nabla.no</td>
+                </tr>
+                <tr>
+                    <td>{{ t("økonomiansvarlig") }}</td>
+                    <td>Juliane Mundal</td>
+                    <td>kasserer@nabla.no</td>
+                </tr>
+                <tr>
+                    <td>{{ t("koordinator") }}</td>
+                    <td>Ole Marius Green</td>
+                    <td>koordinator@nabla.no</td>
+                </tr>
+                <tr>
+                    <td>{{ t("bedkomsjef") }}</td>
+                    <td>Sondre Tønder Sangolt</td>
+                    <td>bedriftskontakt@nabla.no</td>
+                </tr>
+                <tr>
+                    <td>{{ t("arrangementsjef") }}</td>
+                    <td>Cornelia Fure</td>
+                    <td>arrsjef@nabla.no</td>
+                </tr>
 
-            <!--       Gjelder kun ved jubileum
+                <!--       Gjelder kun ved jubileum
             <tr> 
                 <td>Jubileumssjef</td>
                 <td>-</td>
                 <td>jubileumssjef@nabla.no</td>
             </tr>
 -->
-        </NablaTable>
+            </NablaTable>
+        </div>
+
+        <div class="...">
+            <p>
+                Har du en superkul idé til noe nytt vi kan gjøre i Nabla? Savner
+                du noe, eller har du en tilbakemelding til oss som drifter
+                linjeforeningen? Da tar Styret gjerne imot tilbakemelding på
+                mail til nabla [Ætt] nabla.no. Styret ønsker gjerne hjelp fra
+                dere alle til å gjøre Nabla til en best mulig linjeforening. Vi
+                ønsker derfor alle mulige tilbakemeldinger dersom du har noe på
+                hjertet, enten det er ris eller ros. Det kan være alt fra et
+                ønskearrangement for Arrkom til eventuelle problem eller
+                forbedringer i Nabla. Dersom saken angår noen i Styret, kan du
+                gjerne sende mail til PostKom gjennom postkom [Ætt] nabla.no som
+                et mellomledd for klager til Styret. Alle tilbakemeldinger og
+                forslag vil gjennomgås på styremøter og behandles av Styret.
+            </p>
+            <p>
+                Det er også mulig å sende en mail til de tillitsvalgte ved
+                instituttene. Deres kontaktinformasjon finner du på
+                tillitsvalgtsida. ITV-ene tar imot blant annet forslag til
+                faglige eller studierelaterte endringer. De vil bringe
+                forslagene dine videre til ledelsen. Husk at du også kan
+                kontakte ITV-ene ved utfordringer med emner og undervisere.
+            </p>
+        </div>
     </div>
-    <h1 class="mx-12 text-title-4 font-semibold">
+
+    <h1 class="mx-12 my-8 text-title-4 font-semibold">
         {{ t("undergrupper") }}
     </h1>
     <div class="flex-rows mx-12 my-10 justify-center">
@@ -115,10 +144,7 @@
                 </span>
             </h2>
 
-            <NablaTable
-                :column-titles="['Stilling', 'Navn', 'Mail']"
-                class="table-fixed"
-            >
+            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
                 <tr>
                     <td>{{ t("leder") }}</td>
                     <td v-if="group.leader?.user">
