@@ -6,7 +6,7 @@
 
     const quotes = [
         "intersection",
-        "takeon",
+        "takyon",
         "limit",
         "null",
         "waveform",
@@ -75,7 +75,7 @@
 <i18n lang="yaml">
 nb:
     intersection: "Snittet av sidene våre og søket er et tomt sett."
-    takeon: "Der var browseren din raskere enn lyset. Siden fins ikke enda, jo!"
+    takyon: "Der var browseren din raskere enn lyset. Siden fins ikke enda, jo!"
     limit: "Det fins en epsilon større enn null som peker denne sida mot en delta som går mot null."
     "null": "Segmentation fault (core dumped)"
     waveform: "Nettsida kollapset da du observerte et sted nettstedet ikke var."
@@ -85,7 +85,7 @@ nb:
 
 en:
     intersection: "The intersection of our pages and the URL leads to an empty set."
-    takeon: "Your browser used technology so advanced the bits travelled back in time. The page doesn't exist yet!"
+    takyon: "Your browser used technology so advanced the bits travelled back in time. The page doesn't exist yet!"
     limit: "There exists an epsilon greater than zero that goes towards a delta pointing this page towards zero"
     "null": "Segmentation fault (core dumped)"
     waveform: "The website collapsed upon your observation of a place it could not be."
