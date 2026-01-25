@@ -121,7 +121,16 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                 logo,
                 mailList: mail_list,
                 leaderMail: leader_mail,
-                leader,
+                leader: nabla_users!nabla_groups_leader_fkey(
+                    username: username,
+                    firstName: first_name,
+                    lastName: last_name
+                ),
+                trustedMember: nabla_users!nabla_groups_trusted_member_fkey(
+                    ntnuEmail: ntnu_email,
+                    firstName: first_name,
+                    lastName: last_name
+                ),
                 about,
                 groupPhoto: group_photo,
                 dateBegan: date_began
@@ -140,10 +149,9 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                     : undefined,
                 logo: makeURL(group.logo),
                 mailList: group.mailList,
-                leader: group.leader
-                    ? { user: { username: group.leader } }
-                    : undefined,
+                leader: group.leader,
                 leaderMail: group.leaderMail,
+                trustedMember: group.trustedMember,
                 about: group.about,
                 groupPhoto: makeURL(group.groupPhoto),
                 dateBegan: new Date(group.dateBegan),

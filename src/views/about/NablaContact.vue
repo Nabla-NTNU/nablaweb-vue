@@ -10,7 +10,7 @@
 </script>
 
 <template>
-    <div class="mx-12 flex flex-col m:my-12 m:flex-row">
+    <div class="mx-8 flex flex-col m:my-12 m:flex-row">
         <div>
             <h1 class="text-title-3 font-semibold">
                 {{ t("kontakt") }}
@@ -19,7 +19,7 @@
 
         <div class="m:grow">
             <br class="m:hidden" />
-            <!--Flytter knappen til høyre side-->
+            <!--Flytter knappen til høyre-->
         </div>
 
         <div>
@@ -91,7 +91,7 @@
                 <td>-</td>
                 <td>jubileumssjef@nabla.no</td>
             </tr>
--->
+                -->
             </NablaTable>
         </div>
 
@@ -112,11 +112,10 @@
             </p>
             <p>
                 Det er også mulig å sende en mail til de tillitsvalgte ved
-                instituttene. Deres kontaktinformasjon finner du på
-                tillitsvalgtsida. ITV-ene tar imot blant annet forslag til
-                faglige eller studierelaterte endringer. De vil bringe
-                forslagene dine videre til ledelsen. Husk at du også kan
-                kontakte ITV-ene ved utfordringer med emner og undervisere.
+                instituttene. ITV-ene tar imot blant annet forslag til faglige
+                eller studierelaterte endringer. De vil bringe forslagene dine
+                videre til ledelsen. Husk at du også kan kontakte ITV-ene ved
+                utfordringer med emner og undervisere.
             </p>
         </div>
     </div>
@@ -146,27 +145,29 @@
 
             <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
                 <tr>
-                    <td>{{ t("leder") }}</td>
-                    <td v-if="group.leader?.user">
-                        {{ group.leader?.user.firstName }}
-                        {{ group.leader?.user.lastName }}
+                    <td class="left-0 bg-inherit border-r sticky z-10">
+                        {{ t("leder") }}
                     </td>
-                    <td v-else>-</td>
-                    <td v-if="group.leaderMail">
-                        {{ group.leaderMail }}
+
+                    <td class="w-1/2">
+                        <span v-if="group.leader">
+                            {{ group.leader.firstName }}
+                            {{ group.leader.lastName }}
+                        </span>
+                        <span v-else>-</span>
                     </td>
-                    <td v-else>-</td>
+                    <td class="w-1/4">{{ group.leaderMail || "-" }}</td>
                 </tr>
 
                 <tr>
                     <td>{{ t("tillitsvalgt") }}</td>
                     <td v-if="group.trustedMember">
-                        {{ group.trustedMember.user.firstName }}
-                        {{ group.trustedMember.user.lastName }}
+                        {{ group.trustedMember.firstName }}
+                        {{ group.trustedMember.lastName }}
                     </td>
                     <td v-else>-</td>
                     <td v-if="group.trustedMember">
-                        {{ group.trustedMember.user.username }}@student.ntnu.no
+                        {{ group.trustedMember.ntnuEmail }}
                     </td>
                     <td v-else>-</td>
                 </tr>

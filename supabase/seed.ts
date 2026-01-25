@@ -131,6 +131,7 @@ const groups: NablaGroupDict = {
         leader_mail: "arrsjef@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcOBN0lTkj6KlhMZh2-auUo_fZWROoupD8MP7s4HX3mWZGmgdHArYsrQONBCKkJbU4P5oerMFRvxEYI61ShI4o_WORi3aSixAvaP0OXtMz3e02oysiTqa3LMy6CFUKZCfDP-5l5Jev7YjAANeYHJJoT2q0?key=aeJqyczQFfxPqAbucOqYxBAM",
     },
@@ -143,6 +144,7 @@ const groups: NablaGroupDict = {
         leader_mail: "bedriftskontakt@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
     },
     educom: {
@@ -153,6 +155,7 @@ const groups: NablaGroupDict = {
         leader_mail: "ambassador@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://lh7-rt.googleusercontent.com/docsz/AD_4nXciCrS_lM0nIUT-sRSQ4KySZwkB-xITYUpyWQpJiYynXjm21fPHLsWd8ouLX0wLUz2ttyIw_ea_mOkuuR4gft7obb-eagUUh1oaSm1mfDFez0f1zoO4k0gzvM2Ys229n3a6MYXPFC90oa8Yt2_zqkYz3_c?key=aeJqyczQFfxPqAbucOqYxBAM",
     },
@@ -163,6 +166,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Skjermbilde_2024-11-06_kl._08.17.07.png.250x250_q85_crop-smart.png",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://lh7-rt.googleusercontent.com/docsz/AD_4nXftykOYRdyz1BUXGUbB_c4LL06VAT82mABdN_VrmkaGK40cbcP37F-zTcV2q3Bo8F7iEls0e2ksUr4EuwvImQ9yYDwG_ywe0-eP38v49-dEVDyy2fvbA5FJCAOEg-pBYYEwbIBBfd0Mj3lZwmy_DK9TPuDn?key=KyKQVimNYgblVFL0RAGYWJpc",
     },
@@ -175,6 +179,7 @@ const groups: NablaGroupDict = {
         leader_mail: "kjellersjef@nabla.no",
         about: faker.lorem.paragraphs(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://lh7-rt.googleusercontent.com/docsz/AD_4nXe4MH5vyqY0EpjCWbVARuCBwrkYYF1a02soMPSAciZSaPXFYVoTXvLqZWh4TCRjgHICAunUc8HGpK74wbd_s7OApNZX9X038BUNhr7ugESwWNHt46KtHSzKaVb9dW1eNUd_N61yhbdUgyh9OW3J-lf5wwE?key=Ub7xtpmS0D3jF3uiC4Wgdvhi",
     },
@@ -187,6 +192,7 @@ const groups: NablaGroupDict = {
         leader_mail: "leder.kontorkom@nabla.no",
         about: faker.lorem.paragraph(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://lh7-rt.googleusercontent.com/docsz/AD_4nXc2sD9zUyyPowNu3gcaf4tYj6pSFYfUujQ0wQ4-40KVb1Pa-0CP0zeUUwBbBWM4Y517-KnlIweRcllEQxIu3DHFBuGyk7Ts4w9L6unUygm1NvPeCSiI1GEvSGP3s6m32bnRmp2Uwg?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
     },
@@ -199,6 +205,7 @@ const groups: NablaGroupDict = {
         leader_mail: "leder.prokom@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/com_pictures/HU5A9317.jpeg",
     },
@@ -211,6 +218,7 @@ const groups: NablaGroupDict = {
         leader_mail: "redaktor@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/content/Nabladet_logo_bla.JPG",
     },
@@ -222,6 +230,7 @@ const groups: NablaGroupDict = {
         leader_mail: "sportskom@nabla.no",
         about: faker.person.bio(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-163.jpg",
     },
@@ -232,6 +241,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/styret.jpeg.250x250_q85_crop-smart.jpg",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
     },
     webkom: {
@@ -245,6 +255,7 @@ const groups: NablaGroupDict = {
         group_photo:
             "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg",
         leader: "admin",
+        trusted_member: getRandomElement(Object.keys(users)),
     },
     casinus: {
         name: "Casinus",
@@ -253,6 +264,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Casinus_2.png.250x250_q85_crop-smart.png",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://lh7-rt.googleusercontent.com/docsz/AD_4nXd04_Y2dquwJ2nhmcTVY8vStUNCQmIZUqA8RBPs-nJDG_KoJ3C_-EA_vt-4dw-QEHmW4GbIgS3476nSApEu0DbGbb3goKWOX9VqssqL2U6hDP5SlgHJpWWU049jYSJVv8FTZOq-DQ?key=WJSp9qahF5-MtEm6b_9b_Qkh",
     },
@@ -265,6 +277,7 @@ const groups: NablaGroupDict = {
         leader_mail: "koreolis.kraften@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/content/koreolis-2025.jpeg",
     },
@@ -275,6 +288,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kultkom.png.250x250_q85_crop-smart.png",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/content/nabla_under_gruppe_kultkom.jpg",
     },
@@ -285,6 +299,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lopelogo.png.250x250_q85_crop-smart.png",
         about: faker.lorem.paragraphs(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
     },
     makernabla: {
@@ -294,6 +309,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/maker_nabla_vrtWpwO.jpg.250x250_q85_crop-smart.jpg",
         about: faker.lorem.paragraphs(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
     },
     m3: {
@@ -304,6 +320,7 @@ const groups: NablaGroupDict = {
         leader_mail: "maxwells.muntre@nabla.no",
         about: faker.lorem.paragraphs(5),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/com_pictures/nabla_under_gruppe_foto-091.jpg",
     },
@@ -317,6 +334,7 @@ const groups: NablaGroupDict = {
         leader_mail: "revy@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/HU5A9343.jpg",
     },
     nav: {
@@ -326,6 +344,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/NAV_prof1.PNG.250x250_q85_crop-smart.png",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
     },
     finans: {
@@ -335,6 +354,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/5F7AA176-901B-4E5A-AB0F-0AE26615B52B_1_201_a.jpeg.250x250_q85_crop-smart.jpg",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/p1330291.jpg",
     },
     nff: {
@@ -344,6 +364,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Nff-Logo-1.png.250x250_q85_crop-smart.jpg",
         about: faker.lorem.paragraphs(2),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/P1270300.jpg",
     },
     handball: {
@@ -353,6 +374,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/static/img/nabla-black.svg",
         about: faker.lorem.paragraph(3),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcPoGs6cAvR6_xpKCkxwPhUmiTb2cfvZhE5_Jp3-itV027PIzVsZyQSr1z26tkqV-Nrg85GxxVIPdtU001kdac8OQI9yCDG54MMQ0MaTKQJf0zlKeyXQ4e8Oq5pkO2zNTs_GrAOeQ?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
     },
@@ -363,6 +385,7 @@ const groups: NablaGroupDict = {
         logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/klatregrLogo4.png.250x250_q85_crop-smart.png",
         about: faker.lorem.paragraph(5),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/P1270842.jpg",
     },
     olbryggerlaug: {
@@ -373,6 +396,7 @@ const groups: NablaGroupDict = {
         leader_mail: "bryggemester@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/content/nabla_under_gruppe_ølbryggerlaug_2425.jpg",
     },
@@ -384,6 +408,7 @@ const groups: NablaGroupDict = {
         mail_list: "postkom@nabla.no",
         about: faker.lorem.paragraphs(5),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-169.jpg",
     },
@@ -395,6 +420,7 @@ const groups: NablaGroupDict = {
         leader_mail: "quizkom@nabla.no",
         about: faker.lorem.sentence(2),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/quizkom-102.jpg",
     },
     reka: {
@@ -405,6 +431,7 @@ const groups: NablaGroupDict = {
         leader_mail: "reka@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/Reka.JPG",
     },
     reven: {
@@ -415,6 +442,7 @@ const groups: NablaGroupDict = {
         leader_mail: "reven@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo: "https://nabla.no/media/uploads/content/reven-2025.jpg",
     },
     pod: {
@@ -425,6 +453,7 @@ const groups: NablaGroupDict = {
         leader_mail: "skraattcast@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "http://nabla.no/media/uploads/content/skrattcast-2025.jpg",
     },
@@ -436,6 +465,7 @@ const groups: NablaGroupDict = {
         mail_list: "gravitones@nabla.no",
         about: faker.lorem.text(),
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
         group_photo:
             "https://nabla.no/media/uploads/content/gravitones2425.jpg",
     },
@@ -449,6 +479,7 @@ const groups: NablaGroupDict = {
         about: `<img src: "https://nabla.no/media/uploads/content/TheStokes.jpg" width="100%"> <br> ${faker.lorem.text()}`,
         group_photo: "https://nabla.no/media/uploads/content/TheStokes.jpg",
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
     },
     utfluks: {
         id: "utfluks",
@@ -459,6 +490,7 @@ const groups: NablaGroupDict = {
         about: faker.lorem.text(),
         group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
         leader: getRandomElement(Object.keys(users)),
+        trusted_member: getRandomElement(Object.keys(users)),
     },
 }
 
