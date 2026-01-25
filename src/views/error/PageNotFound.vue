@@ -4,7 +4,15 @@
 
     const { t } = useI18n()
 
-    const quotes = ["union", "takeon", "limit", "null", "waveform", "set"]
+    const quotes = [
+        "intersection",
+        "takeon",
+        "limit",
+        "null",
+        "waveform",
+        "set",
+        "equation",
+    ]
 
     const quote = ref()
 
@@ -66,20 +74,22 @@
 
 <i18n lang="yaml">
 nb:
-    union: "Union av sidene våre og søknaden er et tomt sett."
+    intersection: "Snittet av sidene våre og søket er et tomt sett."
     takeon: "Der var browseren din raskere enn lyset. Siden fins ikke enda, jo!"
-    limit: "Det fins et epsilon større enn null som peker denne sida mot en delta som går mot null."
+    limit: "Det fins en epsilon større enn null som peker denne sida mot en delta som går mot null."
     "null": "Segmentation fault (core dumped)"
-    waveform: "Nettsida kollapset da du observerte et sted nesstedet ikke var."
+    waveform: "Nettsida kollapset da du observerte et sted nettstedet ikke var."
     set: "En universal mengde av alle mengder som ikke inneholder seg selv inneholder ikke denne siden."
     message: "Stemmer dette ittj? Gjerne gi WebKom en beskjed!"
+    equation: "4 + e**i*π - 4! - (1+2+3) - 7? = 42"
 
 en:
-    union: "The union of our pages and the URL leads to an empty set."
+    intersection: "The intersection of our pages and the URL leads to an empty set."
     takeon: "Your browser used technology so advanced the bits travelled back in time. The page doesn't exist yet!"
     limit: "There exists an epsilon greater than zero that goes towards a delta pointing this page towards zero"
     "null": "Segmentation fault (core dumped)"
     waveform: "The website collapsed upon your observation of a place it could not be."
     set: "A universal set cannot contain this page, as it does not exist."
     message: "Is this a mistake? Please let WebKom know!"
+    equation: "4 + e**i*π - 4! - (1+2+3) - 1+2+3+4+5+6+7 = 42"
 </i18n>

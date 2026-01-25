@@ -30,6 +30,7 @@
         "Kanelbolleonsdag 🍴",
         "Sconestorsdag 🫓",
         "Fredagsquiz ❔",
+        "Se revyen 🎭",
     ]
 
     type HeaderItem = {
