@@ -91,5 +91,5 @@ en:
     waveform: "The website collapsed upon your observation of a place it could not be."
     set: "A universal set cannot contain this page, as it does not exist."
     message: "Is this a mistake? Please let WebKom know!"
-    equation: "4 + e**i*π - 4! - (1+2+3) - 1+2+3+4+5+6+7 = 42"
+    equation: "4 + e**i*π - 4! - (1+2+3) - 7? = 42"
 </i18n>
