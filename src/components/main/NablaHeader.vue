@@ -30,6 +30,10 @@
         "Kanelbolleonsdag 🍴",
         "Sconestorsdag 🫓",
         "Fredagsquiz ❔",
+        "Se revyen 🎭",
+        "Hvem er Haakon Børs Lind ❓",
+        "Det gyldne integral ∫",
+        "'As the young people say this is Skibidi' 6️⃣7️⃣",
     ]
 
     type HeaderItem = {

@@ -14,7 +14,7 @@
             <div class="m-3 font-lato text-m">
                 <h4 class="mb-4 text-l">{{ t("adresse") }}</h4>
                 <p>
-                    Linjeforeningen Nabla<br />Kjemiblokk 2, Realfagsbygget<br />Sæm
+                    Linjeforeningen Nabla<br />Kjemiblokk 2, Realfagsbygget<br />Sem
                     Sælands vei 10, NTNU<br />7034 Trondheim, Norway
                 </p>
             </div>
