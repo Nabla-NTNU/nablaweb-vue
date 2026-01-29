@@ -12,7 +12,7 @@
 <template>
     <div class="mx-8 flex flex-col m:my-12 m:flex-row">
         <div>
-            <h1 class="text-title-3 font-semibold">
+            <h1 class="text-title-2 font-semibold">
                 {{ t("kontakt") }}
             </h1>
         </div>
@@ -137,10 +137,7 @@
                 </router-link>
             </h2>
             <h2 class="mb-3 text-title-5 font-semibold">
-                <span v-if="group.mailList">
-                    {{ t("gruppemail") }}:
-                    {{ group.mailList }}
-                </span>
+                {{ group.mailList || "-" }}
             </h2>
 
             <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
@@ -151,8 +148,13 @@
 
                     <td class="w-1/2">
                         <span v-if="group.leader">
-                            {{ group.leader.firstName }}
-                            {{ group.leader.lastName }}
+                            <router-link
+                                :to="`/profile/${group.leader.username}`"
+                                class="text-primary-600 hover:underline"
+                            >
+                                {{ group.leader.firstName }}
+                                {{ group.leader.lastName }}
+                            </router-link>
                         </span>
                         <span v-else>-</span>
                     </td>
@@ -162,8 +164,13 @@
                 <tr>
                     <td>{{ t("tillitsvalgt") }}</td>
                     <td v-if="group.trustedMember">
-                        {{ group.trustedMember.firstName }}
-                        {{ group.trustedMember.lastName }}
+                        <router-link
+                            :to="`/profile/${group.trustedMember.username}`"
+                            class="text-primary-600 hover:underline"
+                        >
+                            {{ group.trustedMember.firstName }}
+                            {{ group.trustedMember.lastName }}
+                        </router-link>
                     </td>
                     <td v-else>-</td>
                     <td v-if="group.trustedMember">
