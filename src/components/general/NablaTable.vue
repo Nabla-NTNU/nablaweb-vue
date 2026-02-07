@@ -10,11 +10,9 @@
             <thead v-if="columnTitles">
                 <tr>
                     <th
-                        v-for="(colTitle, index) in columnTitles"
+                        v-for="colTitle in columnTitles"
                         :key="colTitle"
-                        :class="{
-                            'left-0 sticky z-10 bg-neutral': index === 0,
-                        }"
+                        class="top-0 border-black/10 sticky z-10 border-b-2 bg-neutral p-4 text-center"
                     >
                         {{ colTitle }}
                     </th>
@@ -23,7 +21,7 @@
 
             <!-- TODO Change colour after hovering. Should be as simple as adding [&>tr:hover]:!bg-[colour] to the class underneath -->
             <tbody
-                class="text-center [&>tr:nth-child(evem)]:bg-neutral [&>tr:nth-child(odd)]:bg-neutralish [&>tr>td]:p-4"
+                class="text-center [&>tr:nth-child(even)]:bg-neutral [&>tr:nth-child(odd)]:bg-neutralish [&>tr>td]:p-4"
             >
                 <slot />
             </tbody>

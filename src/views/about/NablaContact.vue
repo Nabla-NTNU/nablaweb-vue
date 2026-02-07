@@ -24,7 +24,7 @@
 
         <div>
             <router-link
-                class="rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
+                class="rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
                 to="/for-bedrifter"
             >
                 {{ t("for-bedriftshenvendelser") }}
@@ -32,9 +32,9 @@
         </div>
     </div>
 
-    <div class="m-8 grid grid-cols-3 gap-4">
-        <div class="mb-3 text-title-4 font-semibold">
-            <h2>{{ t("kontaktinfo-til-styret") }}</h2>
+    <div class="mx-8 grid grid-cols-3 gap-4">
+        <div class="mb-3 text-title-3 font-semibold">
+            <h2>{{ t("styret") }}</h2>
         </div>
         <div class="..."></div>
         <div class="mb-3 text-title-4 font-semibold">
@@ -120,66 +120,68 @@
         </div>
     </div>
 
-    <h1 class="mx-12 my-8 text-title-4 font-semibold">
+    <h1 class="mx-8 my-8 text-title-3 font-semibold">
         {{ t("undergrupper") }}
     </h1>
-    <div class="flex-rows mx-12 my-10 justify-center">
-        <div
-            v-for="group in groups.filter((g) => g.id !== 'styret')"
-            :key="group.id"
+
+    <div class="flex-rows mx-8 my-10 justify-center">
+        <NablaTable
+            :column-titles="[
+                '',
+                t('gruppemail'),
+                t('leder'),
+                t('ledermail'),
+                t('tillitsvalgt'),
+            ]"
         >
-            <h2 class="mb-3 text-title-4 font-semibold">
-                <router-link
-                    :to="`/undergrupper/${group.id}`"
-                    class="text-primary hover:underline"
-                >
-                    {{ group.name }}
-                </router-link>
-            </h2>
-            <h2 class="mb-3 text-title-5 font-semibold">
-                {{ group.mailList || "-" }}
-            </h2>
-
-            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
-                <tr>
-                    <td class="left-0 bg-inherit border-r sticky z-10">
-                        {{ t("leder") }}
-                    </td>
-
-                    <td class="w-1/2">
-                        <span v-if="group.leader">
-                            <router-link
-                                :to="`/profile/${group.leader.username}`"
-                                class="text-primary-600 hover:underline"
-                            >
-                                {{ group.leader.firstName }}
-                                {{ group.leader.lastName }}
-                            </router-link>
-                        </span>
-                        <span v-else>-</span>
-                    </td>
-                    <td class="w-1/4">{{ group.leaderMail || "-" }}</td>
-                </tr>
-
-                <tr>
-                    <td>{{ t("tillitsvalgt") }}</td>
-                    <td v-if="group.trustedMember">
+            <tr
+                v-for="group in groups.filter(
+                    (g) => g.id !== 'styret' && g.id !== 'bedkom',
+                )"
+                :key="group.id"
+            >
+                <td>
+                    <span class="text-title-4">
                         <router-link
-                            :to="`/profile/${group.trustedMember.username}`"
-                            class="text-primary-600 hover:underline"
+                            :to="`/undergrupper/${group.id}`"
+                            class="text-link"
                         >
-                            {{ group.trustedMember.firstName }}
-                            {{ group.trustedMember.lastName }}
+                            {{ group.name }}
                         </router-link>
-                    </td>
-                    <td v-else>-</td>
-                    <td v-if="group.trustedMember">
-                        {{ group.trustedMember.ntnuEmail }}
-                    </td>
-                    <td v-else>-</td>
-                </tr>
-            </NablaTable>
-        </div>
+                    </span>
+                </td>
+
+                <td>
+                    <span>
+                        {{ group.mailList || "-" }}
+                    </span>
+                </td>
+                <td>
+                    <router-link
+                        v-if="group.leader"
+                        :to="`/profile/${group.leader.username}`"
+                        class="text-link"
+                    >
+                        {{ group.leader.firstName }} {{ group.leader.lastName }}
+                    </router-link>
+                    <span v-else>-</span>
+                </td>
+                <td>
+                    {{ group.leaderMail || "-" }}
+                </td>
+                <td>
+                    <router-link
+                        v-if="group.trustedMember"
+                        :to="`/profile/${group.trustedMember.username}`"
+                        class="text-link"
+                    >
+                        {{ group.trustedMember.firstName }}
+                        {{ group.trustedMember.lastName }}
+                    </router-link>
+                    <span v-else>-</span>
+                </td>
+            </tr>
+        </NablaTable>
     </div>
 </template>
 
@@ -193,7 +195,7 @@ nb:
     ledermail: Ledermail
     gruppemail: Gruppemail
     tillitsvalgt: Tillitsvalgt
-    kontaktinfo-til-styret: Kontaktinfo til styret
+    styret: Styret
     hele-styret: Hele Styret
     leder: Leder
     nestleder: Nestleder
@@ -212,9 +214,9 @@ en:
     ledermail: Leadermail
     gruppemail: Group mail
     tillitsvalgt: Trusted member
-    kontaktinfo-til-styret: Contact info for the board
+    styret: The Board
     hele-styret: The whole board
-    leder: The leader
+    leder: Leader
     nestleder: Assistant leader
     faddersjef/sektretær: Chief of buddies and secretary
     økonomiansvarlig: Financal manager

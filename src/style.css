@@ -11,6 +11,9 @@ to our main bg colour, and stretches it */
     body {
         @apply bg-primary;
     }
+    .text-link {
+        @apply cursor-pointer text-primary transition-colors duration-200 visited:text-primary-light hover:text-secondary hover:underline;
+    }
 }
 
 .reset-tailwind * {
