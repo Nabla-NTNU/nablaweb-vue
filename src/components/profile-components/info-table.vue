@@ -59,7 +59,7 @@
                 </td>
             </tr>
 
-            <tr v-if="!!user?.pastMemberOf">
+            <tr v-if="!!user?.pastMemberOf && user.pastMemberOf.length > 0">
                 <td>{{ t("tidelegareMedlemskap") }}</td>
                 <td>
                     <ul>
