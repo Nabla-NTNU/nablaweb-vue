@@ -1,14 +1,20 @@
 <script setup lang="ts">
-    import { useI18n } from "vue-i18n"
-    const { locale } = useI18n()
-
+    import { useRoute } from "vue-router"
     import { useAuth } from "@/composables/useAuth"
     import LoginCard from "@/components/general/LoginCard.vue"
     import ThemeToggler from "@/components/depricated/ThemeToggle.vue"
     import MobileProfile from "@/components/profile-components/MobileProfile.vue"
     import DesktopProfile from "@/components/profile-components/DesktopProfile.vue"
 
-    const { isAuthenticated, signOut, username } = useAuth()
+    import { useI18n } from "vue-i18n"
+    const { locale } = useI18n()
+
+    const { isAuthenticated, signOut, username: userLoggedIn } = useAuth()
+
+    const route = useRoute()
+    const userID = route.params.id as string
+
+    const username = userID || userLoggedIn.value
 </script>
 
 <template>

@@ -58,6 +58,10 @@ const routes = [
 
     // Logged in utilities
     { path: "/profil", component: ProfilView },
+    {
+        path: "/profil/:username",
+        component: ProfilView,
+    },
     { path: "/profil/edit", component: ProfileEditing },
     // { path: "/golf", component: NablaGolf },
     // { path: "/refusjon", component: NablaRefund },
