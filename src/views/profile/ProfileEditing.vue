@@ -65,6 +65,12 @@
         setBirthday(birthday.value)
     }
 
+    // The HTML input tag requires dates of the form YYYY-MM-DD
+    const formatDate = (date: Date) => {
+        return date.toISOString().split("T")[0]
+    }
+
+    // Filling in default values
     watch(user, () => {
         firstname.value = user.value?.firstName
         lastname.value = user.value?.lastName
@@ -73,8 +79,9 @@
         if (publicNotList.value) {
             listEmail.value = user.value?.listEmail
         }
-        birthday.value = user.value?.birthday?.toDateString() || undefined
-        console.log(birthday.value?.toString())
+        birthday.value = user.value?.birthday
+            ? formatDate(user.value.birthday)
+            : undefined
     })
 </script>
 
