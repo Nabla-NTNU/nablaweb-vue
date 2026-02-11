@@ -179,15 +179,6 @@ export function useUser(username: string) {
                     user.value[fieldName] = toUser
                         ? toUser(newValue)
                         : (newValue as unknown as NablaUser[K])
-
-                    console.log(
-                        "New value for ",
-                        fieldName,
-                        ": ",
-                        toUser
-                            ? toUser(newValue)
-                            : (newValue as unknown as NablaUser[K]),
-                    )
                 }
             } catch (error) {
                 console.error(
@@ -202,14 +193,14 @@ export function useUser(username: string) {
 
     function getUserSetters() {
         const setFirstName = createFieldSetter("firstName", "first_name")
-        const setLastName = createFieldSetter("firstName", "last_name")
+        const setLastName = createFieldSetter("lastName", "last_name")
         const setProfilePicture = createFieldSetter(
             "profilePicture",
             "profile_picture",
         )
         const setIsActive = createFieldSetter("isActive", "is_active")
-        const setNTNUEmail = createFieldSetter("ntnuEmail", "ntnu_email")
-        const setListEmail = createFieldSetter("publicEmail", "public_email")
+        const setPublicEmail = createFieldSetter("publicEmail", "public_email")
+        const setListEmail = createFieldSetter("listEmail", "list_email")
         const setAbout = createFieldSetter("about", "about")
         const setBirthday = createFieldSetter("birthday", "birthday")
         const setWebsite = createFieldSetter("website", "website")
@@ -219,7 +210,7 @@ export function useUser(username: string) {
             setLastName,
             setProfilePicture,
             setIsActive,
-            setNTNUEmail,
+            setPublicEmail,
             setListEmail,
             setAbout,
             setBirthday,
