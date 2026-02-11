@@ -5,11 +5,10 @@
     import router from "@/router"
     import ImagePicker from "@/components/group-page/ImagePicker.vue"
     // import MarkdownField from "@/components/group-page/MarkdownField.vue"
+    import { onUpdated, watch } from "vue"
 
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
-
-    import { onUpdated } from "vue"
 
     const { isAuthenticated, username } = useAuth()
 
@@ -22,14 +21,14 @@
     const { user, getUserSetters } = useUser(username.value ?? "")
 
     const {
-        //     setFirstName,
-        //     setLastName,
+        setFirstName,
+        setLastName,
         setProfilePicture,
         //     setIsActive,
-        //     setNTNUEmail,
-        //     setListEmail,
+        setPublicEmail,
+        setListEmail,
         //     setAbout,
-        //     setBirthday,
+        setBirthday,
         //     setWebsite,
     } = getUserSetters()
 
@@ -48,37 +47,107 @@
     const firstname = defineModel<string>("firstname")
     const lastname = defineModel<string>("lastname")
     const publicEmail = defineModel<string>("publicEmail")
-    const publicNotList = defineModel<string>("publicNotList")
+    const publicNotList = defineModel<boolean>("publicNotList")
     const listEmail = defineModel<string>("listEmail")
+    const birthday = defineModel<string>("birthday")
+
+    firstname.value = "test"
+
+    const handleSubmit = () => {
+        setFirstName(firstname.value)
+        setLastName(lastname.value)
+        setPublicEmail(publicEmail.value)
+        if (publicNotList.value) {
+            setListEmail(listEmail.value)
+        } else {
+            setListEmail(publicEmail.value)
+        }
+        setBirthday(birthday.value)
+    }
+
+    watch(user, () => {
+        firstname.value = user.value?.firstName
+        lastname.value = user.value?.lastName
+        publicEmail.value = user.value?.publicEmail
+        publicNotList.value = user.value?.listEmail != user.value?.publicEmail
+        if (publicNotList.value) {
+            listEmail.value = user.value?.listEmail
+        }
+        birthday.value = user.value?.birthday?.toDateString() || undefined
+        console.log(birthday.value?.toString())
+    })
 </script>
 
 <template>
     <div v-if="isAuthenticated && !!user" class="p-20">
-        <div>Test!</div>
+        <div>{{ user.firstName }}</div>
 
-        <form class="h-full w-full p-4">
-            <input
-                v-model="firstname"
-                type="text"
-                name="firstname"
-                autocomplete="given-name"
-                class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
-                :placeholder="t('firstname')"
-                required
-            />
+        <form class="h-full w-full p-4" @submit.prevent="handleSubmit">
+            <div class="relative">
+                <input
+                    id="firstname"
+                    v-model="firstname"
+                    type="text"
+                    name="firstname"
+                    autocomplete="given-name"
+                    required
+                    placeholder=" "
+                    class="peer w-full rounded-xl bg-neutral p-4 pt-6 text-fg"
+                />
 
-            <input
-                v-model="lastname"
-                type="text"
-                name="lastname"
-                autocomplete="family-name"
-                class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
-                :placeholder="t('lastname')"
-                required
-            />
+                <label
+                    for="firstname"
+                    class="peer-[:not(:placeholder-shown)]:top-0 absolute left-4 align-text-top opacity-40 transition-all duration-200 peer-placeholder-shown:top-1/2"
+                >
+                    {{ t("firstname") }}
+                </label>
+            </div>
+
+            <div class="relative">
+                <input
+                    id="firstname"
+                    v-model="firstname"
+                    type="text"
+                    name="firstname"
+                    autocomplete="given-name"
+                    required
+                    placeholder=" "
+                    class="peer w-full rounded-xl bg-neutral p-4 pt-6 text-fg"
+                />
+
+                <label
+                    for="firstname"
+                    class="peer-not-placeholder-shown:top-0 transition-transform: translate absolute left-4 opacity-40 transition-all ease-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2"
+                >
+                    {{ t("firstname") }}
+                </label>
+            </div>
+
+            <div class="flex flex-col s:flex-row s:items-center">
+                <input
+                    v-model="firstname"
+                    type="text"
+                    name="firstname"
+                    autocomplete="given-name"
+                    class="mb-2 mt-2 w-full rounded-xl bg-neutral p-4 text-fg"
+                    :placeholder="t('firstname')"
+                    required
+                />
+
+                <input
+                    v-model="lastname"
+                    type="text"
+                    name="lastname"
+                    autocomplete="family-name"
+                    class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
+                    :placeholder="t('lastname')"
+                    required
+                />
+            </div>
+
             <input
                 v-model="publicEmail"
-                type="text"
+                type="email"
                 name="publicEmail"
                 autocomplete="email"
                 class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
@@ -91,7 +160,7 @@
             <input
                 v-if="publicNotList"
                 v-model="listEmail"
-                type="text"
+                type="email"
                 name="listEmail"
                 autocomplete="email"
                 class="m-4 w-full rounded-xl bg-neutral p-4 text-fg"
@@ -99,13 +168,16 @@
                 required
             />
             <input
+                v-model="birthday"
                 type="date"
                 name="birthday"
                 autocomplete="bday"
                 class="m-4 rounded-xl bg-neutral p-4 text-fg"
-                :placeholder="t('email')"
+                value="10/09/2004"
                 required
             />
+
+            <button type="submit">{{ t("save") }}</button>
         </form>
 
         <ImagePicker
@@ -117,3 +189,24 @@
 
     <div v-else></div>
 </template>
+
+<i18n lang="yaml">
+nb:
+    firstname: Fornavn
+    lastname: Etternavn
+    email: E-post
+    birthday: Bursdag
+    save: Lagre
+en:
+    firstname: First name
+    lastname: Surname
+    email: Email
+    birthday: Birthday
+    save: Save
+nn:
+    firstname: Fornamn
+    lastname: Etternamn
+    email: E-post
+    birthday: Bursdag
+    save: Lagre
+</i18n>
