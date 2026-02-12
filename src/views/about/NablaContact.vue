@@ -32,15 +32,12 @@
         </div>
     </div>
 
-    <div class="mx-8 grid grid-cols-3 gap-4">
-        <div class="mb-3 text-title-3 font-semibold">
+    <div class="mx-8 grid grid-cols-2 gap-x-20">
+        <div class="text-title-3 font-semibold">
             <h2>{{ t("styret") }}</h2>
         </div>
-        <div class="..."></div>
-        <div class="mb-3 text-title-4 font-semibold">
-            Nabla - {{ t("kontakt") }}
-        </div>
-        <div class="w-250 col-span-2 flex">
+        <div class="text-title-4 font-semibold">Andre viktige mailer</div>
+        <div class="...">
             <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
                 <tr>
                     <td>{{ t("hele-styret") }}</td>
@@ -96,27 +93,23 @@
         </div>
 
         <div class="...">
-            <p>
-                Har du en superkul idé til noe nytt vi kan gjøre i Nabla? Savner
-                du noe, eller har du en tilbakemelding til oss som drifter
-                linjeforeningen? Da tar Styret gjerne imot tilbakemelding på
-                mail til nabla [Ætt] nabla.no. Styret ønsker gjerne hjelp fra
-                dere alle til å gjøre Nabla til en best mulig linjeforening. Vi
-                ønsker derfor alle mulige tilbakemeldinger dersom du har noe på
-                hjertet, enten det er ris eller ros. Det kan være alt fra et
-                ønskearrangement for Arrkom til eventuelle problem eller
-                forbedringer i Nabla. Dersom saken angår noen i Styret, kan du
-                gjerne sende mail til PostKom gjennom postkom [Ætt] nabla.no som
-                et mellomledd for klager til Styret. Alle tilbakemeldinger og
-                forslag vil gjennomgås på styremøter og behandles av Styret.
-            </p>
-            <p>
-                Det er også mulig å sende en mail til de tillitsvalgte ved
-                instituttene. ITV-ene tar imot blant annet forslag til faglige
-                eller studierelaterte endringer. De vil bringe forslagene dine
-                videre til ledelsen. Husk at du også kan kontakte ITV-ene ved
-                utfordringer med emner og undervisere.
-            </p>
+            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
+                <tr>
+                    <td>{{ t("alle") + " " + t("gruppeledere") }}</td>
+                    <td>-</td>
+                    <td>gruppeledere@nabla.no</td>
+                </tr>
+                <tr>
+                    <td>{{ t("bnokonomi") }}</td>
+                    <td>Martin Viken</td>
+                    <td>bnokonomi@nabla.no</td>
+                </tr>
+                <tr>
+                    <td>Eureka-{{ t("ansvarlig") }}</td>
+                    <td>Mikkel Brastad</td>
+                    <td>eureka@nabla.no</td>
+                </tr>
+            </NablaTable>
         </div>
     </div>
 
@@ -135,13 +128,11 @@
             ]"
         >
             <tr
-                v-for="group in groups.filter(
-                    (g) => g.id !== 'styret' && g.id !== 'bedkom',
-                )"
+                v-for="group in groups.filter((g) => g.id !== 'styret')"
                 :key="group.id"
             >
                 <td>
-                    <span class="text-title-4">
+                    <span class="text-title-5">
                         <router-link
                             :to="`/undergrupper/${group.id}`"
                             class="text-link"
@@ -187,10 +178,12 @@
 
 <i18n lang="yaml">
 nb:
+    alle: Alle
     kontakt: Kontakt
     undergrupper: Undergrupper
     for-bedriftshenvendelser: For bedriftshenvendelser
     gruppeleder: Gruppeleder
+    gruppeledere: gruppeledere
     mail: Mail
     ledermail: Ledermail
     gruppemail: Gruppemail
@@ -204,12 +197,16 @@ nb:
     koordinator: Koordinator
     bedkomsjef: Bedkomsjef
     arrangementsjef: Arrangementsjef
+    bnokonomi: BN-Økonomi
+    ansvarlig: ansvarlig
 
 en:
+    alle: All
     kontakt: Contact
     undergrupper: Subgroups
     for-bedriftshenvendelser: For bedriftshenvendelser
     gruppeleder: Group leader
+    gruppeledere: group leaders
     mail: Mail
     ledermail: Leadermail
     gruppemail: Group mail
@@ -223,4 +220,6 @@ en:
     koordinator: Coordinator
     bedkomsjef: Business manager
     arrangementsjef: Event manager
+    bnokonomi: BN-Economy
+    ansvarlig: responsible
 </i18n>
