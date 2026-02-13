@@ -16,7 +16,7 @@
         "@intlify/unplugin-vue-i18n": "^6.0.8",
         "@supabase/supabase-js": "^2.49.4",
         "@types/markdown-it": "^14.1.2",
-        "markdown-it": "^14.1.0",
+        "markdown-it": "^14.1.1",
         "postcss-import": "^16.1.0",
         "tsx": "^4.19.4",
         "vue": "^3.5.13",
