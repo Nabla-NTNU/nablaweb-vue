@@ -39,7 +39,7 @@ const routes = [
     // { path: "/nabladet", component: NablaNabladet },
     // { path: "/skraattcast", component: NablaPodcast },
     // { path: "/kjelleren", component: NablaCellar },
-    { path: "/kontakt-og-varsling", component: NablaContact },
+    { path: "/kontakt", component: NablaContact },
 
     // Calendar (filtering could be nice)
     // { path: "/kalender", component: NablaCalendar },
