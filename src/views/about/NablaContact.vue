@@ -34,10 +34,12 @@
 
     <div class="mx-8 grid grid-cols-2 gap-x-20">
         <div class="text-title-3 font-semibold">
-            <h2>{{ t("styret") }}</h2>
+            {{ t("styret") }}
         </div>
-        <div class="text-title-4 font-semibold">Andre viktige mailer</div>
-        <div class="...">
+
+        <div class="..."></div>
+
+        <div class="row-span-2">
             <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
                 <tr>
                     <td>{{ t("hele-styret") }}</td>
@@ -90,6 +92,10 @@
             </tr>
                 -->
             </NablaTable>
+        </div>
+
+        <div class="self-end text-title-3 font-semibold">
+            {{ t("andre-viktige-mailer") }}
         </div>
 
         <div class="...">
@@ -178,6 +184,7 @@
 
 <i18n lang="yaml">
 nb:
+    andre-viktige-mailer: Andre viktige mailer
     alle: Alle
     kontakt: Kontakt
     undergrupper: Undergrupper
@@ -201,6 +208,7 @@ nb:
     ansvarlig: ansvarlig
 
 en:
+    andre-viktige-mailer: Other important mails
     alle: All
     kontakt: Contact
     undergrupper: Subgroups
