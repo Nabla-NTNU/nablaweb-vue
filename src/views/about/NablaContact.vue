@@ -33,8 +33,19 @@
     </div>
 
     <div class="mx-8 grid grid-cols-2 gap-x-20">
-        <div class="text-title-3 font-semibold">
-            {{ t("styret") }}
+        <div class="...">
+            <h2 class="text-title-3 font-semibold">
+                {{ t("styret") }}
+            </h2>
+            <p class="my-4">
+                Har du en superkul idé til noe nytt vi kan gjøre i Nabla? Savner
+                du noe, eller har du en tilbakemelding til oss som drifter
+                linjeforeningen? Da tar Styret gjerne imot tilbakemelding på
+                mail. Dersom saken angår noen i Styret, kan du gjerne sende mail
+                til PostKom gjennom postkom@nabla.no som et mellomledd for
+                klager til Styret. Alle tilbakemeldinger og forslag vil
+                gjennomgås på styremøter og behandles av Styret.
+            </p>
         </div>
 
         <div class="..."></div>
@@ -116,6 +127,15 @@
                     <td>eureka@nabla.no</td>
                 </tr>
             </NablaTable>
+            <h1 class="my-4 text-title-3 font-semibold">ITV-er</h1>
+            <p>
+                Det er også mulig å sende en mail til de tillitsvalgte ved
+                instituttene. Deres kontaktinformasjon finner du på
+                tillitsvalgtsida. ITV-ene tar imot blant annet forslag til
+                faglige eller studierelaterte endringer. De vil bringe
+                forslagene dine videre til ledelsen. Husk at du også kan
+                kontakte ITV-ene ved utfordringer med emner og undervisere.
+            </p>
         </div>
     </div>
 
