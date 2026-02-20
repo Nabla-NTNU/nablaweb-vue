@@ -130,9 +130,9 @@
             <h1 class="my-4 text-title-3 font-semibold">ITV-er</h1>
             <p>
                 Det er også mulig å sende en mail til de tillitsvalgte ved
-                instituttene. Deres kontaktinformasjon finner du på
-                tillitsvalgtsida. ITV-ene tar imot blant annet forslag til
-                faglige eller studierelaterte endringer. De vil bringe
+                instituttene. Deres kontaktinformasjon finner du ved
+                tillitsvalgtabellene(link). ITV-ene tar imot blant annet forslag
+                til faglige eller studierelaterte endringer. De vil bringe
                 forslagene dine videre til ledelsen. Husk at du også kan
                 kontakte ITV-ene ved utfordringer med emner og undervisere.
             </p>
