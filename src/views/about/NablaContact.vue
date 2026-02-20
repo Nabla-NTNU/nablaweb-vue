@@ -51,7 +51,7 @@
         <div class="..."></div>
 
         <div class="row-span-2">
-            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
+            <NablaTable :column-titles="[t('stilling'), t('navn'), t('mail')]">
                 <tr>
                     <td>{{ t("hele-styret") }}</td>
                     <td>-</td>
@@ -200,6 +200,97 @@
             </tr>
         </NablaTable>
     </div>
+
+    <h2 class="text-title-3 font-semibold">
+        Studentdemokratiet og tillitsvalgte for fysmat
+    </h2>
+
+    <NablaTable :column-titles="['', t('ansvarsområde'), t('navn'), t('mail')]">
+        <tr>
+            <td>Fakultetstillitsvalgte (FTV)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fakultet for naturvitenskap (NV)</td>
+            <td>-</td>
+            <td>nv-ftv@studentrad.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fakultet for informasjonsteknologi og elektroteknikk (IE)</td>
+            <td>-</td>
+            <td>ie-ftv@studentrad.ntnu.no</td>
+        </tr>
+        <tr>
+            <td>Instituttillitsvalgte (ITV)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Institutt for fysikk (IFY)</td>
+            <td>Sunniva Amundsen</td>
+            <td>nv-fysikk@studentrad.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Institutt for matematiske fag (IMF)</td>
+            <td>Ingeborg Ulvestad Haugli</td>
+            <td>imf@sr-ie.no</td>
+        </tr>
+        <tr>
+            <td>Programtillitsvalgte (PTV)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fysmat</td>
+            <td>Olav Irgens Henanger</td>
+            <td>olavih@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fysmat</td>
+            <td>Erle Furre</td>
+            <td>erlefu@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td>Klassetillitsvalgte (KTV)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Fysmat kull 24</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Lars Ådlandsvik Askeland</td>
+            <td>larsaask@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Gaute Bergan</td>
+            <td>gauteub@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td>Fysmat kull 23</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </NablaTable>
 </template>
 
 <i18n lang="yaml">
