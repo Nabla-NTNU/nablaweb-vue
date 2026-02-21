@@ -21,13 +21,13 @@
     <div v-if="isAuthenticated" style="margin: 40pt">
         <MobileProfile
             v-if="username"
-            class="block s:hidden"
+            class="block m:hidden"
             :username="username"
         />
 
         <DesktopProfile
             v-if="username"
-            class="hidden s:block"
+            class="hidden m:block"
             :username="username"
         />
 

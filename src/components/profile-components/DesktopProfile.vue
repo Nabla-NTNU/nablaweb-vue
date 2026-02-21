@@ -21,7 +21,7 @@
     <div v-if="user">
         <div class="flex h-20 items-center gap-4">
             <div
-                class="border-bg-primary flex h-20 w-20 overflow-hidden rounded-full border-2 bg-primary-dark fill-white"
+                class="border-bg-primary flex h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 bg-primary-dark fill-white"
             >
                 <img
                     v-if="user.profilePicture"
