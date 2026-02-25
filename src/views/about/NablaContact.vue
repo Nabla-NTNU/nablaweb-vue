@@ -267,28 +267,64 @@
             <td></td>
         </tr>
         <tr>
+            <td></td>
             <td>Fysmat kull 24</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
             <td>Lars Ådlandsvik Askeland</td>
             <td>larsaask@stud.ntnu.no</td>
         </tr>
         <tr>
             <td></td>
-            <td></td>
+            <td>Fysmat kull 24</td>
             <td>Gaute Bergan</td>
             <td>gauteub@stud.ntnu.no</td>
         </tr>
         <tr>
+            <td></td>
             <td>Fysmat kull 23</td>
+            <td>Andre Gjestemoen-von Hirsch</td>
+            <td>andgjes@stud.ntnu.no</td>
+        </tr>
+        <tr>
             <td></td>
+            <td>Fysmat kull 23</td>
+            <td>Torgrim Frøystein</td>
+            <td>torgrif@stud.ntnu.no</td>
+        </tr>
+        <tr>
             <td></td>
+            <td>Fysmat kull 22</td>
+            <td>Theodoros Xenakis</td>
+            <td>theodorx@stud.ntnu.no</td>
+        </tr>
+        <tr>
             <td></td>
+            <td>Fysmat kull 22</td>
+            <td>Mali Erdal El`Mourabit</td>
+            <td>maliee@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fysmat kull 21</td>
+            <td>Hedda Bjørnstad</td>
+            <td>haddabjo@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fysmat kull 21</td>
+            <td>Rasmus Grødeland</td>
+            <td>rasmug@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fysmat kull 20</td>
+            <td>Ingeborg Malene Klemsdal</td>
+            <td>ingebomk@stud.ntnu.no</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>Fysmat kull 20</td>
+            <td>Christoffer Røneid</td>
+            <td>chrirone@stud.ntnu.no</td>
         </tr>
     </NablaTable>
 </template>
