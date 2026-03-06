@@ -7,6 +7,16 @@
     const { groups } = useGroups()
 
     import NablaTable from "@/components/general/NablaTable.vue"
+
+    import { useTrustedMembers } from "@/composables/useTrustedMembers"
+    const { categories } = useTrustedMembers()
+
+    const scrollToTable = () => {
+        const tableEl = document.getElementById("trusted-members-table")
+        if (tableEl) {
+            tableEl.scrollIntoView({ behavior: "smooth", block: "start" })
+        }
+    }
 </script>
 
 <template>
@@ -110,7 +120,7 @@
         </div>
 
         <div class="...">
-            <NablaTable :column-titles="['Stilling', 'Navn', 'Mail']">
+            <NablaTable :column-titles="[t('stilling'), t('navn'), t('mail')]">
                 <tr>
                     <td>{{ t("alle") + " " + t("gruppeledere") }}</td>
                     <td>-</td>
@@ -128,13 +138,20 @@
                 </tr>
             </NablaTable>
             <h1 class="my-4 text-title-3 font-semibold">ITV-er</h1>
+
             <p>
                 Det er også mulig å sende en mail til de tillitsvalgte ved
-                instituttene. Deres kontaktinformasjon finner du ved
-                tillitsvalgtabellene(link). ITV-ene tar imot blant annet forslag
-                til faglige eller studierelaterte endringer. De vil bringe
-                forslagene dine videre til ledelsen. Husk at du også kan
-                kontakte ITV-ene ved utfordringer med emner og undervisere.
+                instituttene. Deres kontaktinformasjon finner du i
+                <router-link
+                    :to="{ hash: '#trusted-members-table' }"
+                    class="text-link"
+                    @click.prevent="scrollToTable"
+                >
+                    tabellen over tillitsvalgte </router-link
+                >. TV-ene tar imot blant annet forslag til faglige eller
+                studierelaterte endringer. De vil bringe forslagene dine videre
+                til ledelsen. Husk at du også kan kontakte ITV-ene ved
+                utfordringer med emner og undervisere.
             </p>
         </div>
     </div>
@@ -200,133 +217,49 @@
             </tr>
         </NablaTable>
     </div>
+    <div id="trusted-members-table">
+        <h2 class="text-title-3 font-semibold">
+            Studentdemokratiet og tillitsvalgte for fysmat
+        </h2>
 
-    <h2 class="text-title-3 font-semibold">
-        Studentdemokratiet og tillitsvalgte for fysmat
-    </h2>
+        <NablaTable
+            :column-titles="['', t('ansvarsområde'), t('navn'), t('mail')]"
+        >
+            <template v-for="category in categories" :key="category.id">
+                <tr class="font-bold">
+                    <td colspan="4" class="text-left">
+                        {{ category.displayName }}
+                    </td>
+                </tr>
 
-    <NablaTable :column-titles="['', t('ansvarsområde'), t('navn'), t('mail')]">
-        <tr>
-            <td>Fakultetstillitsvalgte (FTV)</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fakultet for naturvitenskap (NV)</td>
-            <td>-</td>
-            <td>nv-ftv@studentrad.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fakultet for informasjonsteknologi og elektroteknikk (IE)</td>
-            <td>-</td>
-            <td>ie-ftv@studentrad.ntnu.no</td>
-        </tr>
-        <tr>
-            <td>Instituttillitsvalgte (ITV)</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Institutt for fysikk (IFY)</td>
-            <td>Sunniva Amundsen</td>
-            <td>nv-fysikk@studentrad.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Institutt for matematiske fag (IMF)</td>
-            <td>Ingeborg Ulvestad Haugli</td>
-            <td>imf@sr-ie.no</td>
-        </tr>
-        <tr>
-            <td>Programtillitsvalgte (PTV)</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat</td>
-            <td>Olav Irgens Henanger</td>
-            <td>olavih@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat</td>
-            <td>Erle Furre</td>
-            <td>erlefu@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td>Klassetillitsvalgte (KTV)</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 24</td>
-            <td>Lars Ådlandsvik Askeland</td>
-            <td>larsaask@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 24</td>
-            <td>Gaute Bergan</td>
-            <td>gauteub@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 23</td>
-            <td>Andre Gjestemoen-von Hirsch</td>
-            <td>andgjes@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 23</td>
-            <td>Torgrim Frøystein</td>
-            <td>torgrif@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 22</td>
-            <td>Theodoros Xenakis</td>
-            <td>theodorx@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 22</td>
-            <td>Mali Erdal El`Mourabit</td>
-            <td>maliee@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 21</td>
-            <td>Hedda Bjørnstad</td>
-            <td>haddabjo@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 21</td>
-            <td>Rasmus Grødeland</td>
-            <td>rasmug@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 20</td>
-            <td>Ingeborg Malene Klemsdal</td>
-            <td>ingebomk@stud.ntnu.no</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>Fysmat kull 20</td>
-            <td>Christoffer Røneid</td>
-            <td>chrirone@stud.ntnu.no</td>
-        </tr>
-    </NablaTable>
+                <template v-for="area in category.areas" :key="area.id">
+                    <tr
+                        v-for="(assignment, idx) in area.assignments"
+                        :key="idx"
+                    >
+                        <td></td>
+                        <td class="">
+                            {{ area.name }}
+                        </td>
+                        <td>
+                            <router-link
+                                v-if="assignment.user"
+                                :to="`/profile/${assignment.user.username}`"
+                                class="text-link"
+                            >
+                                {{ assignment.user.firstName }}
+                                {{ assignment.user.lastName }}
+                            </router-link>
+                            <span v-else>-</span>
+                        </td>
+                        <td>
+                            {{ area.areaMail || assignment.user.ntnuEmail }}
+                        </td>
+                    </tr>
+                </template>
+            </template>
+        </NablaTable>
+    </div>
 </template>
 
 <i18n lang="yaml">
@@ -353,7 +286,9 @@ nb:
     arrangementsjef: Arrangementsjef
     bnokonomi: BN-Økonomi
     ansvarlig: ansvarlig
-
+    navn: Navn
+    stilling: Stilling
+    ansvarsområde: Ansvarsområde
 en:
     andre-viktige-mailer: Other important mails
     alle: All
@@ -377,4 +312,7 @@ en:
     arrangementsjef: Event manager
     bnokonomi: BN-Economy
     ansvarlig: responsible
+    name: Name
+    stilling: Position
+    ansvarsområde: Area of responsibility
 </i18n>

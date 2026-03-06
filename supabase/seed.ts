@@ -523,6 +523,117 @@ while (memberships.length < Object.keys(groups).length * 15) {
     memberships.push(membership)
 }
 
+type TrustedCategory =
+    Database["nablaweb_vue"]["Tables"]["trusted_member_categories"]["Insert"]
+type TrustedArea =
+    Database["nablaweb_vue"]["Tables"]["trusted_member_areas"]["Insert"]
+type TrustedAssignment =
+    Database["nablaweb_vue"]["Tables"]["trusted_member_assignments"]["Insert"]
+
+console.log("Seeding Trusted Member Categories...")
+const categories: TrustedCategory[] = [
+    { id: "ftv", display_name: "Fakultetstillitsvalgte (FTV)", order: 1 },
+    { id: "itv", display_name: "Instituttillitsvalgte (ITV)", order: 2 },
+    { id: "ptv", display_name: "Programtillitsvalgte (PTV)", order: 3 },
+    { id: "ktv", display_name: "Klassetillitsvalgte (KTV)", order: 4 },
+]
+
+await supabase
+    .schema("nablaweb_vue")
+    .from("trusted_member_categories")
+    .upsert(categories)
+
+console.log("Seeding Trusted Member Areas...")
+const areas: TrustedArea[] = [
+    {
+        id: "ftv-nv",
+        category: "ftv",
+        name: "Fakultet for naturvitenskap (NV)",
+        area_mail: "nv-ftv@studentrad.ntnu.no",
+        order: 1,
+    },
+    {
+        id: "ftv-ie",
+        category: "ftv",
+        name: "Fakultet for informasjonsteknologi og elektroteknikk (IE)",
+        area_mail: "ie-ftv@studentrad.ntnu.no",
+        order: 2,
+    },
+    {
+        id: "itv-ify",
+        category: "itv",
+        name: "Institutt for fysikk (IFY)",
+        area_mail: "nv-fysikk@studentrad.ntnu.no",
+        order: 1,
+    },
+    {
+        id: "itv-imf",
+        category: "itv",
+        name: "Institutt for matematiske fag (IMF)",
+        area_mail: "imf@sr-ie.no",
+        order: 2,
+    },
+    { id: "ptv-fysmat", category: "ptv", name: "Fysmat", order: 1 },
+    { id: "ktv-24", category: "ktv", name: "Fysmat kull 24", order: 1 },
+    { id: "ktv-23", category: "ktv", name: "Fysmat kull 23", order: 2 },
+    { id: "ktv-22", category: "ktv", name: "Fysmat kull 22", order: 3 },
+    { id: "ktv-21", category: "ktv", name: "Fysmat kull 21", order: 4 },
+    { id: "ktv-20", category: "ktv", name: "Fysmat kull 20", order: 5 },
+]
+
+await supabase.schema("nablaweb_vue").from("trusted_member_areas").upsert(areas)
+
+console.log("Assigning users to Trusted Member roles...")
+const assignments: TrustedAssignment[] = []
+const usernames = Object.keys(users)
+
+// 1 person roles
+const singlePersonAreas = ["ftv-nv", "ftv-ie", "itv-ify", "itv-imf"]
+for (const areaId of singlePersonAreas) {
+    assignments.push({
+        area: areaId,
+        user: getRandomElement(usernames),
+        order: 0,
+        // member_role: "" // Uncomment if you added the column back
+    })
+}
+
+// 2 person roles (PTV and KTV)
+const doublePersonAreas = [
+    "ptv-fysmat",
+    "ktv-24",
+    "ktv-23",
+    "ktv-22",
+    "ktv-21",
+    "ktv-20",
+]
+for (const areaId of doublePersonAreas) {
+    // First person
+    assignments.push({
+        area: areaId,
+        user: getRandomElement(usernames),
+        order: 0,
+    })
+    // Second person (different user)
+    const secondUser = getRandomElement(usernames)
+    assignments.push({
+        area: areaId,
+        user: secondUser,
+        order: 1,
+    })
+}
+
+const { error: assignError } = await supabase
+    .schema("nablaweb_vue")
+    .from("trusted_member_assignments")
+    .upsert(assignments)
+
+if (assignError) {
+    console.log("Error in assignments:", assignError)
+} else {
+    console.log(`Successfully assigned ${assignments.length} trusted members.`)
+}
+
 const { error } = await supabase
     .schema("nablaweb_vue")
     .from("nabla_group_members")
