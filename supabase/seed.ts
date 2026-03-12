@@ -97,6 +97,7 @@ async function addUsersToDB(users: NablaUserDict) {
     if (error) console.log(error)
 }
 
+// eslint-disable-next-line no-restricted-syntax
 function getRandomElement(array: string[]) {
     const index = Math.floor(Math.random() * array.length)
     return array[index]
