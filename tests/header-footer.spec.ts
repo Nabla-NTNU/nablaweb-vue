@@ -4,7 +4,7 @@ test("Footer contains all info", async ({ page }) => {
     await page.goto("http://localhost:5173/")
     await expect(page.getByRole("contentinfo")).toMatchAriaSnapshot(`
         - heading "Adresse" [level=4]
-        - paragraph: /Linjeforeningen Nabla Kjemiblokk 2, Realfagsbygget Sæm Sælands vei \\d+, NTNU \\d+ Trondheim, Norway/
+        - paragraph: /Linjeforeningen Nabla Kjemiblokk 2, Realfagsbygget Sem Sælands vei \\d+, NTNU \\d+ Trondheim, Norway/
         `)
     await expect(
         page.getByText("Følg oss!FacebookTwitterInstagramLinkedIn"),
