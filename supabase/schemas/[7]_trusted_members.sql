@@ -5,7 +5,7 @@ CREATE TABLE nablaweb_vue.trusted_member_categories (
     "order"      INTEGER NOT NULL DEFAULT 0
 );
 
--- Specific Roles (e.g., "Fysmat kull 24" or "Institutt for fysikk")
+-- Roles (e.g., "Fysmat kull 24" or "Institutt for fysikk")
 CREATE TABLE nablaweb_vue.trusted_member_areas (
     id           TEXT PRIMARY KEY, 
     category     TEXT NOT NULL REFERENCES nablaweb_vue.trusted_member_categories(id) ON UPDATE CASCADE,
@@ -32,4 +32,4 @@ GRANT SELECT ON ALL TABLES IN SCHEMA nablaweb_vue TO anon, authenticated, servic
 -- Descriptions for Supabase Studio
 COMMENT ON TABLE nablaweb_vue.trusted_member_categories IS 'Top level groupings for trusted members';
 COMMENT ON TABLE nablaweb_vue.trusted_member_areas IS 'Specific positions or student councils';
-COMMENT ON COLUMN nablaweb_vue.trusted_member_areas.area_mail IS 'The official role email, e.g. ftv@...';
+COMMENT ON TABLE nablaweb_vue.trusted_member_assignments IS 'Linking users to roles';

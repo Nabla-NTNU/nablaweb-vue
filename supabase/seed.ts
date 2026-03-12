@@ -587,18 +587,15 @@ console.log("Assigning users to Trusted Member roles...")
 const assignments: TrustedAssignment[] = []
 const usernames = Object.keys(users)
 
-// 1 person roles
 const singlePersonAreas = ["ftv-nv", "ftv-ie", "itv-ify", "itv-imf"]
 for (const areaId of singlePersonAreas) {
     assignments.push({
         area: areaId,
         user: getRandomElement(usernames),
         order: 0,
-        // member_role: "" // Uncomment if you added the column back
     })
 }
 
-// 2 person roles (PTV and KTV)
 const doublePersonAreas = [
     "ptv-fysmat",
     "ktv-24",
@@ -608,13 +605,11 @@ const doublePersonAreas = [
     "ktv-20",
 ]
 for (const areaId of doublePersonAreas) {
-    // First person
     assignments.push({
         area: areaId,
         user: getRandomElement(usernames),
         order: 0,
     })
-    // Second person (different user)
     const secondUser = getRandomElement(usernames)
     assignments.push({
         area: areaId,

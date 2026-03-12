@@ -1,8 +1,7 @@
 import { supabase } from "@/lib/supabaseClient"
 import { Ref, ref, onMounted } from "vue"
 
-// You'll want to add these to your frontend.types.ts later
-export interface TrustedAssignment {
+interface TrustedAssignment {
     user: {
         username: string
         firstName: string
@@ -12,7 +11,7 @@ export interface TrustedAssignment {
     order: number
 }
 
-export interface TrustedArea {
+interface TrustedArea {
     id: string
     name: string
     areaMail: string | null
@@ -20,7 +19,7 @@ export interface TrustedArea {
     assignments: TrustedAssignment[]
 }
 
-export interface TrustedCategory {
+interface TrustedCategory {
     id: string
     displayName: string
     order: number
@@ -64,7 +63,6 @@ export function useTrustedMembers() {
 
             if (supabaseError) throw supabaseError
 
-            // Supabase returns nested data, but we can clean up the sorting for sub-levels here
             categories.value = (data as TrustedCategory[]).map((cat) => ({
                 ...cat,
                 areas: cat.areas
