@@ -64,7 +64,7 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
             .schema("nablaweb_vue")
             .from("nabla_group_members")
             .select(
-                `    
+                `
                 memberRole: member_role,
                 dateJoined: date_joined,
                 isActive: is_active,
@@ -133,10 +133,11 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                 ),
                 about,
                 groupPhoto: group_photo,
-                dateBegan: date_began
+                dateBegan: date_began,
+                isActive: is_active
                 `,
             )
-            .eq("is_active", true)
+
         if (error) {
             throw error
         }
@@ -155,6 +156,7 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                 about: group.about,
                 groupPhoto: makeURL(group.groupPhoto),
                 dateBegan: new Date(group.dateBegan),
+                isActive: group.isActive,
             }
         })
         return activeGroups

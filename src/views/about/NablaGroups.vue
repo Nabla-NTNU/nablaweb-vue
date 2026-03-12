@@ -15,6 +15,18 @@
     const interestGroups = computed(() =>
         groups.value.filter((group) => group.kind == GroupKind.InterestGroup),
     )
+
+    const inactiveGroups = computed(() =>
+        groups.value.filter(
+            (group) => group.kind == GroupKind.InterestGroup && !group.isActive,
+        ),
+    )
+
+    const activeGroups = computed(() =>
+        groups.value.filter(
+            (group) => group.kind == GroupKind.InterestGroup && group.isActive,
+        ),
+    )
 </script>
 
 <template>
@@ -41,26 +53,62 @@
                 :logo="group.logo"
             />
         </div>
-        <h1 class="text-subtitle-4 font-semibold tracking-tight">
-            {{ t("interesse-grupper") }}:
+
+        <h1 class="mx-12 text-subtitle-4 font-semibold tracking-tight">
+            {{ t("active-groups") }}
         </h1>
-    </div>
-    <div class="flex flex-wrap justify-center gap-6">
-        <GroupCard
-            v-for="group in interestGroups"
-            :id="group.id"
-            :key="group.id"
-            :name="group.name"
-            :logo="group.logo"
-        />
+
+        <div class="flex flex-wrap justify-center gap-6">
+            <GroupCard
+                v-for="group in activeGroups"
+                :id="group.id"
+                :key="group.id"
+                :name="group.name"
+                :logo="group.logo"
+            />
+        </div>
+
+        <details closed>
+            <summary class="mx-12 text-subtitle-4 font-semibold tracking-tight">
+                {{ t("inactive-groups") }}
+            </summary>
+
+            <div class="flex flex-wrap justify-center gap-6">
+                <GroupCard
+                    v-for="group in inactiveGroups"
+                    :id="group.id"
+                    :key="group.id"
+                    :name="group.name"
+                    :logo="group.logo"
+                />
+            </div>
+        </details>
+        <details closed>
+            <summary class="mx-12 text-subtitle-4 font-semibold tracking-tight">
+                {{ t("interesse-grupper") }}
+            </summary>
+            <div class="flex flex-wrap justify-center gap-6">
+                <GroupCard
+                    v-for="group in interestGroups"
+                    :id="group.id"
+                    :key="group.id"
+                    :name="group.name"
+                    :logo="group.logo"
+                />
+            </div>
+        </details>
     </div>
 </template>
 
 <i18n lang="yaml">
 nb:
     komiteer: Komiteer
-    interesse-grupper: Interessegrupper
+    interesse-grupper: Alle interessegrupper
+    inactive-groups: Inaktive interessegrupper
+    active-groups: Aktive interessegrupper
 en:
     komiteer: Committees
-    interesse-grupper: Interest Groups
+    interesse-grupper: All Interest Groups
+    inactive-groups: Inactive Interest Groups
+    active-groups: Active Interest Groups
 </i18n>
