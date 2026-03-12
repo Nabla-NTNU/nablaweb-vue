@@ -2,6 +2,7 @@ import { base, en, Faker, nb_NO, sv } from "@faker-js/faker"
 import { createClient, UserResponse } from "@supabase/supabase-js"
 import pLimit from "p-limit"
 import type { Database } from "../src/lib/types/database.types.js"
+import { randomInt } from "crypto"
 
 type NablaUser = Database["nablaweb_vue"]["Tables"]["nabla_users"]["Insert"]
 type NablaGroup = Database["nablaweb_vue"]["Tables"]["nabla_groups"]["Insert"]
@@ -98,9 +99,7 @@ async function addUsersToDB(users: NablaUserDict) {
 }
 
 function getRandomElement(array: string[]) {
-    // codeql[js/insecure-randomness] - This is for development database seeding only, not production security
-    const index = Math.floor(Math.random() * array.length)
-    return array[index]
+    return array[randomInt(0, array.length)]
 }
 
 console.log("Making users...")
