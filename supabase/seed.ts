@@ -97,8 +97,8 @@ async function addUsersToDB(users: NablaUserDict) {
     if (error) console.log(error)
 }
 
-// eslint-disable-next-line no-restricted-syntax
 function getRandomElement(array: string[]) {
+    // codeql[js/insecure-randomness] - This is for development database seeding only, not production security
     const index = Math.floor(Math.random() * array.length)
     return array[index]
 }
