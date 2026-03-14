@@ -106,7 +106,7 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
     return []
 }
 
-async function getActiveGroups(): Promise<NablaGroup[]> {
+async function getGroups(): Promise<NablaGroup[]> {
     try {
         const { data, error } = await supabase
             .schema("nablaweb_vue")
@@ -229,7 +229,7 @@ export function useGroups() {
 
     async function refreshGroups() {
         loading.value = true
-        const groupsResponse = await getActiveGroups()
+        const groupsResponse = await getGroups()
         if (groupsResponse) {
             groups.value = groupsResponse
         }
