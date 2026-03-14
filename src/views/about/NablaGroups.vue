@@ -10,22 +10,19 @@
     // useGroups also has an error and a loading that can be used in frontend
     const { groups } = useGroups()
     const committees = computed(() =>
-        groups.value.filter((group) => group.kind == GroupKind.Committee),
-    )
-    const interestGroups = computed(() =>
-        groups.value.filter((group) => group.kind == GroupKind.InterestGroup),
-    )
-
-    const inactiveGroups = computed(() =>
         groups.value.filter(
-            (group) => group.kind == GroupKind.InterestGroup && !group.isActive,
+            (group) => group.kind == GroupKind.Committee && group.isActive,
         ),
     )
 
-    const activeGroups = computed(() =>
+    const interestGroups = computed(() =>
         groups.value.filter(
             (group) => group.kind == GroupKind.InterestGroup && group.isActive,
         ),
+    )
+
+    const inactiveGroups = computed(() =>
+        groups.value.filter((group) => !group.isActive),
     )
 </script>
 
@@ -60,7 +57,7 @@
 
         <div class="flex flex-wrap justify-center gap-6">
             <GroupCard
-                v-for="group in activeGroups"
+                v-for="group in interestGroups"
                 :id="group.id"
                 :key="group.id"
                 :name="group.name"
@@ -72,24 +69,11 @@
             <summary class="mx-12 text-subtitle-4 font-semibold tracking-tight">
                 {{ t("inactive-groups") }}
             </summary>
+            <p class="mx-12">{{ t("inactive-groups-text") }}</p>
 
             <div class="flex flex-wrap justify-center gap-6">
                 <GroupCard
                     v-for="group in inactiveGroups"
-                    :id="group.id"
-                    :key="group.id"
-                    :name="group.name"
-                    :logo="group.logo"
-                />
-            </div>
-        </details>
-        <details closed>
-            <summary class="mx-12 text-subtitle-4 font-semibold tracking-tight">
-                {{ t("interesse-grupper") }}
-            </summary>
-            <div class="flex flex-wrap justify-center gap-6">
-                <GroupCard
-                    v-for="group in interestGroups"
                     :id="group.id"
                     :key="group.id"
                     :name="group.name"
@@ -103,12 +87,17 @@
 <i18n lang="yaml">
 nb:
     komiteer: Komiteer
-    interesse-grupper: Alle interessegrupper
-    inactive-groups: Inaktive interessegrupper
+    inactive-groups: Inaktive undergrupper
+    inactive-groups-text: Høres en av disse undergruppene ut som noe du vil starte opp igjen? Ta kontakt med styret da vel!
+    active-groups: Aktive interessegrupper
+nn:
+    komiteer: Komiteer
+    inactive-groups: Inaktive undergrupper
+    inactive-groups-text: Høyrest ei av desse undergruppene ut som noko du vil starte opp att? Ta kontakt med styret, då vel!
     active-groups: Aktive interessegrupper
 en:
     komiteer: Committees
-    interesse-grupper: All Interest Groups
-    inactive-groups: Inactive Interest Groups
+    inactive-groups: Inactive  Subgroups
+    inactive-groups-text: Does one of these subgroups sound like something you’d like to start up again? Get in touch with the board, then!
     active-groups: Active Interest Groups
 </i18n>
