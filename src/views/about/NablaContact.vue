@@ -41,8 +41,8 @@
             </router-link>
         </div>
     </div>
-
-    <div class="mx-8 grid grid-cols-2 gap-x-20">
+    <br />
+    <div class="mx-8 grid-cols-2 gap-x-20 m:grid">
         <div class="...">
             <h2 class="text-title-3 font-semibold">
                 {{ t("styret") }}
