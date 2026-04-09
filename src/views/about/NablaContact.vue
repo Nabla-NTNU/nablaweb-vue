@@ -48,13 +48,7 @@
                 {{ t("styret") }}
             </h2>
             <p class="my-4">
-                Har du en superkul idé til noe nytt vi kan gjøre i Nabla? Savner
-                du noe, eller har du en tilbakemelding til oss som drifter
-                linjeforeningen? Da tar Styret gjerne imot tilbakemelding på
-                mail. Dersom saken angår noen i Styret, kan du gjerne sende mail
-                til PostKom gjennom postkom@nabla.no som et mellomledd for
-                klager til Styret. Alle tilbakemeldinger og forslag vil
-                gjennomgås på styremøter og behandles av Styret.
+                {{ t("tilbakemelding") }}
             </p>
         </div>
 
@@ -137,21 +131,18 @@
                     <td>eureka@nabla.no</td>
                 </tr>
             </NablaTable>
-            <h1 class="my-4 text-title-3 font-semibold">ITV-er</h1>
+            <h1 class="my-4 text-title-3 font-semibold">{{ t("ITV-er") }}</h1>
 
             <p>
-                Det er også mulig å sende en mail til de tillitsvalgte ved
-                instituttene. Deres kontaktinformasjon finner du i
+                {{ t("sende-mail") }}
                 <router-link
                     :to="{ hash: '#trusted-members-table' }"
                     class="text-link"
                     @click.prevent="scrollToTable"
                 >
-                    tabellen over tillitsvalgte </router-link
-                >. TV-ene tar imot blant annet forslag til faglige eller
-                studierelaterte endringer. De vil bringe forslagene dine videre
-                til ledelsen. Husk at du også kan kontakte ITV-ene ved
-                utfordringer med emner og undervisere.
+                    {{ t("tabellen-over-tillitsvalgte") }} </router-link
+                >.
+                {{ t("ITV") }}
             </p>
         </div>
     </div>
@@ -219,7 +210,7 @@
     </div>
     <div id="trusted-members-table">
         <h2 class="text-title-3 font-semibold">
-            Studentdemokratiet og tillitsvalgte for fysmat
+            {{ t("studentdemokratiet-og-tillitsvalgte-for-fysmat") }}
         </h2>
 
         <NablaTable
@@ -289,12 +280,31 @@ nb:
     navn: Navn
     stilling: Stilling
     ansvarsområde: Ansvarsområde
+    ITV-er: ITV-er
+    tilbakemelding: >
+        Har du en superkul idé til noe nytt vi kan gjøre i Nabla? Savner
+        du noe, eller har du en tilbakemelding til oss som drifter
+        linjeforeningen? Da tar Styret gjerne imot tilbakemelding på
+        mail. Dersom saken angår noen i Styret, kan du gjerne sende mail
+        til PostKom gjennom postkom[Ætt]nabla.no som et mellomledd for
+        klager til Styret. Alle tilbakemeldinger og forslag vil
+        gjennomgås på styremøter og behandles av Styret.
+    sende-mail: >
+        Det er også mulig å sende en mail til de tillitsvalgte ved
+        instituttene. Deres kontaktinformasjon finner du i
+    tabellen-over-tillitsvalgte: tabellen under
+    ITV: >
+        ITV-ene tar imot blant annet forslag til faglige eller
+        studierelaterte endringer. De vil bringe forslagene dine videre
+        til ledelsen. Husk at du også kan kontakte ITV-ene ved
+        utfordringer med emner og undervisere.
+    studentdemokratiet-og-tillitsvalgte-for-fysmat: Studentdemokratiet og tillitsvalgte for fysmat
 en:
     andre-viktige-mailer: Other important mails
     alle: All
     kontakt: Contact
     undergrupper: Subgroups
-    for-bedriftshenvendelser: For bedriftshenvendelser
+    for-bedriftshenvendelser: For business inquiries
     gruppeleder: Group leader
     gruppeledere: group leaders
     mail: Mail
@@ -312,7 +322,25 @@ en:
     arrangementsjef: Event manager
     bnokonomi: BN-Economy
     ansvarlig: responsible
-    name: Name
+    navn: Name
     stilling: Position
     ansvarsområde: Area of responsibility
+    ITV-er: ITVs
+    tilbakemelding: >
+        Do you have a supercool idea to something new we can do in Nabla? 
+        Are you missing anything, or do you have feedback to us? Then 
+        The Board is glad to hear your feedback through mail. If the case 
+        concerns someone in The Board, PostKom is happy to hear your complaints to The Board
+        through postkom[Ætt]nabla.no as an intermediary. All feedback and proposals will be 
+        reviewed at board meetings and processed by The Board.
+    sende-mail: >
+        It is also possible to send mail to the trusted members for the institutes.
+        You find their contact information in
+    tabellen-over-tillitsvalgte: the table further down
+    ITV: >
+        The ITVs handles proposals for academic and study-related changes.
+        They will bring your proposals to the management. Remember that
+        you can also contact the ITVs if you have problems with your subjects or 
+        lecturers.
+    studentdemokratiet-og-tillitsvalgte-for-fysmat: The student democracy and trusted members for applied physics and mathematics
 </i18n>
