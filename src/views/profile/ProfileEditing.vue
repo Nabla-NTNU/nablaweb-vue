@@ -3,8 +3,8 @@
     import { useUser } from "@/composables/useNablaUser"
     import { useProfilePictureUpload } from "@/composables/useImageUpload"
     import router from "@/router"
-    import ImagePicker from "@/components/group-page/ImagePicker.vue"
-    import MarkdownField from "@/components/group-page/MarkdownField.vue"
+    import ImagePicker from "@/components/input-components/ImagePicker.vue"
+    import MarkdownField from "@/components/input-components/MarkdownField.vue"
     import { onUpdated, watch } from "vue"
 
     import { useI18n } from "vue-i18n"
@@ -84,119 +84,120 @@
 <template>
     <div v-if="isAuthenticated && !!user" class="p-20">
         <form
-            class="h-full w-full justify-end p-4"
+            class="grid h-full w-full grid-cols-1 justify-end gap-6 p-4 m:grid-cols-5"
             @submit.prevent="handleSubmit"
         >
-            <h4>{{ t("biography") }}</h4>
+            <div class="col-span-2">
+                <label for="firstname" class="m-4 font-bold">
+                    {{ t("firstname") }}
+                </label>
+                <br />
 
-            <div class="flex flex-row flex-wrap">
-                <div>
-                    <label for="firstname" class="m-4 font-bold">
-                        {{ t("firstname") }}
-                    </label>
-                    <br />
-
-                    <input
-                        id="firstname"
-                        v-model="firstname"
-                        type="text"
-                        name="firstname"
-                        autocomplete="given-name"
-                        class="m-4 rounded-xl bg-neutralish p-4 text-fg"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label for="lastname" class="m-4 font-bold">
-                        {{ t("lastname") }}
-                    </label>
-                    <br />
-
-                    <input
-                        v-model="lastname"
-                        type="text"
-                        name="lastname"
-                        autocomplete="family-name"
-                        class="m-4 rounded-xl bg-neutralish p-4 text-fg"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label for="birthday" class="m-4 font-bold">{{
-                        t("birthday")
-                    }}</label>
-
-                    <br />
-
-                    <input
-                        v-model="birthday"
-                        type="date"
-                        name="birthday"
-                        autocomplete="bday"
-                        class="m-4 rounded-xl bg-neutralish p-4 text-fg"
-                    />
-                </div>
+                <input
+                    id="firstname"
+                    v-model="firstname"
+                    type="text"
+                    name="firstname"
+                    autocomplete="given-name"
+                    class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
+                    required
+                />
             </div>
 
-            <h2>{{ t("contact") }}</h2>
+            <div class="col-span-2">
+                <label for="lastname" class="m-4 font-bold">
+                    {{ t("lastname") }}
+                </label>
+                <br />
 
-            <div class="flex flex-row flex-wrap">
-                <div>
-                    <label for="publicemail" class="m-4 font-bold">{{
-                        t("email")
-                    }}</label>
-
-                    <br />
-
-                    <input
-                        v-model="publicEmail"
-                        type="email"
-                        name="publicEmail"
-                        autocomplete="email"
-                        class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
-                        :placeholder="t('email')"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <input
-                        v-model="publicIsList"
-                        type="checkbox"
-                        name="publicIsList"
-                    />
-                    <label for="publicIsList">{{ t("publicIsList") }}</label>
-                </div>
-
-                <div v-if="!publicIsList">
-                    <label for="listEmail" class="m-4 font-bold"
-                        >{{ t("listEmail") }}
-                    </label>
-                    <input
-                        v-model="listEmail"
-                        type="email"
-                        name="listEmail"
-                        autocomplete="email"
-                        class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
-                        :placeholder="t('email')"
-                        required
-                    />
-                </div>
+                <input
+                    v-model="lastname"
+                    type="text"
+                    name="lastname"
+                    autocomplete="family-name"
+                    class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
+                    required
+                />
             </div>
 
-            <button type="submit">{{ t("save") }}</button>
+            <div class="col-span-1">
+                <label for="birthday" class="m-4 font-bold">{{
+                    t("birthday")
+                }}</label>
+
+                <br />
+
+                <input
+                    v-model="birthday"
+                    type="date"
+                    name="birthday"
+                    autocomplete="bday"
+                    class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
+                />
+            </div>
+
+            <div class="col-span-3">
+                <label for="publicemail" class="m-4 font-bold">{{
+                    t("email")
+                }}</label>
+
+                <br />
+
+                <input
+                    v-model="publicEmail"
+                    type="email"
+                    name="publicEmail"
+                    autocomplete="email"
+                    class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
+                    :placeholder="t('email')"
+                    required
+                />
+            </div>
+
+            <div class="col-span-2">
+                <input
+                    v-model="publicIsList"
+                    type="checkbox"
+                    name="publicIsList"
+                />
+                <label for="publicIsList">{{ t("publicIsList") }}</label>
+            </div>
+
+            <div v-if="!publicIsList" class="col-span-3">
+                <label for="listEmail" class="m-4 font-bold"
+                    >{{ t("listEmail") }}
+                </label>
+                <input
+                    v-model="listEmail"
+                    type="email"
+                    name="listEmail"
+                    autocomplete="email"
+                    class="m-4 w-full rounded-xl bg-neutralish p-4 text-fg"
+                    :placeholder="t('email')"
+                    required
+                />
+            </div>
+
+            <div v-if="!publicIsList" class="col-span-2"></div>
+
+            <button
+                type="submit"
+                class="m-auto items-center text-nowrap rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
+            >
+                {{ t("save") }}
+            </button>
         </form>
 
         <ImagePicker
             :image-url="user.profilePicture ? user.profilePicture.href : ''"
             :upload-image="upload"
+            alt-text="t('profileImageAlt')"
             @save-image="handleSaveImage"
         />
 
         <MarkdownField
             :text="user.about ? user.about : ''"
+            :placeholder="t('bio_placeholder')"
             @save-text="setAbout"
         />
     </div>
@@ -216,6 +217,8 @@ nb:
     publicIsList: Kontakt meg med denne e-posten
     listEmail: Kontaktepost
     about: Om deg
+    bio_placeholder: Skriv litt om deg selv!
+    profileImageAlt: Profilbildet ditt
 en:
     firstname: First name
     lastname: Surname
@@ -227,6 +230,8 @@ en:
     publicIsList: Contact me with this email
     listEmail: Contact email
     about: About you
+    bio_placeholder: Write something about yourself!
+    profileImageAlt: Your profile picture
 nn:
     firstname: Fornamn
     lastname: Etternamn
@@ -237,4 +242,6 @@ nn:
     contact: Kontaktinformasjon
     publicIsList: Kontakt meg med denne e-posten
     listEmail: Kontaktepost
+    bio_placeholder: Skriv litt om deg sjølv!
+    profileImageAlt: Profilbiletet ditt
 </i18n>
