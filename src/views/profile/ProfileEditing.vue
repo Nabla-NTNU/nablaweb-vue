@@ -3,8 +3,8 @@
     import { useUser } from "@/composables/useNablaUser"
     import { useProfilePictureUpload } from "@/composables/useImageUpload"
     import router from "@/router"
-    import ImagePicker from "@/components/input-components/ImagePicker.vue"
-    import MarkdownField from "@/components/input-components/MarkdownField.vue"
+    import ImagePicker from "@/components/general/ImagePicker.vue"
+    import MarkdownField from "@/components/general/MarkdownField.vue"
     import { onUpdated, watch } from "vue"
 
     import { useI18n } from "vue-i18n"
