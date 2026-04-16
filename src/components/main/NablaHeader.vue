@@ -72,7 +72,7 @@
                 },
                 {
                     text: "kontakt",
-                    link: "/kontakt-og-varsling",
+                    link: "/kontakt",
                 },
             ],
         },
@@ -152,7 +152,7 @@ nb:
     nabladet: Nabladet
     skråttcast: Skråttcast
     kjelleren: Kjelleren
-    kontakt: Kontakt og varsling
+    kontakt: Kontakt
     arrangement: Arrangement
     bedpres: BedPres
     regelmessig: Regelmessige

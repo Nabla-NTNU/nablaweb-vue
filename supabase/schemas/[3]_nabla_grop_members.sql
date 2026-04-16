@@ -1,5 +1,5 @@
 -- Actual table
-CREATE TABLE nablaweb_vue.nabla_group_members (
+CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_group_members (
     "user"      TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     "group"     TEXT NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     member_role TEXT                        NOT NULL DEFAULT '',

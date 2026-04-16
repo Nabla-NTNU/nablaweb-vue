@@ -12,7 +12,6 @@
 
 <template>
     <div class="group relative h-header items-center">
-        <!-- Temporarilly just a button and not a router-link. Need to figure out how to disable. -->
         <router-link
             class="box h-4/5 content-center rounded-full border-2 border-transparent px-4 transition-all duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light"
             :to="linkTo"
