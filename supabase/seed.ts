@@ -115,10 +115,14 @@ const users = await addUsersToSupabase(usersLocal)
 await addUsersToDB(users)
 
 console.log("Making admin an admin...")
-await supabase.schema("nablaweb_vue").from("nabladmins").insert({
-    user: "admin",
-    reason: "Administration",
-})
+const { error: adminError } = await supabase
+    .schema("nablaweb_vue")
+    .from("nabladmins")
+    .insert({
+        user: "admin",
+        reason: "Administration",
+    })
+if (adminError) console.error(adminError)
 
 console.log("Making groups...") // A lot of the images break badly. THhink it's the googleusercontent links
 const groups: NablaGroupDict = {
@@ -538,50 +542,57 @@ const categories: TrustedCategory[] = [
     { id: "ktv", display_name: "Klassetillitsvalgte (KTV)", order: 4 },
 ]
 
-await supabase
+const { error: trustedCategories } = await supabase
     .schema("nablaweb_vue")
     .from("trusted_member_categories")
     .upsert(categories)
+
+if (trustedCategories) console.error(trustedCategories)
 
 console.log("Seeding Trusted Member Areas...")
 const areas: TrustedArea[] = [
     {
         id: "ftv-nv",
         category: "ftv",
-        name: "Fakultet for naturvitenskap (NV)",
+        display_name: "Fakultet for naturvitenskap (NV)",
         area_mail: "nv-ftv@studentrad.ntnu.no",
         order: 1,
     },
     {
         id: "ftv-ie",
         category: "ftv",
-        name: "Fakultet for informasjonsteknologi og elektroteknikk (IE)",
+        display_name:
+            "Fakultet for informasjonsteknologi og elektroteknikk (IE)",
         area_mail: "ie-ftv@studentrad.ntnu.no",
         order: 2,
     },
     {
         id: "itv-ify",
         category: "itv",
-        name: "Institutt for fysikk (IFY)",
+        display_name: "Institutt for fysikk (IFY)",
         area_mail: "nv-fysikk@studentrad.ntnu.no",
         order: 1,
     },
     {
         id: "itv-imf",
         category: "itv",
-        name: "Institutt for matematiske fag (IMF)",
+        display_name: "Institutt for matematiske fag (IMF)",
         area_mail: "imf@sr-ie.no",
         order: 2,
     },
-    { id: "ptv-fysmat", category: "ptv", name: "Fysmat", order: 1 },
-    { id: "ktv-24", category: "ktv", name: "Fysmat kull 24", order: 1 },
-    { id: "ktv-23", category: "ktv", name: "Fysmat kull 23", order: 2 },
-    { id: "ktv-22", category: "ktv", name: "Fysmat kull 22", order: 3 },
-    { id: "ktv-21", category: "ktv", name: "Fysmat kull 21", order: 4 },
-    { id: "ktv-20", category: "ktv", name: "Fysmat kull 20", order: 5 },
+    { id: "ptv-fysmat", category: "ptv", display_name: "Fysmat", order: 1 },
+    { id: "ktv-24", category: "ktv", display_name: "Fysmat kull 24", order: 1 },
+    { id: "ktv-23", category: "ktv", display_name: "Fysmat kull 23", order: 2 },
+    { id: "ktv-22", category: "ktv", display_name: "Fysmat kull 22", order: 3 },
+    { id: "ktv-21", category: "ktv", display_name: "Fysmat kull 21", order: 4 },
+    { id: "ktv-20", category: "ktv", display_name: "Fysmat kull 20", order: 5 },
 ]
 
-await supabase.schema("nablaweb_vue").from("trusted_member_areas").upsert(areas)
+const { error: areaError } = await supabase
+    .schema("nablaweb_vue")
+    .from("trusted_member_areas")
+    .upsert(areas)
+if (areaError) console.error(areaError)
 
 console.log("Assigning users to Trusted Member roles...")
 const assignments: TrustedAssignment[] = []
@@ -590,8 +601,8 @@ const usernames = Object.keys(users)
 const singlePersonAreas = ["ftv-nv", "ftv-ie", "itv-ify", "itv-imf"]
 for (const areaId of singlePersonAreas) {
     assignments.push({
-        area: areaId,
-        user: getRandomElement(usernames),
+        area_id: areaId,
+        username: getRandomElement(usernames),
         order: 0,
     })
 }
@@ -604,16 +615,16 @@ const doublePersonAreas = [
     "ktv-21",
     "ktv-20",
 ]
+
 for (const areaId of doublePersonAreas) {
     assignments.push({
-        area: areaId,
-        user: getRandomElement(usernames),
+        area_id: areaId,
+        username: getRandomElement(usernames),
         order: 0,
     })
-    const secondUser = getRandomElement(usernames)
     assignments.push({
-        area: areaId,
-        user: secondUser,
+        area_id: areaId,
+        username: getRandomElement(usernames),
         order: 1,
     })
 }

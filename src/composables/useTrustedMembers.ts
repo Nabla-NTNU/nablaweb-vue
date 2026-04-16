@@ -42,7 +42,7 @@ export function useTrustedMembers() {
                     order,
                     areas: trusted_member_areas (
                         id,
-                        name,
+                        display_name,
                         areaMail: area_mail,
                         order,
                         assignments: trusted_member_assignments (
@@ -58,8 +58,6 @@ export function useTrustedMembers() {
                 `,
                 )
                 .order("order", { ascending: true })
-            console.log("Raw Data: ", data)
-            console.log("Error: ", error)
 
             if (supabaseError) throw supabaseError
 
