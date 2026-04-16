@@ -11,7 +11,6 @@
     type HeaderItem = {
         text: string
         link: string
-        // Could be recursive, but multiple dropdown layers is bad UX
         dropdownItems?: {
             text: string
             link: string
@@ -21,7 +20,18 @@
     const props = defineProps<{
         headerItems: HeaderItem[]
         quotes: string[]
+        locale: string
     }>()
+
+    const emit = defineEmits<{
+        switchLanguage: []
+    }>()
+
+    const getLanguageButtonText = () => {
+        if (props.locale === "nb") return "EN"
+        if (props.locale === "en") return "NN"
+        return "NB"
+    }
 
     // Keep track of focused link by the URL it sends to, as this is unique
     const focusedLink = ref<string | null>(null)
@@ -31,20 +41,16 @@
     onMounted(() => {
         const randomIndex = Math.floor(Math.random() * props.quotes.length)
         currentQuote.value = props.quotes[randomIndex]
-
         // Logic to detect presses to close all dropdowns. AI-GENERATED
         isTouch.value = window.matchMedia("(hover: none)").matches
         const handleClickOutside = (e: MouseEvent) => {
             if (!isTouch.value || !focusedLink.value) return
-
             const target = e.target as HTMLElement
             // Skip if click happened inside any dropdown or navigation
             if (target.closest(".navigation-link")) return
-
             // Otherwise, click was outside — reset
             focusedLink.value = null
         }
-
         document.addEventListener("click", handleClickOutside)
         onBeforeUnmount(() => {
             document.removeEventListener("click", handleClickOutside)
@@ -65,7 +71,6 @@
             >
                 {{ currentQuote }}
             </div>
-
             <!-- Logo -->
             <div class="mx-4 h-header w-screen content-center s:w-header">
                 <router-link class="h-header w-header" to="/">
@@ -74,7 +79,6 @@
                     />
                 </router-link>
             </div>
-
             <!-- Links in header-->
             <nav class="hidden flex-row s:flex">
                 <div v-for="item in headerItems" :key="item.link">
@@ -92,6 +96,15 @@
                         @mouseleave="focusedLink = null"
                     />
                 </div>
+
+                <!-- Language Switcher -->
+                <button
+                    class="mx-2 flex h-header items-center px-3 font-semibold text-gray-25 transition-colors duration-200 hover:text-secondary"
+                    @click="emit('switchLanguage')"
+                >
+                    {{ getLanguageButtonText() }}
+                </button>
+
                 <ProfileLink
                     class="h-header w-header"
                     :is-focused="focusedLink == '/profile'"

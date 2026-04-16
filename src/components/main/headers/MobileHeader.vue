@@ -9,18 +9,28 @@
 
     const mobileNavVisible = ref(false)
 
-    defineProps<{
-        headerItems: HeaderItem[]
-    }>()
-
     type HeaderItem = {
         text: string
         link: string
-        // Could be recursive, but multiple dropdown layers is bad UX
         dropdownItems?: {
             text: string
             link: string
         }[]
+    }
+
+    const props = defineProps<{
+        headerItems: HeaderItem[]
+        locale: string
+    }>()
+
+    const emit = defineEmits<{
+        switchLanguage: []
+    }>()
+
+    const getLanguageButtonText = () => {
+        if (props.locale === "nb") return "EN"
+        if (props.locale === "en") return "NN"
+        return "NB"
     }
 
     // Keep track of link by the URL it sends to, as this is unique
@@ -76,6 +86,7 @@
                     />
                 </svg>
             </button>
+
             <!-- Logo -->
             <div class="h-header w-header flex-grow content-center">
                 <router-link class="h-header w-header" to="/">
@@ -84,6 +95,13 @@
                     />
                 </router-link>
             </div>
+            <!-- Language Switcher-->
+            <button
+                class="mx-2 flex h-header items-center px-3 font-semibold text-gray-25 transition-colors duration-200 hover:text-secondary"
+                @click="emit('switchLanguage')"
+            >
+                {{ getLanguageButtonText() }}
+            </button>
             <div class="mx-2 w-header">
                 <ProfileLink class="h-header w-header" :is-focused="false" />
             </div>

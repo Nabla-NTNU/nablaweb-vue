@@ -2,7 +2,7 @@
     import MobileHeader from "@/components/main/headers/MobileHeader.vue"
     import DesktopHeader from "@/components/main/headers/DesktopHeader.vue"
     import { useI18n } from "vue-i18n"
-    useI18n()
+    const { locale } = useI18n()
 
     const quotes = [
         "Du kan nå endre fargetema i profilen din 🎨",
@@ -127,16 +127,29 @@
             ],
         },
     ]
+
+    const switchLanguage = () => {
+        if (locale.value === "nb") locale.value = "en"
+        else if (locale.value === "en") locale.value = "nn"
+        else locale.value = "nb"
+    }
 </script>
 
 <template>
     <!-- Show mobile header up until size small  -->
-    <MobileHeader class="bliock s:hidden" :header-items="headerItems" />
+    <MobileHeader
+        class="bliock s:hidden"
+        :header-items="headerItems"
+        :locale="locale"
+        @switch-language="switchLanguage"
+    />
     <!-- At greater sizes show desktop header -->
     <DesktopHeader
         class="hidden s:block"
         :header-items="headerItems"
         :quotes="quotes"
+        :locale="locale"
+        @switch-language="switchLanguage"
     />
 </template>
 
