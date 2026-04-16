@@ -1,30 +1,6 @@
 import { supabase } from "@/lib/supabaseClient"
+import { TrustedCategory } from "@/lib/types/frontend.types"
 import { Ref, ref, onMounted } from "vue"
-
-interface TrustedAssignment {
-    user: {
-        username: string
-        firstName: string
-        lastName: string
-        ntnuEmail: string
-    }
-    order: number
-}
-
-interface TrustedArea {
-    id: string
-    name: string
-    areaMail: string | null
-    order: number
-    assignments: TrustedAssignment[]
-}
-
-interface TrustedCategory {
-    id: string
-    displayName: string
-    order: number
-    areas: TrustedArea[]
-}
 
 export function useTrustedMembers() {
     const categories: Ref<TrustedCategory[]> = ref([])
