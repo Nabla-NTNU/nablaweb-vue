@@ -128,10 +128,12 @@
         },
     ]
 
+    // This should later be found from the profile page and can be either nb or nn, currently it is set to default nb
+    const preferredNorwegian = "nb"
+
     const switchLanguage = () => {
-        if (locale.value === "nb") locale.value = "en"
-        else if (locale.value === "en") locale.value = "nn"
-        else locale.value = "nb"
+        if (locale.value === "en") locale.value = preferredNorwegian
+        else locale.value = "en"
     }
 </script>
 
