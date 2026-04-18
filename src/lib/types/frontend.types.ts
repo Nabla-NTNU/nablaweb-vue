@@ -8,8 +8,9 @@ export type NablaGroup = {
     kind?: GroupKind
     logo?: URL
     mailList?: string | null
-    leaderMailList?: string | null
-    leader?: GroupMember
+    leaderMail?: string | null
+    leader?: NablaUser
+    trustedMember?: NablaUser
     about?: string
     groupPhoto?: URL
     date?: Date
@@ -54,4 +55,29 @@ export enum ColorTheme {
     Light = "light",
     Dark = "dark",
     System = "system",
+}
+
+export type TrustedAssignment = {
+    user: {
+        username: string
+        firstName: string
+        lastName: string
+        ntnuEmail: string
+    }
+    order: number
+}
+
+export type TrustedArea = {
+    id: string
+    name: string
+    areaMail: string | null
+    order: number
+    assignments: TrustedAssignment[]
+}
+
+export type TrustedCategory = {
+    id: string
+    displayName: string
+    order: number
+    areas: TrustedArea[]
 }

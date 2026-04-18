@@ -25,6 +25,7 @@ async function getGroupWithoutMembers(
                 kind,
                 logo,
                 mailList: mail_list,
+                leaderMail: leader_mail,
                 leader,
                 about,
                 groupPhoto: group_photo,
@@ -41,6 +42,7 @@ async function getGroupWithoutMembers(
             kind: data.kind in GroupKind ? (data.kind as GroupKind) : undefined, // Will fail silently for unknown GroupKinds
             logo: makeURL(data.logo),
             mailList: data.mailList,
+            leaderMail: data.leaderMail,
             leader: { user: { username: data.leader! } },
             about: data.about,
             groupPhoto: makeURL(data.groupPhoto),
@@ -62,7 +64,7 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
             .schema("nablaweb_vue")
             .from("nabla_group_members")
             .select(
-                `    
+                `
                 memberRole: member_role,
                 dateJoined: date_joined,
                 isActive: is_active,
@@ -106,7 +108,7 @@ async function getGroupMembers(groupID: string): Promise<GroupMember[]> {
     return []
 }
 
-async function getActiveGroups(): Promise<NablaGroup[]> {
+async function getGroups(): Promise<NablaGroup[]> {
     try {
         const { data, error } = await supabase
             .schema("nablaweb_vue")
@@ -118,13 +120,24 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                 kind,
                 logo,
                 mailList: mail_list,
-                leader,
+                leaderMail: leader_mail,
+                leader: nabla_users!nabla_groups_leader_fkey(
+                    username: username,
+                    firstName: first_name,
+                    lastName: last_name
+                ),
+                trustedMember: nabla_users!nabla_groups_trusted_member_fkey(
+                    ntnuEmail: ntnu_email,
+                    firstName: first_name,
+                    lastName: last_name
+                ),
                 about,
                 groupPhoto: group_photo,
-                dateBegan: date_began
+                dateBegan: date_began,
+                isActive: is_active
                 `,
             )
-            .eq("is_active", true)
+
         if (error) {
             throw error
         }
@@ -137,12 +150,13 @@ async function getActiveGroups(): Promise<NablaGroup[]> {
                     : undefined,
                 logo: makeURL(group.logo),
                 mailList: group.mailList,
-                leader: group.leader
-                    ? { user: { username: group.leader } }
-                    : undefined,
+                leader: group.leader,
+                leaderMail: group.leaderMail,
+                trustedMember: group.trustedMember,
                 about: group.about,
                 groupPhoto: makeURL(group.groupPhoto),
                 dateBegan: new Date(group.dateBegan),
+                isActive: group.isActive,
             }
         })
         return activeGroups
@@ -227,7 +241,7 @@ export function useGroups() {
 
     async function refreshGroups() {
         loading.value = true
-        const groupsResponse = await getActiveGroups()
+        const groupsResponse = await getGroups()
         if (groupsResponse) {
             groups.value = groupsResponse
         }

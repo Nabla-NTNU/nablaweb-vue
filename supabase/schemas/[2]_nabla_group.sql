@@ -5,7 +5,7 @@ CREATE TYPE nablaweb_vue.group_kind AS ENUM (
 );
 
 -- Actual table
-CREATE TABLE nablaweb_vue.nabla_groups (
+CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_groups (
     id              TEXT                    PRIMARY KEY,
     name            TEXT                    NOT NULL UNIQUE,
     kind            nablaweb_vue.group_kind NOT NULL DEFAULT 'Interest group',
@@ -14,6 +14,7 @@ CREATE TABLE nablaweb_vue.nabla_groups (
     leader_mail     TEXT                    UNIQUE,
     -- Should leader be NOT-NULL? Unsure about ideology here.
     leader          TEXT REFERENCES nablaweb_vue.nabla_users(username),
+    trusted_member  TEXT REFERENCES nablaweb_vue.nabla_users(username),
     about           TEXT                    NOT NULL DEFAULT '',
     group_photo     TEXT                    NOT NULL DEFAULT '',
     date_began TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,

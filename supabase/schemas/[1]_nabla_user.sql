@@ -10,7 +10,7 @@ CREATE TYPE nablaweb_vue.class AS ENUM (
 );
 
 -- Actual table
-CREATE TABLE nablaweb_vue.nabla_users (
+CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_users (
     username        TEXT                PRIMARY KEY,
     supabase_id     UUID                NOT NULL UNIQUE,
     ntnu_email      TEXT                NOT NULL UNIQUE,

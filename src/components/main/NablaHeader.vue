@@ -30,6 +30,10 @@
         "Kanelbolleonsdag 🍴",
         "Sconestorsdag 🫓",
         "Fredagsquiz ❔",
+        "Se revyen 🎭",
+        "Hvem er Haakon Børs Lind ❓",
+        "Det gyldne integral ∫",
+        "'As the young people say this is Skibidi' 6️⃣7️⃣",
     ]
 
     type HeaderItem = {
@@ -68,7 +72,7 @@
                 },
                 {
                     text: "kontakt",
-                    link: "/kontakt-og-varsling",
+                    link: "/kontakt",
                 },
             ],
         },
@@ -148,7 +152,7 @@ nb:
     nabladet: Nabladet
     skråttcast: Skråttcast
     kjelleren: Kjelleren
-    kontakt: Kontakt og varsling
+    kontakt: Kontakt
     arrangement: Arrangement
     bedpres: BedPres
     regelmessig: Regelmessige
