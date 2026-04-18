@@ -81,3 +81,8 @@ export type TrustedCategory = {
     order: number
     areas: TrustedArea[]
 }
+
+export type FlatPage = {
+    slug: string
+    content: string
+}

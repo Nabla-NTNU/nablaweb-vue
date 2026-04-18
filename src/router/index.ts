@@ -8,6 +8,8 @@ import GroupPage from "@/views/about/NablaGroup.vue"
 import GroupAdminPage from "@/views/about/NablaGroupAdmin.vue"
 import GroupsPage from "@/views/about/NablaGroups.vue"
 
+import FlatPage from "@/views/FlatPage.vue"
+
 import NablaContact from "@/views/about/NablaContact.vue"
 
 // import UnderKonstruksjonView from "@/views/error/UnderKontruksjon.vue"
@@ -52,6 +54,18 @@ const routes = [
     // { path: "/for-bedrifter", component: ForCompanies },
     // { path: "/jobb", component: NablaJobs },
     // { path: "/eureka", component: AboutEureka },
+
+    // Flatpages
+    {
+        path: "/flatpagetest",
+        component: FlatPage,
+        props: { slug: "/flatpagetest" },
+    },
+    {
+        path: "/flatpagetest2",
+        component: FlatPage,
+        props: { slug: "/flatpagetest2" },
+    },
 
     // Wiki
     // { path: "/wiki", component: NablaWiki },
