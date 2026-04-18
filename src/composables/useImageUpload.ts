@@ -36,8 +36,9 @@ export function useProfilePictureUpload(username: string) {
     const publicURL = ref<string | null>(null)
 
     async function upload(file: File) {
+        const date: Date = new Date()
         const fileExtention = file.name.split(".").pop()
-        const filepath = `profile_pictures/${username}.${fileExtention}`
+        const filepath = `profile_pictures/${username}/${date.toISOString()}.${fileExtention}`
 
         return uploadFile(file, filepath, "images", uploading, error, publicURL)
     }
