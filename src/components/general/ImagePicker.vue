@@ -7,6 +7,7 @@
         imageUrl: string
         uploadImage: (file: File) => Promise<string | null>
         altText: string
+        show_url: boolean
     }>()
 
     defineEmits<{
@@ -60,6 +61,7 @@
         @drop.prevent="handleFileUpload"
     >
         <input
+            v-if="props.show_url"
             v-model="localImageURL"
             class="w-full rounded-xl bg-neutralish px-4 text-fg"
             placeholder="https://nabla.no/det_kuleste_bildet"
