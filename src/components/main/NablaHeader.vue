@@ -1,9 +1,8 @@
 <script setup lang="ts">
     import MobileHeader from "@/components/main/headers/MobileHeader.vue"
     import DesktopHeader from "@/components/main/headers/DesktopHeader.vue"
-    import { useI18n } from "vue-i18n"
-    const { locale } = useI18n()
-
+    import { useLanguage, chosenLanguage } from "@/composables/useLanguage"
+    import { HeaderItem } from "@/lib/types/frontend.types"
     const quotes = [
         "Du kan nå endre fargetema i profilen din 🎨",
         "WebKom er best 💯",
@@ -36,15 +35,6 @@
         "'As the young people say this is Skibidi' 6️⃣7️⃣",
     ]
 
-    type HeaderItem = {
-        text: string
-        link: string
-        // Could be recursive, but multiple dropdown layers is bad UX
-        dropdownItems?: {
-            text: string
-            link: string
-        }[]
-    }
     const headerItems: HeaderItem[] = [
         {
             text: "om-nabla",
@@ -128,12 +118,11 @@
         },
     ]
 
-    // This should later be found from the profile page and can be either nb or nn, currently it is set to default nb
-    const preferredNorwegian = "nb"
+    useLanguage()
 
     const switchLanguage = () => {
-        if (locale.value === "en") locale.value = preferredNorwegian
-        else locale.value = "en"
+        if (chosenLanguage.value === "nb") chosenLanguage.value = "en"
+        else chosenLanguage.value = "nb"
     }
 </script>
 
@@ -142,7 +131,6 @@
     <MobileHeader
         class="bliock s:hidden"
         :header-items="headerItems"
-        :locale="locale"
         @switch-language="switchLanguage"
     />
     <!-- At greater sizes show desktop header -->
@@ -150,7 +138,6 @@
         class="hidden s:block"
         :header-items="headerItems"
         :quotes="quotes"
-        :locale="locale"
         @switch-language="switchLanguage"
     />
 </template>

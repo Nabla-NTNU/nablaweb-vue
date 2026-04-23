@@ -46,6 +46,16 @@ export type NablaUser = {
     website?: URL
 }
 
+export type HeaderItem = {
+    text: string
+    link: string
+    // Could be recursive, but multiple dropdown layers is bad UX
+    dropdownItems?: {
+        text: string
+        link: string
+    }[]
+}
+
 export enum StyleTheme {
     Classic = "classic",
     Modern = "modern",

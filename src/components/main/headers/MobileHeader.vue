@@ -1,35 +1,20 @@
 <script setup lang="ts">
-    import { ref, onMounted, computed, onBeforeUnmount } from "vue"
+    import { ref, onMounted, onBeforeUnmount } from "vue"
     import { useI18n } from "vue-i18n"
     import NablaLogo from "@/components/main/header-links/ReturnLink.vue"
     import ProfileLink from "@/components/main/header-links/ProfileLink.vue"
     import FlagNo from "@/components/main/header-links/FlagNo.vue"
     import FlagEn from "@/components/main/header-links/FlagEn.vue"
+    import { chosenLanguage } from "@/composables/useLanguage"
 
     // Global scope to translate from NablaHeader.vue
     const { t } = useI18n({ useScope: "global" })
 
     const mobileNavVisible = ref(false)
 
-    type HeaderItem = {
-        text: string
-        link: string
-        dropdownItems?: {
-            text: string
-            link: string
-        }[]
-    }
-
-    const props = defineProps<{
-        headerItems: HeaderItem[]
-        locale: string
-    }>()
-
     const emit = defineEmits<{
         switchLanguage: []
     }>()
-
-    const isEnglish = computed(() => props.locale === "en")
 
     // Keep track of link by the URL it sends to, as this is unique
     const focusedLink = ref<string | null>(null)
@@ -98,7 +83,10 @@
                 class="mx-3 flex h-8 w-10 items-center self-center transition-transform duration-200 hover:scale-110"
                 @click="emit('switchLanguage')"
             >
-                <FlagNo v-if="isEnglish" class="h-5 w-7 shadow-sm rounded-sm" />
+                <FlagNo
+                    v-if="chosenLanguage == 'en'"
+                    class="h-5 w-7 shadow-sm rounded-sm"
+                />
                 <FlagEn v-else class="h-5 w-7 shadow-sm rounded-sm" />
             </button>
 
