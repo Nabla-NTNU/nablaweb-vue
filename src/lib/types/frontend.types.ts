@@ -56,3 +56,28 @@ export enum ColorTheme {
     Dark = "dark",
     System = "system",
 }
+
+export type TrustedAssignment = {
+    user: {
+        username: string
+        firstName: string
+        lastName: string
+        ntnuEmail: string
+    }
+    order: number
+}
+
+export type TrustedArea = {
+    id: string
+    name: string
+    areaMail: string | null
+    order: number
+    assignments: TrustedAssignment[]
+}
+
+export type TrustedCategory = {
+    id: string
+    displayName: string
+    order: number
+    areas: TrustedArea[]
+}
