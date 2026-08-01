@@ -41,7 +41,7 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.1.0",
         "p-limit": "^6.2.0",
-        "postcss": "^8.4.47",
+        "postcss": "^8.5.25",
         "prettier": "^3.5.3",
         "prettier-plugin-tailwindcss": "^0.6.12",
         "supabase": "^2.78.1",
