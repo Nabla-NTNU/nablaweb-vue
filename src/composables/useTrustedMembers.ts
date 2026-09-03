@@ -18,7 +18,7 @@ export function useTrustedMembers() {
                     order,
                     areas: trusted_member_areas (
                         id,
-                        display_name,
+                        name: display_name,
                         areaMail: area_mail,
                         order,
                         assignments: trusted_member_assignments (
