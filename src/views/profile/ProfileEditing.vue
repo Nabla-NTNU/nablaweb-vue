@@ -30,10 +30,6 @@
         //     setWebsite,
     } = getUserSetters()
 
-    const handleSaveImage = (newValue: string) => {
-        setProfilePicture(newValue)
-    }
-
     const { upload } = useProfilePictureUpload(username.value ?? "")
 
     onUpdated(() => {
@@ -48,6 +44,7 @@
     const publicIsList = defineModel<boolean>("publicNotList")
     const listEmail = defineModel<string>("listEmail")
     const birthday = defineModel<string>("birthday")
+    const avatar = defineModel<string>()
 
     const handleSubmit = () => {
         setFirstName(firstname.value)
@@ -59,6 +56,7 @@
             setListEmail(listEmail.value)
         }
         setBirthday(birthday.value == "" ? null : birthday.value)
+        setProfilePicture(avatar.value)
     }
 
     // The HTML input tag requires dates of the form YYYY-MM-DD
@@ -78,13 +76,16 @@
         birthday.value = user.value?.birthday
             ? formatDate(user.value.birthday)
             : undefined
+        avatar.value = user.value?.profilePicture
+            ? user.value.profilePicture.href
+            : ""
     })
 </script>
 
 <template>
     <div v-if="isAuthenticated && !!user" class="p-20">
         <form
-            class="grid h-full w-full grid-cols-1 justify-end gap-6 p-4 m:grid-cols-5"
+            class="flex h-full w-full grid-cols-1 flex-col justify-end gap-6 p-4 m:grid m:grid-cols-5"
             @submit.prevent="handleSubmit"
         >
             <div class="col-span-2">
@@ -189,10 +190,10 @@
         </form>
 
         <ImagePicker
-            :image-url="user.profilePicture ? user.profilePicture.href : ''"
+            v-model="avatar"
+            :saved-url="user.profilePicture ? user.profilePicture?.href : ''"
             :upload-image="upload"
-            alt-text="t('profileImageAlt')"
-            @save-image="handleSaveImage"
+            :alt-text="t('profileImageAlt')"
         />
 
         <MarkdownField

@@ -1,26 +1,15 @@
 <script setup lang="ts">
-    import { ref, watch } from "vue"
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
 
+    const imageURL = defineModel<string>()
+
     const props = defineProps<{
-        imageUrl: string
+        savedUrl: string
         uploadImage: (file: File) => Promise<string | null>
         altText: string
-        show_url: boolean
+        showUrl?: { Type: boolean; default: false }
     }>()
-
-    defineEmits<{
-        saveImage: [localImageURL: string]
-    }>()
-
-    const localImageURL = ref(props.imageUrl)
-    watch(
-        () => props.imageUrl,
-        (url) => {
-            localImageURL.value = url
-        },
-    )
 
     async function handleFileUpload(e: DragEvent | Event) {
         let files: FileList | null = null
@@ -49,7 +38,7 @@
 
         const url = await props.uploadImage(file)
         if (url) {
-            localImageURL.value = url // update preview in child
+            imageURL.value = url // update preview in child
         }
     }
 </script>
@@ -61,8 +50,8 @@
         @drop.prevent="handleFileUpload"
     >
         <input
-            v-if="props.show_url"
-            v-model="localImageURL"
+            v-if="props.showUrl"
+            v-model="imageURL"
             class="w-full rounded-xl bg-neutralish px-4 text-fg"
             placeholder="https://nabla.no/det_kuleste_bildet"
         />
@@ -75,7 +64,7 @@
             @change="handleFileUpload"
         />
         <label
-            v-if="localImageURL === imageUrl"
+            v-if="imageURL === savedUrl"
             for="fileInput"
             class="m-auto cursor-pointer items-center text-nowrap rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300"
         >
@@ -83,27 +72,19 @@
         </label>
 
         <button
-            v-if="localImageURL !== imageUrl"
+            v-if="imageURL !== savedUrl"
             class="m-auto items-center text-nowrap rounded-lg bg-primary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
             :disabled="false"
-            @click="localImageURL = imageUrl"
+            @click="imageURL = savedUrl"
         >
             {{ t("avbryt") }}
-        </button>
-
-        <button
-            class="m-auto items-center text-nowrap rounded-lg bg-secondary px-4 py-2 font-semibold text-white transition-all duration-300 disabled:bg-gray"
-            :disabled="localImageURL === imageUrl"
-            @click="$emit('saveImage', localImageURL)"
-        >
-            {{ t("lagre-endring") }}
         </button>
     </div>
     <div>
         <img
-            :src="localImageURL"
+            :src="imageURL"
             class="mt-4 w-full rounded-xl object-contain"
-            :alt="t('alt-text')"
+            :alt="altText"
         />
     </div>
 </template>
