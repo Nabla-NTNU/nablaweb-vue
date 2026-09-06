@@ -35,18 +35,21 @@ ALTER TABLE nablaweb_vue.trusted_member_assignments ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Everyone can view trusted member categories"
     ON nablaweb_vue.trusted_member_categories
-    FOR ALL
-    TO anon, authenticated, service_role;
+    FOR SELECT
+    TO anon, authenticated, service_role
+    USING (true);
 
 CREATE POLICY "Everyone can view trusted member areas"
     ON nablaweb_vue.trusted_member_areas
-    FOR ALL
-    TO anon, authenticated, service_role;
+    FOR SELECT
+    TO anon, authenticated, service_role
+    USING (true);
 
 CREATE POLICY "Everyone can view trusted members"
     ON nablaweb_vue.trusted_member_assignments
-    FOR ALL
-    TO anon, authenticated, service_role;
+    FOR SELECT
+    TO anon, authenticated, service_role
+    USING (true);
 
 -- Descriptions for Supabase Studio
 COMMENT ON TABLE nablaweb_vue.trusted_member_categories IS 'Top level groupings for trusted members';
