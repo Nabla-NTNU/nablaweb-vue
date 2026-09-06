@@ -9,6 +9,331 @@ export type Json =
 export type Database = {
     nablaweb_vue: {
         Tables: {
+            nabla_events: {
+                Row: {
+                    created_at: string
+                    end_time: string
+                    event_photo: string
+                    global_registration_limit: number
+                    id: string
+                    is_hidden: boolean
+                    location: string
+                    organiser: string
+                    registration_required: boolean
+                    slug: string
+                    start_time: string
+                }
+                Insert: {
+                    created_at?: string
+                    end_time?: string
+                    event_photo?: string
+                    global_registration_limit?: number
+                    id?: string
+                    is_hidden?: boolean
+                    location?: string
+                    organiser: string
+                    registration_required?: boolean
+                    slug: string
+                    start_time?: string
+                }
+                Update: {
+                    created_at?: string
+                    end_time?: string
+                    event_photo?: string
+                    global_registration_limit?: number
+                    id?: string
+                    is_hidden?: boolean
+                    location?: string
+                    organiser?: string
+                    registration_required?: boolean
+                    slug?: string
+                    start_time?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_organiser_fkey"
+                        columns: ["organiser"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            nabla_events_comment_reactions: {
+                Row: {
+                    comment: string
+                    reaction: string
+                    username: string
+                }
+                Insert: {
+                    comment: string
+                    reaction?: string
+                    username: string
+                }
+                Update: {
+                    comment?: string
+                    reaction?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_comment_reactions_comment_fkey"
+                        columns: ["comment"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events_comments"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_comment_reactions_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_comments: {
+                Row: {
+                    comment: string
+                    created_at: string
+                    event: string
+                    id: string
+                    username: string
+                }
+                Insert: {
+                    comment?: string
+                    created_at?: string
+                    event: string
+                    id?: string
+                    username: string
+                }
+                Update: {
+                    comment?: string
+                    created_at?: string
+                    event?: string
+                    id?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_comments_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_comments_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_owner_groups: {
+                Row: {
+                    event: string
+                    organizing_group: string
+                }
+                Insert: {
+                    event: string
+                    organizing_group: string
+                }
+                Update: {
+                    event?: string
+                    organizing_group?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_owner_groups_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_owner_groups_organizing_group_fkey"
+                        columns: ["organizing_group"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            nabla_events_owner_individuals: {
+                Row: {
+                    event: string
+                    username: string
+                }
+                Insert: {
+                    event: string
+                    username: string
+                }
+                Update: {
+                    event?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_owner_individuals_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_owner_individuals_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_participants: {
+                Row: {
+                    event: string
+                    is_registered: boolean
+                    registered_at: string
+                    username: string
+                }
+                Insert: {
+                    event: string
+                    is_registered?: boolean
+                    registered_at?: string
+                    username: string
+                }
+                Update: {
+                    event?: string
+                    is_registered?: boolean
+                    registered_at?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_participants_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_participants_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_reactions: {
+                Row: {
+                    event: string
+                    reaction: string
+                    username: string
+                }
+                Insert: {
+                    event: string
+                    reaction?: string
+                    username: string
+                }
+                Update: {
+                    event?: string
+                    reaction?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_reactions_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_reactions_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_registrations: {
+                Row: {
+                    deregistration_end: string
+                    event: string
+                    id: string
+                    registering_group: string
+                    registration_end: string
+                    registration_start: string
+                }
+                Insert: {
+                    deregistration_end?: string
+                    event: string
+                    id?: string
+                    registering_group: string
+                    registration_end?: string
+                    registration_start?: string
+                }
+                Update: {
+                    deregistration_end?: string
+                    event?: string
+                    id?: string
+                    registering_group?: string
+                    registration_end?: string
+                    registration_start?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_registrations_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_registrations_registering_group_fkey"
+                        columns: ["registering_group"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            nabla_events_translations: {
+                Row: {
+                    body_text: string
+                    description: string
+                    event: string
+                    language: string
+                    title: string
+                }
+                Insert: {
+                    body_text?: string
+                    description?: string
+                    event: string
+                    language: string
+                    title?: string
+                }
+                Update: {
+                    body_text?: string
+                    description?: string
+                    event?: string
+                    language?: string
+                    title?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_translations_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
             nabla_group_members: {
                 Row: {
                     date_joined: string
@@ -195,22 +520,22 @@ export type Database = {
                 Row: {
                     area_mail: string | null
                     category: string
+                    display_name: string
                     id: string
-                    name: string
                     order: number
                 }
                 Insert: {
                     area_mail?: string | null
                     category: string
+                    display_name: string
                     id: string
-                    name: string
                     order?: number
                 }
                 Update: {
                     area_mail?: string | null
                     category?: string
+                    display_name?: string
                     id?: string
-                    name?: string
                     order?: number
                 }
                 Relationships: [
@@ -225,31 +550,31 @@ export type Database = {
             }
             trusted_member_assignments: {
                 Row: {
-                    area: string
+                    area_id: string
                     order: number
-                    user: string
+                    username: string
                 }
                 Insert: {
-                    area: string
+                    area_id: string
                     order?: number
-                    user: string
+                    username: string
                 }
                 Update: {
-                    area?: string
+                    area_id?: string
                     order?: number
-                    user?: string
+                    username?: string
                 }
                 Relationships: [
                     {
-                        foreignKeyName: "trusted_member_assignments_area_fkey"
-                        columns: ["area"]
+                        foreignKeyName: "trusted_member_assignments_area_id_fkey"
+                        columns: ["area_id"]
                         isOneToOne: false
                         referencedRelation: "trusted_member_areas"
                         referencedColumns: ["id"]
                     },
                     {
-                        foreignKeyName: "trusted_member_assignments_user_fkey"
-                        columns: ["user"]
+                        foreignKeyName: "trusted_member_assignments_username_fkey"
+                        columns: ["username"]
                         isOneToOne: false
                         referencedRelation: "nabla_users"
                         referencedColumns: ["username"]
@@ -291,23 +616,6 @@ export type Database = {
                 | "kull24"
                 | "kull25"
             group_kind: "Committee" | "Interest group"
-        }
-        CompositeTypes: {
-            [_ in never]: never
-        }
-    }
-    public: {
-        Tables: {
-            [_ in never]: never
-        }
-        Views: {
-            [_ in never]: never
-        }
-        Functions: {
-            [_ in never]: never
-        }
-        Enums: {
-            [_ in never]: never
         }
         CompositeTypes: {
             [_ in never]: never
@@ -446,8 +754,5 @@ export const Constants = {
             ],
             group_kind: ["Committee", "Interest group"],
         },
-    },
-    public: {
-        Enums: {},
     },
 } as const
