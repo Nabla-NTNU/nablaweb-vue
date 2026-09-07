@@ -11,6 +11,9 @@ type NablaGroupMember =
 type ClassEnum = Database["nablaweb_vue"]["Enums"]["class"]
 type NablaUserDict = { [username: string]: NablaUser }
 type NablaGroupDict = { [id: string]: NablaGroup }
+type NablaEvent = Database["nablaweb_vue"]["Tables"]["nabla_events"]["Insert"]
+type NablaEventTranslation =
+    Database["nablaweb_vue"]["Tables"]["nabla_events_translations"]["Insert"]
 
 // Need service key - this is standard for local instances
 const supabase = createClient<Database>(
@@ -21,6 +24,23 @@ const supabase = createClient<Database>(
 const faker = new Faker({
     locale: [nb_NO, sv, en, base], // Faker doesn't support nynorsk atm :((
 })
+
+// ------------------------------------------------------------
+// Helper to check whether a table already has rows,
+// so each seeding section can skip itself on a rerun instead of
+// erroring
+// ------------------------------------------------------------
+async function tableRowCount(table: string): Promise<number> {
+    const { count, error } = await supabase
+        .schema("nablaweb_vue")
+        .from(table)
+        .select("*", { count: "exact", head: true })
+    if (error) {
+        console.error(`Error checking existing rows in ${table}:`, error)
+        return 0
+    }
+    return count ?? 0
+}
 
 function makeUser(
     firstName: string,
@@ -103,428 +123,470 @@ function getRandomElement(array: string[]) {
 }
 
 console.log("Making users...")
-const nUsers = 500
-const usersLocal = makeRandomUsers(nUsers - 2)
+let users: NablaUserDict
+if ((await tableRowCount("nabla_users")) > 0) {
+    console.log("Users already seeded - reusing existing users.")
+    const { data: existingUsers, error } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_users")
+        .select("*")
+    if (error) throw error
+    users = Object.fromEntries(
+        (existingUsers as NablaUser[]).map((u) => [u.username, u]),
+    )
+} else {
+    const nUsers = 500
+    const usersLocal = makeRandomUsers(nUsers - 2)
 
-const admin = makeUser("Admin", "Adminsdotter", "admin")
-const user = makeUser("User", "Userssønn", "user")
-usersLocal[admin.username] = admin
-usersLocal[user.username] = user
+    const admin = makeUser("Admin", "Adminsdotter", "admin")
+    const user = makeUser("User", "Userssønn", "user")
+    usersLocal[admin.username] = admin
+    usersLocal[user.username] = user
 
-const users = await addUsersToSupabase(usersLocal)
-await addUsersToDB(users)
+    users = await addUsersToSupabase(usersLocal)
+    await addUsersToDB(users)
+}
 
 console.log("Making admin an admin...")
 const { error: adminError } = await supabase
     .schema("nablaweb_vue")
     .from("nabladmins")
-    .insert({
+    .upsert({
         user: "admin",
         reason: "Administration",
     })
 if (adminError) console.error(adminError)
 
-console.log("Making groups...") // A lot of the images break badly. THhink it's the googleusercontent links
-const groups: NablaGroupDict = {
-    arrkom: {
-        name: "ArrKom",
-        id: "arrkom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/IMG_0306_HcJuzGf.jpg.250x250_q85_crop-smart.jpg",
-        mail_list: "arrkom@nabla.no",
-        leader_mail: "arrsjef@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcOBN0lTkj6KlhMZh2-auUo_fZWROoupD8MP7s4HX3mWZGmgdHArYsrQONBCKkJbU4P5oerMFRvxEYI61ShI4o_WORi3aSixAvaP0OXtMz3e02oysiTqa3LMy6CFUKZCfDP-5l5Jev7YjAANeYHJJoT2q0?key=aeJqyczQFfxPqAbucOqYxBAM",
-    },
-    bedkom: {
-        name: "Bedriftskontakten Nabla",
-        id: "bedkom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Ny_BN-logo-2_FLQ8NVr.jpg.250x250_q85_crop-smart.png",
-        mail_list: "bedkom@nabla.no",
-        leader_mail: "bedriftskontakt@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
-    },
-    educom: {
-        name: "Educom",
-        id: "educom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/edukom.jpg.250x250_q85_crop-smart.jpg",
-        leader_mail: "ambassador@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://lh7-rt.googleusercontent.com/docsz/AD_4nXciCrS_lM0nIUT-sRSQ4KySZwkB-xITYUpyWQpJiYynXjm21fPHLsWd8ouLX0wLUz2ttyIw_ea_mOkuuR4gft7obb-eagUUh1oaSm1mfDFez0f1zoO4k0gzvM2Ys229n3a6MYXPFC90oa8Yt2_zqkYz3_c?key=aeJqyczQFfxPqAbucOqYxBAM",
-    },
-    fadderkom: {
-        name: "FadderKom",
-        id: "fadderkom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Skjermbilde_2024-11-06_kl._08.17.07.png.250x250_q85_crop-smart.png",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://lh7-rt.googleusercontent.com/docsz/AD_4nXftykOYRdyz1BUXGUbB_c4LL06VAT82mABdN_VrmkaGK40cbcP37F-zTcV2q3Bo8F7iEls0e2ksUr4EuwvImQ9yYDwG_ywe0-eP38v49-dEVDyy2fvbA5FJCAOEg-pBYYEwbIBBfd0Mj3lZwmy_DK9TPuDn?key=KyKQVimNYgblVFL0RAGYWJpc",
-    },
-    kjellerstyret: {
-        name: "Kjellerstyret",
-        id: "kjellerstyret",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/kjellerstyret_dDWDFE9.png.250x250_q85_crop-smart.png.250x250_q85_crop-smart.png",
-        mail_list: "kjellern.hk18@nabla.no",
-        leader_mail: "kjellersjef@nabla.no",
-        about: faker.lorem.paragraphs(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://lh7-rt.googleusercontent.com/docsz/AD_4nXe4MH5vyqY0EpjCWbVARuCBwrkYYF1a02soMPSAciZSaPXFYVoTXvLqZWh4TCRjgHICAunUc8HGpK74wbd_s7OApNZX9X038BUNhr7ugESwWNHt46KtHSzKaVb9dW1eNUd_N61yhbdUgyh9OW3J-lf5wwE?key=Ub7xtpmS0D3jF3uiC4Wgdvhi",
-    },
-    kontorkom: {
-        name: "KontorKom",
-        id: "kontorkom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kontorkom_Logo.jpg.250x250_q85_crop-smart.jpg",
-        mail_list: "kontorkom@nabla.no",
-        leader_mail: "leder.kontorkom@nabla.no",
-        about: faker.lorem.paragraph(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://lh7-rt.googleusercontent.com/docsz/AD_4nXc2sD9zUyyPowNu3gcaf4tYj6pSFYfUujQ0wQ4-40KVb1Pa-0CP0zeUUwBbBWM4Y517-KnlIweRcllEQxIu3DHFBuGyk7Ts4w9L6unUygm1NvPeCSiI1GEvSGP3s6m32bnRmp2Uwg?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
-    },
-    prokom: {
-        id: "prokom",
-        name: "ProKom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Prokom-ikon-monokrom.jpg.250x250_q85_crop-smart.jpg",
-        mail_list: "prokom@nabla.no",
-        leader_mail: "leder.prokom@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/com_pictures/HU5A9317.jpeg",
-    },
-    redaksjonen: {
-        id: "redaksjonen",
-        name: "Redaksjonen",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/redaksjonen_logo.jpg.250x250_q85_crop-smart.jpg",
-        mail_list: "nabladet@nabla.no",
-        leader_mail: "redaktor@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/content/Nabladet_logo_bla.JPG",
-    },
-    sportskom: {
-        name: "SportsKom",
-        id: "sportskom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/sportskom.png.250x250_q85_crop-smart.png",
-        leader_mail: "sportskom@nabla.no",
-        about: faker.person.bio(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-163.jpg",
-    },
-    styret: {
-        name: "Styret",
-        id: "styret",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/styret.jpeg.250x250_q85_crop-smart.jpg",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
-    },
-    webkom: {
-        id: "webkom",
-        name: "WebKom",
-        kind: "Committee",
-        logo: "https://nabla.no/media/thumbnails/uploads/news_pictures/webkom-logo_cd43LtI.png.250x250_q85_crop-smart.png",
-        mail_list: "webkom@nabla.no",
-        leader_mail: "websjef@nabla.no",
-        about: faker.lorem.text(),
-        group_photo:
-            "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg",
-        leader: "admin",
-        trusted_member: getRandomElement(Object.keys(users)),
-    },
-    casinus: {
-        name: "Casinus",
-        id: "casinus",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Casinus_2.png.250x250_q85_crop-smart.png",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://lh7-rt.googleusercontent.com/docsz/AD_4nXd04_Y2dquwJ2nhmcTVY8vStUNCQmIZUqA8RBPs-nJDG_KoJ3C_-EA_vt-4dw-QEHmW4GbIgS3476nSApEu0DbGbb3goKWOX9VqssqL2U6hDP5SlgHJpWWU049jYSJVv8FTZOq-DQ?key=WJSp9qahF5-MtEm6b_9b_Qkh",
-    },
-    koreolis: {
-        name: "Koreolis",
-        id: "koreolis",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/koreolis_logo.jpg.250x250_q85_crop-smart.jpg",
-        mail_list: "koreolis@nabla.no",
-        leader_mail: "koreolis.kraften@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/content/koreolis-2025.jpeg",
-    },
-    kultkom: {
-        id: "kultkom",
-        name: "Kultkom",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kultkom.png.250x250_q85_crop-smart.png",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/content/nabla_under_gruppe_kultkom.jpg",
-    },
-    lopeklubben: {
-        id: "lopeklubben",
-        name: "Løpeklubben",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lopelogo.png.250x250_q85_crop-smart.png",
-        about: faker.lorem.paragraphs(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
-    },
-    makernabla: {
-        id: "makernabla",
-        name: "MakerNabla",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/maker_nabla_vrtWpwO.jpg.250x250_q85_crop-smart.jpg",
-        about: faker.lorem.paragraphs(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
-    },
-    m3: {
-        id: "m3",
-        name: "Maxwells Muntre Musikanter",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Maxwells_logo_1ob4IqE.png.250x250_q85_crop-smart.png",
-        leader_mail: "maxwells.muntre@nabla.no",
-        about: faker.lorem.paragraphs(5),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/com_pictures/nabla_under_gruppe_foto-091.jpg",
-    },
-    revyen: {
-        // Hey if the revue is not a group but its own thing... Should this only be the "styret", and everyone else be in a reparate group?
-        id: "revyen", //Should this maybe be revyen?
-        name: "Nablarevyen",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/revyen.jpg.250x250_q85_crop-smart.jpg",
-        mail_list: "revy-alle@nabla.no",
-        leader_mail: "revy@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/HU5A9343.jpg",
-    },
-    nav: {
-        id: "nav",
-        name: "Nablas Aerodynamiske Venner",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/NAV_prof1.PNG.250x250_q85_crop-smart.png",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
-    },
-    finans: {
-        id: "finans",
-        name: "Nablas finansklubb",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/5F7AA176-901B-4E5A-AB0F-0AE26615B52B_1_201_a.jpeg.250x250_q85_crop-smart.jpg",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/p1330291.jpg",
-    },
-    nff: {
-        id: "nff",
-        name: "Nablas Flytende Fysikere",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Nff-Logo-1.png.250x250_q85_crop-smart.jpg",
-        about: faker.lorem.paragraphs(2),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/P1270300.jpg",
-    },
-    handball: {
-        id: "handball",
-        name: "Nablas håndball-lag",
-        kind: "Interest group",
-        logo: "https://nabla.no/static/img/nabla-black.svg",
-        about: faker.lorem.paragraph(3),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcPoGs6cAvR6_xpKCkxwPhUmiTb2cfvZhE5_Jp3-itV027PIzVsZyQSr1z26tkqV-Nrg85GxxVIPdtU001kdac8OQI9yCDG54MMQ0MaTKQJf0zlKeyXQ4e8Oq5pkO2zNTs_GrAOeQ?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
-    },
-    klatregruppa: {
-        id: "klatregruppa",
-        name: "Nablas Klatregruppe",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/klatregrLogo4.png.250x250_q85_crop-smart.png",
-        about: faker.lorem.paragraph(5),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/P1270842.jpg",
-    },
-    olbryggerlaug: {
-        id: "olbryggerlaug",
-        name: "Nablas Ølbryggerlaug",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lauget.jpg.250x250_q85_crop-smart.jpg",
-        leader_mail: "bryggemester@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/content/nabla_under_gruppe_ølbryggerlaug_2425.jpg",
-    },
-    postkom: {
-        id: "postkom",
-        name: "PostKom",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/PostKom_logo.png.250x250_q85_crop-smart.jpg",
-        mail_list: "postkom@nabla.no",
-        about: faker.lorem.paragraphs(5),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-169.jpg",
-    },
-    quizkom: {
-        id: "quizkom",
-        name: "QuizKom",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Quizkom-logo.png.250x250_q85_crop-smart.jpg",
-        leader_mail: "quizkom@nabla.no",
-        about: faker.lorem.sentence(2),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/quizkom-102.jpg",
-    },
-    reka: {
-        id: "reka",
-        name: "ReKa",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
-        leader_mail: "reka@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/Reka.JPG",
-    },
-    reven: {
-        id: "reven",
-        name: "ReVen",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
-        leader_mail: "reven@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo: "https://nabla.no/media/uploads/content/reven-2025.jpg",
-    },
-    pod: {
-        id: "pod",
-        name: "Skråttcast",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/skråttcast2_zxdIEaA.jpg.250x250_q85_crop-smart.jpg",
-        leader_mail: "skraattcast@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "http://nabla.no/media/uploads/content/skrattcast-2025.jpg",
-    },
-    gravitones: {
-        id: "gravitones",
-        name: "The Gravitones",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/GravSvart_NpvzpPp.png.250x250_q85_crop-smart.png",
-        mail_list: "gravitones@nabla.no",
-        about: faker.lorem.text(),
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-        group_photo:
-            "https://nabla.no/media/uploads/content/gravitones2425.jpg",
-    },
-    stokes: {
-        id: "stokes",
-        name: "The Stokes",
-        kind: "Interest group",
-        logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Stokes_logo.PNG.250x250_q85_crop-smart.png",
-        mail_list: "thestokes@nabla.no",
-        leader_mail: "lederstokes@nabla.no",
-        about: `<img src: "https://nabla.no/media/uploads/content/TheStokes.jpg" width="100%"> <br> ${faker.lorem.text()}`,
-        group_photo: "https://nabla.no/media/uploads/content/TheStokes.jpg",
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-    },
-    utfluks: {
-        id: "utfluks",
-        name: "Utfluks",
-        kind: "Interest group",
-        logo: "https://nabla.no/static/img/nabla-black.svg",
-        mail_list: "utfluks@nabla.no",
-        about: faker.lorem.text(),
-        group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
-        leader: getRandomElement(Object.keys(users)),
-        trusted_member: getRandomElement(Object.keys(users)),
-    },
-}
+console.log("Making groups...")
+let groups: NablaGroupDict
+if ((await tableRowCount("nabla_groups")) > 0) {
+    console.log("Groups already seeded - reusing existing groups.")
+    const { data: existingGroups, error } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_groups")
+        .select("*")
+    if (error) throw error
+    groups = Object.fromEntries(
+        (existingGroups as NablaGroup[]).map((g) => [g.id, g]),
+    )
+} else {
+    // A lot of the images break badly. THhink it's the googleusercontent links
+    const groupDefs: NablaGroupDict = {
+        arrkom: {
+            name: "ArrKom",
+            id: "arrkom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/IMG_0306_HcJuzGf.jpg.250x250_q85_crop-smart.jpg",
+            mail_list: "arrkom@nabla.no",
+            leader_mail: "arrsjef@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcOBN0lTkj6KlhMZh2-auUo_fZWROoupD8MP7s4HX3mWZGmgdHArYsrQONBCKkJbU4P5oerMFRvxEYI61ShI4o_WORi3aSixAvaP0OXtMz3e02oysiTqa3LMy6CFUKZCfDP-5l5Jev7YjAANeYHJJoT2q0?key=aeJqyczQFfxPqAbucOqYxBAM",
+        },
+        bedkom: {
+            name: "Bedriftskontakten Nabla",
+            id: "bedkom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Ny_BN-logo-2_FLQ8NVr.jpg.250x250_q85_crop-smart.png",
+            mail_list: "bedkom@nabla.no",
+            leader_mail: "bedriftskontakt@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
+        },
+        educom: {
+            name: "Educom",
+            id: "educom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/edukom.jpg.250x250_q85_crop-smart.jpg",
+            leader_mail: "ambassador@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXciCrS_lM0nIUT-sRSQ4KySZwkB-xITYUpyWQpJiYynXjm21fPHLsWd8ouLX0wLUz2ttyIw_ea_mOkuuR4gft7obb-eagUUh1oaSm1mfDFez0f1zoO4k0gzvM2Ys229n3a6MYXPFC90oa8Yt2_zqkYz3_c?key=aeJqyczQFfxPqAbucOqYxBAM",
+        },
+        fadderkom: {
+            name: "FadderKom",
+            id: "fadderkom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Skjermbilde_2024-11-06_kl._08.17.07.png.250x250_q85_crop-smart.png",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXftykOYRdyz1BUXGUbB_c4LL06VAT82mABdN_VrmkaGK40cbcP37F-zTcV2q3Bo8F7iEls0e2ksUr4EuwvImQ9yYDwG_ywe0-eP38v49-dEVDyy2fvbA5FJCAOEg-pBYYEwbIBBfd0Mj3lZwmy_DK9TPuDn?key=KyKQVimNYgblVFL0RAGYWJpc",
+        },
+        kjellerstyret: {
+            name: "Kjellerstyret",
+            id: "kjellerstyret",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/kjellerstyret_dDWDFE9.png.250x250_q85_crop-smart.png.250x250_q85_crop-smart.png",
+            mail_list: "kjellern.hk18@nabla.no",
+            leader_mail: "kjellersjef@nabla.no",
+            about: faker.lorem.paragraphs(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXe4MH5vyqY0EpjCWbVARuCBwrkYYF1a02soMPSAciZSaPXFYVoTXvLqZWh4TCRjgHICAunUc8HGpK74wbd_s7OApNZX9X038BUNhr7ugESwWNHt46KtHSzKaVb9dW1eNUd_N61yhbdUgyh9OW3J-lf5wwE?key=Ub7xtpmS0D3jF3uiC4Wgdvhi",
+        },
+        kontorkom: {
+            name: "KontorKom",
+            id: "kontorkom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kontorkom_Logo.jpg.250x250_q85_crop-smart.jpg",
+            mail_list: "kontorkom@nabla.no",
+            leader_mail: "leder.kontorkom@nabla.no",
+            about: faker.lorem.paragraph(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXc2sD9zUyyPowNu3gcaf4tYj6pSFYfUujQ0wQ4-40KVb1Pa-0CP0zeUUwBbBWM4Y517-KnlIweRcllEQxIu3DHFBuGyk7Ts4w9L6unUygm1NvPeCSiI1GEvSGP3s6m32bnRmp2Uwg?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
+        },
+        prokom: {
+            id: "prokom",
+            name: "ProKom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Prokom-ikon-monokrom.jpg.250x250_q85_crop-smart.jpg",
+            mail_list: "prokom@nabla.no",
+            leader_mail: "leder.prokom@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/com_pictures/HU5A9317.jpeg",
+        },
+        redaksjonen: {
+            id: "redaksjonen",
+            name: "Redaksjonen",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/redaksjonen_logo.jpg.250x250_q85_crop-smart.jpg",
+            mail_list: "nabladet@nabla.no",
+            leader_mail: "redaktor@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/Nabladet_logo_bla.JPG",
+        },
+        sportskom: {
+            name: "SportsKom",
+            id: "sportskom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/sportskom.png.250x250_q85_crop-smart.png",
+            leader_mail: "sportskom@nabla.no",
+            about: faker.person.bio(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-163.jpg",
+        },
+        styret: {
+            name: "Styret",
+            id: "styret",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/styret.jpeg.250x250_q85_crop-smart.jpg",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
+        },
+        webkom: {
+            id: "webkom",
+            name: "WebKom",
+            kind: "Committee",
+            logo: "https://nabla.no/media/thumbnails/uploads/news_pictures/webkom-logo_cd43LtI.png.250x250_q85_crop-smart.png",
+            mail_list: "webkom@nabla.no",
+            leader_mail: "websjef@nabla.no",
+            about: faker.lorem.text(),
+            group_photo:
+                "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg",
+            leader: "admin",
+            trusted_member: getRandomElement(Object.keys(users)),
+        },
+        casinus: {
+            name: "Casinus",
+            id: "casinus",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Casinus_2.png.250x250_q85_crop-smart.png",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXd04_Y2dquwJ2nhmcTVY8vStUNCQmIZUqA8RBPs-nJDG_KoJ3C_-EA_vt-4dw-QEHmW4GbIgS3476nSApEu0DbGbb3goKWOX9VqssqL2U6hDP5SlgHJpWWU049jYSJVv8FTZOq-DQ?key=WJSp9qahF5-MtEm6b_9b_Qkh",
+        },
+        koreolis: {
+            name: "Koreolis",
+            id: "koreolis",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/koreolis_logo.jpg.250x250_q85_crop-smart.jpg",
+            mail_list: "koreolis@nabla.no",
+            leader_mail: "koreolis.kraften@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/koreolis-2025.jpeg",
+        },
+        kultkom: {
+            id: "kultkom",
+            name: "Kultkom",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kultkom.png.250x250_q85_crop-smart.png",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/nabla_under_gruppe_kultkom.jpg",
+        },
+        lopeklubben: {
+            id: "lopeklubben",
+            name: "Løpeklubben",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lopelogo.png.250x250_q85_crop-smart.png",
+            about: faker.lorem.paragraphs(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
+        },
+        makernabla: {
+            id: "makernabla",
+            name: "MakerNabla",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/maker_nabla_vrtWpwO.jpg.250x250_q85_crop-smart.jpg",
+            about: faker.lorem.paragraphs(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
+        },
+        m3: {
+            id: "m3",
+            name: "Maxwells Muntre Musikanter",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Maxwells_logo_1ob4IqE.png.250x250_q85_crop-smart.png",
+            leader_mail: "maxwells.muntre@nabla.no",
+            about: faker.lorem.paragraphs(5),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/com_pictures/nabla_under_gruppe_foto-091.jpg",
+        },
+        revyen: {
+            // Hey if the revue is not a group but its own thing... Should this only be the "styret", and everyone else be in a reparate group?
+            id: "revyen", //Should this maybe be revyen?
+            name: "Nablarevyen",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/revyen.jpg.250x250_q85_crop-smart.jpg",
+            mail_list: "revy-alle@nabla.no",
+            leader_mail: "revy@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/HU5A9343.jpg",
+        },
+        nav: {
+            id: "nav",
+            name: "Nablas Aerodynamiske Venner",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/NAV_prof1.PNG.250x250_q85_crop-smart.png",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
+        },
+        finans: {
+            id: "finans",
+            name: "Nablas finansklubb",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/5F7AA176-901B-4E5A-AB0F-0AE26615B52B_1_201_a.jpeg.250x250_q85_crop-smart.jpg",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/p1330291.jpg",
+        },
+        nff: {
+            id: "nff",
+            name: "Nablas Flytende Fysikere",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Nff-Logo-1.png.250x250_q85_crop-smart.jpg",
+            about: faker.lorem.paragraphs(2),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/P1270300.jpg",
+        },
+        handball: {
+            id: "handball",
+            name: "Nablas håndball-lag",
+            kind: "Interest group",
+            logo: "https://nabla.no/static/img/nabla-black.svg",
+            about: faker.lorem.paragraph(3),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcPoGs6cAvR6_xpKCkxwPhUmiTb2cfvZhE5_Jp3-itV027PIzVsZyQSr1z26tkqV-Nrg85GxxVIPdtU001kdac8OQI9yCDG54MMQ0MaTKQJf0zlKeyXQ4e8Oq5pkO2zNTs_GrAOeQ?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
+        },
+        klatregruppa: {
+            id: "klatregruppa",
+            name: "Nablas Klatregruppe",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/klatregrLogo4.png.250x250_q85_crop-smart.png",
+            about: faker.lorem.paragraph(5),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/P1270842.jpg",
+        },
+        olbryggerlaug: {
+            id: "olbryggerlaug",
+            name: "Nablas Ølbryggerlaug",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lauget.jpg.250x250_q85_crop-smart.jpg",
+            leader_mail: "bryggemester@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/nabla_under_gruppe_ølbryggerlaug_2425.jpg",
+        },
+        postkom: {
+            id: "postkom",
+            name: "PostKom",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/PostKom_logo.png.250x250_q85_crop-smart.jpg",
+            mail_list: "postkom@nabla.no",
+            about: faker.lorem.paragraphs(5),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-169.jpg",
+        },
+        quizkom: {
+            id: "quizkom",
+            name: "QuizKom",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Quizkom-logo.png.250x250_q85_crop-smart.jpg",
+            leader_mail: "quizkom@nabla.no",
+            about: faker.lorem.sentence(2),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/quizkom-102.jpg",
+        },
+        reka: {
+            id: "reka",
+            name: "ReKa",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
+            leader_mail: "reka@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo: "https://nabla.no/media/uploads/content/Reka.JPG",
+        },
+        reven: {
+            id: "reven",
+            name: "ReVen",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
+            leader_mail: "reven@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/reven-2025.jpg",
+        },
+        pod: {
+            id: "pod",
+            name: "Skråttcast",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/skråttcast2_zxdIEaA.jpg.250x250_q85_crop-smart.jpg",
+            leader_mail: "skraattcast@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "http://nabla.no/media/uploads/content/skrattcast-2025.jpg",
+        },
+        gravitones: {
+            id: "gravitones",
+            name: "The Gravitones",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/GravSvart_NpvzpPp.png.250x250_q85_crop-smart.png",
+            mail_list: "gravitones@nabla.no",
+            about: faker.lorem.text(),
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+            group_photo:
+                "https://nabla.no/media/uploads/content/gravitones2425.jpg",
+        },
+        stokes: {
+            id: "stokes",
+            name: "The Stokes",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Stokes_logo.PNG.250x250_q85_crop-smart.png",
+            mail_list: "thestokes@nabla.no",
+            leader_mail: "lederstokes@nabla.no",
+            about: `<img src: "https://nabla.no/media/uploads/content/TheStokes.jpg" width="100%"> <br> ${faker.lorem.text()}`,
+            group_photo: "https://nabla.no/media/uploads/content/TheStokes.jpg",
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+        },
+        utfluks: {
+            id: "utfluks",
+            name: "Utfluks",
+            kind: "Interest group",
+            logo: "https://nabla.no/static/img/nabla-black.svg",
+            mail_list: "utfluks@nabla.no",
+            about: faker.lorem.text(),
+            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
+        },
+    }
 
-const { error: error1 } = await supabase
-    .schema("nablaweb_vue")
-    .from("nabla_groups")
-    .upsert(Object.values(groups))
-if (error1) {
-    console.log(error1)
+    const { error: error1 } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_groups")
+        .upsert(Object.values(groupDefs))
+    if (error1) {
+        console.log(error1)
+    }
+    groups = groupDefs
 }
 
 console.log("Populating groups with members...")
-const memberships: NablaGroupMember[] = []
-const usedPairs = new Set<string>()
-while (memberships.length < Object.keys(groups).length * 15) {
-    const user = getRandomElement(Object.keys(users))
-    const group = getRandomElement(Object.keys(groups))
-    if (usedPairs.has(`${user}:${group}`)) {
-        continue
-    }
-    usedPairs.add(`${user}:${group}`)
+if ((await tableRowCount("nabla_group_members")) > 0) {
+    console.log("Group memberships already seeded - skipping.")
+} else {
+    const memberships: NablaGroupMember[] = []
+    const usedPairs = new Set<string>()
+    while (memberships.length < Object.keys(groups).length * 15) {
+        const user = getRandomElement(Object.keys(users))
+        const group = getRandomElement(Object.keys(groups))
+        if (usedPairs.has(`${user}:${group}`)) {
+            continue
+        }
+        usedPairs.add(`${user}:${group}`)
 
-    const membership: NablaGroupMember = {
-        user: user,
-        group: group,
-        member_role: faker.company.catchPhrase(),
-        is_active: true,
-        order: memberships.length,
+        const membership: NablaGroupMember = {
+            user: user,
+            group: group,
+            member_role: faker.company.catchPhrase(),
+            is_active: true,
+            order: memberships.length,
+        }
+        memberships.push(membership)
     }
-    memberships.push(membership)
+
+    const { error } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_group_members")
+        .upsert(memberships)
+
+    if (error) console.log(error)
 }
 
 type TrustedCategory =
@@ -535,114 +597,257 @@ type TrustedAssignment =
     Database["nablaweb_vue"]["Tables"]["trusted_member_assignments"]["Insert"]
 
 console.log("Seeding Trusted Member Categories...")
-const categories: TrustedCategory[] = [
-    { id: "ftv", display_name: "Fakultetstillitsvalgte (FTV)", order: 1 },
-    { id: "itv", display_name: "Instituttillitsvalgte (ITV)", order: 2 },
-    { id: "ptv", display_name: "Programtillitsvalgte (PTV)", order: 3 },
-    { id: "ktv", display_name: "Klassetillitsvalgte (KTV)", order: 4 },
-]
+if ((await tableRowCount("trusted_member_categories")) > 0) {
+    console.log("Trusted member categories already seeded - skipping.")
+} else {
+    const categories: TrustedCategory[] = [
+        { id: "ftv", display_name: "Fakultetstillitsvalgte (FTV)", order: 1 },
+        { id: "itv", display_name: "Instituttillitsvalgte (ITV)", order: 2 },
+        { id: "ptv", display_name: "Programtillitsvalgte (PTV)", order: 3 },
+        { id: "ktv", display_name: "Klassetillitsvalgte (KTV)", order: 4 },
+    ]
 
-const { error: trustedCategories } = await supabase
-    .schema("nablaweb_vue")
-    .from("trusted_member_categories")
-    .upsert(categories)
+    const { error: trustedCategories } = await supabase
+        .schema("nablaweb_vue")
+        .from("trusted_member_categories")
+        .upsert(categories)
 
-if (trustedCategories) console.error(trustedCategories)
+    if (trustedCategories) console.error(trustedCategories)
+}
 
 console.log("Seeding Trusted Member Areas...")
-const areas: TrustedArea[] = [
-    {
-        id: "ftv-nv",
-        category: "ftv",
-        display_name: "Fakultet for naturvitenskap (NV)",
-        area_mail: "nv-ftv@studentrad.ntnu.no",
-        order: 1,
-    },
-    {
-        id: "ftv-ie",
-        category: "ftv",
-        display_name:
-            "Fakultet for informasjonsteknologi og elektroteknikk (IE)",
-        area_mail: "ie-ftv@studentrad.ntnu.no",
-        order: 2,
-    },
-    {
-        id: "itv-ify",
-        category: "itv",
-        display_name: "Institutt for fysikk (IFY)",
-        area_mail: "nv-fysikk@studentrad.ntnu.no",
-        order: 1,
-    },
-    {
-        id: "itv-imf",
-        category: "itv",
-        display_name: "Institutt for matematiske fag (IMF)",
-        area_mail: "imf@sr-ie.no",
-        order: 2,
-    },
-    { id: "ptv-fysmat", category: "ptv", display_name: "Fysmat", order: 1 },
-    { id: "ktv-24", category: "ktv", display_name: "Fysmat kull 24", order: 1 },
-    { id: "ktv-23", category: "ktv", display_name: "Fysmat kull 23", order: 2 },
-    { id: "ktv-22", category: "ktv", display_name: "Fysmat kull 22", order: 3 },
-    { id: "ktv-21", category: "ktv", display_name: "Fysmat kull 21", order: 4 },
-    { id: "ktv-20", category: "ktv", display_name: "Fysmat kull 20", order: 5 },
-]
+if ((await tableRowCount("trusted_member_areas")) > 0) {
+    console.log("Trusted member areas already seeded - skipping.")
+} else {
+    const areas: TrustedArea[] = [
+        {
+            id: "ftv-nv",
+            category: "ftv",
+            display_name: "Fakultet for naturvitenskap (NV)",
+            area_mail: "nv-ftv@studentrad.ntnu.no",
+            order: 1,
+        },
+        {
+            id: "ftv-ie",
+            category: "ftv",
+            display_name:
+                "Fakultet for informasjonsteknologi og elektroteknikk (IE)",
+            area_mail: "ie-ftv@studentrad.ntnu.no",
+            order: 2,
+        },
+        {
+            id: "itv-ify",
+            category: "itv",
+            display_name: "Institutt for fysikk (IFY)",
+            area_mail: "nv-fysikk@studentrad.ntnu.no",
+            order: 1,
+        },
+        {
+            id: "itv-imf",
+            category: "itv",
+            display_name: "Institutt for matematiske fag (IMF)",
+            area_mail: "imf@sr-ie.no",
+            order: 2,
+        },
+        { id: "ptv-fysmat", category: "ptv", display_name: "Fysmat", order: 1 },
+        {
+            id: "ktv-24",
+            category: "ktv",
+            display_name: "Fysmat kull 24",
+            order: 1,
+        },
+        {
+            id: "ktv-23",
+            category: "ktv",
+            display_name: "Fysmat kull 23",
+            order: 2,
+        },
+        {
+            id: "ktv-22",
+            category: "ktv",
+            display_name: "Fysmat kull 22",
+            order: 3,
+        },
+        {
+            id: "ktv-21",
+            category: "ktv",
+            display_name: "Fysmat kull 21",
+            order: 4,
+        },
+        {
+            id: "ktv-20",
+            category: "ktv",
+            display_name: "Fysmat kull 20",
+            order: 5,
+        },
+    ]
 
-const { error: areaError } = await supabase
-    .schema("nablaweb_vue")
-    .from("trusted_member_areas")
-    .upsert(areas)
-if (areaError) console.error(areaError)
+    const { error: areaError } = await supabase
+        .schema("nablaweb_vue")
+        .from("trusted_member_areas")
+        .upsert(areas)
+    if (areaError) console.error(areaError)
+}
 
 console.log("Assigning users to Trusted Member roles...")
-const assignments: TrustedAssignment[] = []
-const usernames = Object.keys(users)
-
-const singlePersonAreas = ["ftv-nv", "ftv-ie", "itv-ify", "itv-imf"]
-for (const areaId of singlePersonAreas) {
-    assignments.push({
-        area_id: areaId,
-        username: getRandomElement(usernames),
-        order: 0,
-    })
-}
-
-const doublePersonAreas = [
-    "ptv-fysmat",
-    "ktv-24",
-    "ktv-23",
-    "ktv-22",
-    "ktv-21",
-    "ktv-20",
-]
-
-for (const areaId of doublePersonAreas) {
-    assignments.push({
-        area_id: areaId,
-        username: getRandomElement(usernames),
-        order: 0,
-    })
-    assignments.push({
-        area_id: areaId,
-        username: getRandomElement(usernames),
-        order: 1,
-    })
-}
-
-const { error: assignError } = await supabase
-    .schema("nablaweb_vue")
-    .from("trusted_member_assignments")
-    .upsert(assignments)
-
-if (assignError) {
-    console.log("Error in assignments:", assignError)
+if ((await tableRowCount("trusted_member_assignments")) > 0) {
+    console.log("Trusted member assignments already seeded - skipping.")
 } else {
-    console.log(`Successfully assigned ${assignments.length} trusted members.`)
+    const assignments: TrustedAssignment[] = []
+    const usernames = Object.keys(users)
+
+    const singlePersonAreas = ["ftv-nv", "ftv-ie", "itv-ify", "itv-imf"]
+    for (const areaId of singlePersonAreas) {
+        assignments.push({
+            area_id: areaId,
+            username: getRandomElement(usernames),
+            order: 0,
+        })
+    }
+
+    const doublePersonAreas = [
+        "ptv-fysmat",
+        "ktv-24",
+        "ktv-23",
+        "ktv-22",
+        "ktv-21",
+        "ktv-20",
+    ]
+
+    for (const areaId of doublePersonAreas) {
+        assignments.push({
+            area_id: areaId,
+            username: getRandomElement(usernames),
+            order: 0,
+        })
+        assignments.push({
+            area_id: areaId,
+            username: getRandomElement(usernames),
+            order: 1,
+        })
+    }
+
+    const { error: assignError } = await supabase
+        .schema("nablaweb_vue")
+        .from("trusted_member_assignments")
+        .upsert(assignments)
+
+    if (assignError) {
+        console.log("Error in assignments:", assignError)
+    } else {
+        console.log(
+            `Successfully assigned ${assignments.length} trusted members.`,
+        )
+    }
 }
 
-const { error } = await supabase
-    .schema("nablaweb_vue")
-    .from("nabla_group_members")
-    .upsert(memberships)
+console.log("Seeding Events...")
+if ((await tableRowCount("nabla_events")) > 0) {
+    console.log("Events already seeded - skipping.")
+} else {
+    const events: NablaEvent[] = [
+        {
+            id: crypto.randomUUID(),
+            slug: "immball-2026",
+            event_photo:
+                "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg",
+            start_time: "2026-09-17T18:00:00+01:00",
+            end_time: "2026-09-17T23:59:00+01:00",
+            location: "R1, Realfagbygget",
+            registration_required: true,
+            organiser: "arrkom",
+            global_registration_limit: 150,
+            is_hidden: false,
+        },
+        {
+            id: crypto.randomUUID(),
+            slug: "bedriftspresentasjon-example-as",
+            event_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
+            start_time: "2026-09-15T17:15:00+01:00",
+            end_time: "2026-09-15T19:00:00+01:00",
+            location: "KJEL21, Kjelhuset",
+            registration_required: true,
+            organiser: "bedkom",
+            global_registration_limit: 30,
+            is_hidden: false,
+        },
+        {
+            id: crypto.randomUUID(),
+            slug: "julebord-2026",
+            event_photo:
+                "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
+            start_time: "2026-12-05T19:00:00+01:00",
+            end_time: "2026-12-05T23:00:00+01:00",
+            location: "Realfagkantina, Realfagbygget",
+            registration_required: true,
+            organiser: "arrkom",
+            global_registration_limit: 100,
+            is_hidden: false,
+        },
+    ]
 
-if (error) console.log(error)
+    const { error: eventsError } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_events")
+        .upsert(events)
+    if (eventsError) console.error(eventsError)
+
+    const translations: NablaEventTranslation[] = [
+        {
+            event: events[0].id!,
+            language: "nb",
+            title: "Immatrikuleringsball",
+            description:
+                "Finn frem finstasen og gjør dere klare for årets begivenhet i Nabla. Immball blir den 17. september på frimurerlogen",
+            body_text: faker.lorem.paragraphs(2),
+        },
+        {
+            event: events[0].id!,
+            language: "en",
+            title: "Admissions ball",
+            description:
+                "Get ready for this year's event in Nabla. The Admissions ball will be held on September 17th at the Freemason's Lodge.",
+            body_text: faker.lorem.paragraphs(2),
+        },
+        {
+            event: events[1].id!,
+            language: "nb",
+            title: "Bedriftspresentasjon: Example AS",
+            description: "Bli kjent med Example AS over pizza og mingling.",
+            body_text: faker.lorem.paragraphs(2),
+        },
+        {
+            event: events[1].id!,
+            language: "en",
+            title: "Company presentation: Example AS",
+            description: "Get to know Example AS over pizza and mingling.",
+            body_text: faker.lorem.paragraphs(2),
+        },
+        {
+            event: events[2].id!,
+            language: "nb",
+            title: "Julebord",
+            description:
+                "Årets julebord i realfagkantina - god mat og godt selskap.",
+            body_text: faker.lorem.paragraphs(3),
+        },
+        {
+            event: events[2].id!,
+            language: "en",
+            title: "Christmas dinner",
+            description:
+                "This year's Christmas dinner in the realfagkantina - good food and good company.",
+            body_text: faker.lorem.paragraphs(3),
+        },
+    ]
+
+    const { error: translationsError } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_events_translations")
+        .upsert(translations)
+    if (translationsError) {
+        console.error(translationsError)
+    } else {
+        console.log(`Seeded ${events.length} events with translations.`)
+    }
+}
