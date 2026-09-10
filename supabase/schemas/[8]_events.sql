@@ -9,7 +9,7 @@ CREATE TYPE nablaweb_vue.event_type AS ENUM (
 -- nabla_events
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
     id                          UUID                    PRIMARY KEY DEFAULT gen_random_uuid(),
-    types                       nablaweb_vue.event_type NOT NULL DEFAULT 'ordinary',
+    event_type                  nablaweb_vue.event_type NOT NULL DEFAULT 'ordinary',
     slug                        TEXT                    NOT NULL UNIQUE,
     event_photo                 TEXT                    NOT NULL DEFAULT '',
     start_time                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
