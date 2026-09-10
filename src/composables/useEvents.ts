@@ -17,16 +17,10 @@ export function useEvents() {
                     startTime: start_time,
                     endTime: end_time,
                     location,
-                    translations: nabla_events_translations (
-                        title,
-                        ingress: description,
-                        body: body_text
-                        ),
                     eventType: event_type,
                     hiddenIfUnavailable: is_hidden,
                     requiresRegistration: registration_required,
                     image: event_photo,
-                    link,
                     slug,
                     totalCapacity: global_registration_limit
                 `,
@@ -34,13 +28,13 @@ export function useEvents() {
                 .order("order", { ascending: true })
 
             if (supabaseError) throw supabaseError
-            events.value = (data as Event[]).map((event) => ({
+            events.value = (data as unknown as Event[]).map((event) => ({
                 ...event,
                 id: event.id,
                 startTime: new Date(event.startTime),
                 endTime: event.endTime ? new Date(event.endTime) : undefined,
                 location: event.location,
-                body: event.body,
+                body: "",
                 comments: [],
                 eventType:
                     event.eventType in EventType
@@ -52,11 +46,10 @@ export function useEvents() {
                 participants: [],
                 reactions: [],
                 requiresRegistration: event.requiresRegistration,
-                title: event.title,
+                title: "",
                 waitingList: [],
                 image: event.image ? new URL(event.image) : undefined,
-                ingress: event.ingress,
-                link: event.link ? new URL(event.link) : undefined,
+                ingress: "",
                 organizer: [],
                 registrationRules: new Map<string, RegistrationInfo>(),
                 slug: event.slug,

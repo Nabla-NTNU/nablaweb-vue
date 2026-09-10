@@ -14,6 +14,7 @@ export type Database = {
                     created_at: string
                     end_time: string
                     event_photo: string
+                    event_type: Database["nablaweb_vue"]["Enums"]["event_type"]
                     global_registration_limit: number
                     id: string
                     is_hidden: boolean
@@ -27,6 +28,7 @@ export type Database = {
                     created_at?: string
                     end_time?: string
                     event_photo?: string
+                    event_type?: Database["nablaweb_vue"]["Enums"]["event_type"]
                     global_registration_limit?: number
                     id?: string
                     is_hidden?: boolean
@@ -40,6 +42,7 @@ export type Database = {
                     created_at?: string
                     end_time?: string
                     event_photo?: string
+                    event_type?: Database["nablaweb_vue"]["Enums"]["event_type"]
                     global_registration_limit?: number
                     id?: string
                     is_hidden?: boolean
@@ -264,7 +267,9 @@ export type Database = {
                 Row: {
                     deregistration_end: string
                     event: string
+                    group_price: string
                     id: string
+                    payment_end: string
                     registering_group: string
                     registration_end: string
                     registration_start: string
@@ -272,7 +277,9 @@ export type Database = {
                 Insert: {
                     deregistration_end?: string
                     event: string
+                    group_price?: string
                     id?: string
+                    payment_end?: string
                     registering_group: string
                     registration_end?: string
                     registration_start?: string
@@ -280,7 +287,9 @@ export type Database = {
                 Update: {
                     deregistration_end?: string
                     event?: string
+                    group_price?: string
                     id?: string
+                    payment_end?: string
                     registering_group?: string
                     registration_end?: string
                     registration_start?: string
@@ -615,6 +624,7 @@ export type Database = {
                 | "kull23"
                 | "kull24"
                 | "kull25"
+            event_type: "ordinary" | "bedpress" | "payment" | "recurrent"
             group_kind: "Committee" | "Interest group"
         }
         CompositeTypes: {
@@ -752,6 +762,7 @@ export const Constants = {
                 "kull24",
                 "kull25",
             ],
+            event_type: ["ordinary", "bedpress", "payment", "recurrent"],
             group_kind: ["Committee", "Interest group"],
         },
     },
