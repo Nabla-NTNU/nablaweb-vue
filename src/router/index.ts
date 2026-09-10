@@ -16,6 +16,8 @@ import NablaLogin from "@/views/NablaLogin.vue"
 
 import { groupPageGuard, groupAdminPageGuard } from "./guards"
 
+import NablaEvent from "@/views/events/NablaEvent.vue"
+
 const routes = [
     // Hjem
     { path: "/", component: HjemView },
@@ -72,6 +74,7 @@ const routes = [
     // { path: "/ny-student", component: NyStudentView },
     // { path: "/joulekalender", component: UnderKonstruksjonView },
     // { path: "/soknad", component: UnderKonstruksjonView },
+    { path: "/event", component: NablaEvent },
 ]
 // Create a router instance
 const router = createRouter({

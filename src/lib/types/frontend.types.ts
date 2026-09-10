@@ -83,6 +83,7 @@ export type TrustedCategory = {
 }
 
 export type Event = {
+    id: string
     startTime: Date
     endTime?: Date
     location?: string
@@ -105,6 +106,9 @@ export type Event = {
     title: string
     ingress?: string
     body: string
+
+    isWeekly: boolean
+    reccurenceEndDate?: Date
 }
 
 export type RegistrationInfo = {
@@ -119,6 +123,8 @@ export enum EventType {
     bedpress,
     ordinary,
     payment,
+    recurrent,
+    undefined,
 }
 
 export type EventComment = {

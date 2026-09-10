@@ -237,7 +237,7 @@ en:
     gå-tilbake: "Go \n back"
     endre-gruppebilde: Change group photo
     endre-gruppebilde-tekst: >
-        You can choose a web-link, or upload a picture to our servers. If you're uploading - we enforce a maxomum of
+        You can choose a web-link, or upload a picture to our servers. If you're uploading - we enforce a maximum of
         ____ Mb per image. There's no aspect ratio, however, so please make sure it looks alright on both large and
         smaller screens.
     tekst-om-gruppen: About text
