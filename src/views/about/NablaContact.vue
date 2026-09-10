@@ -229,9 +229,11 @@
                         :key="idx"
                     >
                         <td></td>
-                        <td class="">
+
+                        <td>
                             {{ area.name }}
                         </td>
+
                         <td>
                             <router-link
                                 v-if="assignment.user"

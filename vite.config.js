@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => ({
     build: {
         // Show uncompiled .vue and .ts to browser dev tools instead of just y'know
         sourcemap: mode === "development",
+        target: "esnext",
     },
 
     // Fix prettier import root folder

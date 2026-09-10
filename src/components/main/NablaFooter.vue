@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import { useI18n } from "vue-i18n"
     import ThemeToggle from "../depricated/ThemeToggle.vue"
-    import LangToggle from "../depricated/LangToggle.vue"
     const { t } = useI18n()
 </script>
 
@@ -94,7 +93,6 @@
             <div class="m-3 font-lato text-m">
                 <h4 class="mb-4 text-l">;))</h4>
                 <ThemeToggle />
-                <LangToggle />
             </div>
         </div>
     </footer>

@@ -1,27 +1,35 @@
 <script setup lang="ts">
-    import { ref, onMounted, onBeforeUnmount } from "vue"
+    import { ref, onMounted, computed, onBeforeUnmount } from "vue"
     import { useI18n } from "vue-i18n"
     import NablaLogo from "@/components/main/header-links/ReturnLink.vue"
     import ProfileLink from "@/components/main/header-links/ProfileLink.vue"
+    import FlagNo from "@/components/main/header-links/FlagNo.vue"
+    import FlagEn from "@/components/main/header-links/FlagEn.vue"
 
     // Global scope to translate from NablaHeader.vue
     const { t } = useI18n({ useScope: "global" })
 
     const mobileNavVisible = ref(false)
 
-    defineProps<{
-        headerItems: HeaderItem[]
-    }>()
-
     type HeaderItem = {
         text: string
         link: string
-        // Could be recursive, but multiple dropdown layers is bad UX
         dropdownItems?: {
             text: string
             link: string
         }[]
     }
+
+    const props = defineProps<{
+        headerItems: HeaderItem[]
+        locale: string
+    }>()
+
+    const emit = defineEmits<{
+        switchLanguage: []
+    }>()
+
+    const isEnglish = computed(() => props.locale === "en")
 
     // Keep track of link by the URL it sends to, as this is unique
     const focusedLink = ref<string | null>(null)
@@ -76,6 +84,7 @@
                     />
                 </svg>
             </button>
+
             <!-- Logo -->
             <div class="h-header w-header flex-grow content-center">
                 <router-link class="h-header w-header" to="/">
@@ -84,6 +93,15 @@
                     />
                 </router-link>
             </div>
+            <!-- Language Switcher-->
+            <button
+                class="mx-3 flex h-8 w-10 items-center self-center transition-transform duration-200 hover:scale-110"
+                @click="emit('switchLanguage')"
+            >
+                <FlagNo v-if="isEnglish" class="h-5 w-7 shadow-sm rounded-sm" />
+                <FlagEn v-else class="h-5 w-7 shadow-sm rounded-sm" />
+            </button>
+
             <div class="mx-2 w-header">
                 <ProfileLink class="h-header w-header" :is-focused="false" />
             </div>
