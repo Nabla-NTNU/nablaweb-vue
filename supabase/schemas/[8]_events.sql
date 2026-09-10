@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
     is_hidden                   BOOLEAN                 NOT NULL DEFAULT false,
     created_at                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     CHECK (end_time > start_time)
-    -- Prikker, vet ikke hvordan vi tenker å gjøre det
+    -- Prikker, gjør dette i nabla_user? beta-feature
 );
 
 ALTER TABLE nablaweb_vue.nabla_events ENABLE ROW LEVEL SECURITY;
