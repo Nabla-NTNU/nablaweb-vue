@@ -1,6 +1,15 @@
+-- Enums used by events
+CREATE TYPE nablaweb_vue.event_type AS ENUM (
+    'ordinary',
+    'bedpress',
+    'payment',
+    'recurrent'
+);
+
 -- nabla_events
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
     id                          UUID                    PRIMARY KEY DEFAULT gen_random_uuid(),
+    types                       nablaweb_vue.event_type NOT NULL DEFAULT 'ordinary',
     slug                        TEXT                    NOT NULL UNIQUE,
     event_photo                 TEXT                    NOT NULL DEFAULT '',
     start_time                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -96,7 +105,9 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_translations IS 'Per-language title/d
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event                 UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    registering_group     TEXT NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    registering_group     TEXT NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE, -- Hvilken gruppe er personen som ser på arrangementet fra?
+    group_price           TEXT NOT NULL DEFAULT '',
+    payment_end           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     registration_start    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     registration_end      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     deregistration_end    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
