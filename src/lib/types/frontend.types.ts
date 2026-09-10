@@ -108,7 +108,7 @@ export type Event = {
     body: string
 
     isWeekly: boolean
-    reccurenceEndDate?: Date
+    recurrenceEndDate?: Date
 }
 
 export type RegistrationInfo = {
@@ -120,11 +120,11 @@ export type RegistrationInfo = {
 }
 
 export enum EventType {
-    bedpress,
-    ordinary,
-    payment,
-    recurrent,
-    undefined,
+    bedpress = "bedpress",
+    ordinary = "ordinary",
+    payment = "payment",
+    recurrent = "recurrent",
+    undefined = "undefined",
 }
 
 export type EventComment = {

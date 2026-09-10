@@ -55,8 +55,8 @@ export function useEvents() {
                 slug: event.slug,
                 totalCapacity: event.totalCapacity,
 
-                recurrentEndDate: event.reccurenceEndDate
-                    ? new Date(event.reccurenceEndDate)
+                recurrenceEndDate: event.recurrenceEndDate
+                    ? new Date(event.recurrenceEndDate)
                     : undefined,
             }))
         } catch (e) {
