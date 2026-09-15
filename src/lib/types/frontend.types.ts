@@ -107,7 +107,6 @@ export type Event = {
     ingress?: string
     body: string
 
-    isWeekly: boolean
     recurrenceEndDate?: Date
 }
 

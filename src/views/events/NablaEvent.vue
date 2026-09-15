@@ -1,39 +1,33 @@
 <script setup lang="ts">
     import { useEvents } from "@/composables/useEvents"
     const { events } = useEvents()
-
-    // const event = ref<Event>({
-    //     id: "njdfsjknsdfkjndfs",
-    //     startTime: new Date("2026-09-06T14:42:00"),
-    //     endTime: new Date("2026-09-06T15:42:00"),
-    //     location: "Gløs",
-    //     body: "Dette er et arrangment",
-    //     comments: [],
-    //     eventType: EventType.ordinary,
-    //     hiddenIfUnavailable: true,
-    //     owningGroups: [],
-    //     owningPeople: [],
-    //     participants: [],
-    //     reactions: [],
-    //     requiresRegistration: true,
-    //     title: "Kult arrangement",
-    //     waitingList: [],
-    //     image: new URL(
-    //         "https://nabla.no/media/thumbnails/uploads/news_pictures/HU5A5376.jpg.770x300_q95_box-0%2C408%2C3600%2C1811_detail_upscale.jpg",
-    //     ),
-    //     ingress: "Dette er et kult arrangement",
-    //     link: new URL("https://nabla.no/"),
-    //     organizer: [],
-    //     registrationRules: new Map<string, RegistrationInfo>(),
-    //     slug: "hallo",
-    //     totalCapacity: 200,
-    //     isWeekly: true,
-    //     reccurenceEndDate: new Date(),
-    // })
 </script>
 
 <template>
-    <div>
-        {{ events[0].title }}
+    <br />
+    <div v-for="event in events" :key="event.id">
+        <span
+            v-for="organizer_group in event.organizer"
+            :key="organizer_group.id"
+        >
+            <!-- organizer_group contains only the name and id of the groups organizing.
+                 If one needs more info on the group one will have to use the group id.  -->
+            {{ organizer_group.name }}
+        </span>
+        <br />
+        {{ event.title }}
+        <br />
+        {{ event.startTime }}
+        <br />
+        {{ event.endTime }}
+        <br />
+        {{ event.location }}
+        <br />
+        {{ event.eventType }}
+
+        <br />
+        {{ event.ingress }}
+        <br />
+        <br />
     </div>
 </template>

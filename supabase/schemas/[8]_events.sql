@@ -3,22 +3,24 @@ CREATE TYPE nablaweb_vue.event_type AS ENUM (
     'ordinary',
     'bedpress',
     'payment',
-    'recurrent'
+    'recurrent',
+    'undefined'
 );
 
 -- nabla_events
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
     id                          UUID                    PRIMARY KEY DEFAULT gen_random_uuid(),
-    event_type                  nablaweb_vue.event_type NOT NULL DEFAULT 'ordinary',
-    slug                        TEXT                    NOT NULL UNIQUE,
-    event_photo                 TEXT                    NOT NULL DEFAULT '',
     start_time                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     end_time                    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     location                    TEXT                    NOT NULL DEFAULT '',
+    event_type                  nablaweb_vue.event_type NOT NULL DEFAULT 'ordinary',
+    is_hidden                   BOOLEAN                 NOT NULL DEFAULT false,
     registration_required       BOOLEAN                 NOT NULL DEFAULT true,
     organiser                   TEXT                    NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    event_photo                 TEXT                    NOT NULL DEFAULT '',
+    slug                        TEXT                    NOT NULL UNIQUE,
     global_registration_limit   INTEGER                 NOT NULL DEFAULT 0,
-    is_hidden                   BOOLEAN                 NOT NULL DEFAULT false,
+    recurrent_end_date          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     created_at                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     CHECK (end_time > start_time)
     -- Prikker, gjør dette i nabla_user? beta-feature

@@ -749,6 +749,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         {
             id: crypto.randomUUID(),
             slug: "immball-2026",
+            event_type: "payment",
             event_photo:
                 "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg",
             start_time: "2026-09-17T18:00:00+01:00",
@@ -762,6 +763,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         {
             id: crypto.randomUUID(),
             slug: "bedriftspresentasjon-example-as",
+            event_type: "bedpress",
             event_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
             start_time: "2026-09-15T17:15:00+01:00",
             end_time: "2026-09-15T19:00:00+01:00",
@@ -774,6 +776,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         {
             id: crypto.randomUUID(),
             slug: "julebord-2026",
+            event_type: "payment",
             event_photo:
                 "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
             start_time: "2026-12-05T19:00:00+01:00",
