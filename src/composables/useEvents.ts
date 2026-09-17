@@ -83,10 +83,8 @@ export function useEvents() {
             const translation = pickTranslation(event.translations)
             return {
                 id: event.id,
-                startTime: event.start_time
-                    ? new Date(event.start_time)
-                    : undefined,
-                endTime: event.end_time ? new Date(event.end_time) : undefined,
+                startTime: new Date(event.start_time),
+                endTime: new Date(event.end_time),
                 location: event.location || undefined,
                 eventType: event.event_type as EventType,
                 hiddenIfUnavailable: event.is_hidden,
@@ -113,10 +111,7 @@ export function useEvents() {
                 owningPeople: [],
                 participants: [],
                 waitingList: [],
-                recurrenceEndDate:
-                    event.event_type === "recurrent"
-                        ? new Date(event.recurrent_end_date)
-                        : undefined,
+                recurrenceEndDate: new Date(event.recurrent_end_date),
             }
         }),
     )
