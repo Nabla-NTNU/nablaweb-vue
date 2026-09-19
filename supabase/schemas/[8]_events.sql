@@ -104,18 +104,27 @@ CREATE POLICY "Admins can edit event translations"
 COMMENT ON TABLE nablaweb_vue.nabla_events_translations IS 'Per-language title/description/body for an event';
 
 -- nabla_events_registrations
+-- There is one table for each class per event with class pricing
+-- If there is no difference in price between classes class is set to NULL and the default is shown
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event                 UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    registering_group     TEXT NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE, -- Hvilken gruppe er personen som ser på arrangementet fra?
-    group_price           TEXT NOT NULL DEFAULT '',
-    payment_end           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    price_kr              INTEGER NOT NULL DEFAULT 0,
+    class                 nablaweb_vue.class,
+    class_capacity        INTEGER NOT NULL DEFAULT 0,
+    payment_end           TIMESTAMP WITH TIME ZONE,
     registration_start    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     registration_end      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     deregistration_end    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    UNIQUE (event, registering_group)
-    -- Evt. reservert plass? Men det tenkte vi kanskje å gjøre gjennom GUI-en
+
+    CHECK (price_kr = 0 OR payment_end is NOT NULL)
+
 );
+
+CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_registrations (event, class)
+    WHERE class IS NOT NULL;
+CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_registrations (event)
+    WHERE class IS NULL;
 
 ALTER TABLE nablaweb_vue.nabla_events_registrations ENABLE ROW LEVEL SECURITY;
 

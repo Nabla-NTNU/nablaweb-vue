@@ -1,6 +1,14 @@
 import { supabase } from "@/lib/supabaseClient"
 import { Event, EventType } from "@/lib/types/frontend.types"
-import { Ref, ref, computed, onMounted } from "vue"
+import {
+    Ref,
+    ref,
+    computed,
+    onMounted,
+    MaybeRefOrGetter,
+    toValue,
+    watch,
+} from "vue"
 import { useI18n } from "vue-i18n"
 
 type RawEvent = {
@@ -22,50 +30,75 @@ type RawEvent = {
         body_text: string
     }[]
     organiser_group: { id: string; name: string; logo: string } | null
+    owning_groups: { group: { id: string; name: string; logo: string } }[]
+    owning_individuals: {
+        user: {
+            username: string
+            first_name: string
+            last_name: string
+            profile_picture: string
+        }
+    }[]
 }
-export function useEvent(id: string) {
+
+export function useEvent(id: MaybeRefOrGetter<string>) {
     const { locale } = useI18n()
-    const rawEvent: Ref<RawEvent[]> = ref([])
+    const rawEvent: Ref<RawEvent | null> = ref(null)
     const error: Ref<boolean> = ref(false)
 
-    async function fetchEvent(id: string) {
+    async function fetchEvent() {
         try {
             const { data, error: supabaseError } = await supabase
                 .schema("nablaweb_vue")
                 .from("nabla_events")
                 .select(
                     `
-                        id
-                        start_time,
-                        end_time,
-                        location,
-                        event_type,
-                        is_hidden,
-                        registration_required,
-                        event_photo,
-                        slug,
-                        global_registration_limit,
-                        recurrent_end_date,
-                        translations: nabla_events_translations (
-                            language,
-                            title,
-                            description,
-                            body_text
-                        ),
-                        organiser_group: nabla_groups!organiser (
+                    id,
+                    start_time,
+                    end_time,
+                    location,
+                    event_type,
+                    is_hidden,
+                    registration_required,
+                    event_photo,
+                    slug,
+                    global_registration_limit,
+                    recurrent_end_date,
+                    translations: nabla_events_translations (
+                        language,
+                        title,
+                        description,
+                        body_text
+                    ),
+                    organiser_group: nabla_groups!organiser (
+                        id,
+                        name,
+                        logo
+                    ),
+                    owning_groups: nabla_events_owner_groups (
+                        group: nabla_groups!organizing_group (
                             id,
                             name,
                             logo
-                        )   
-                        `,
+                        )
+                    ),
+                    owning_individuals: nabla_events_owner_individuals (
+                        user: nabla_users!username (
+                            username,
+                            first_name,
+                            last_name,
+                            profile_picture
+                        )
+                    )
+                `,
                 )
-                .eq(`id`, id)
+                .eq("id", toValue(id))
                 .single()
 
             if (supabaseError) throw supabaseError
-            rawEvent.value = data as unknown as RawEvent[]
+            rawEvent.value = data as unknown as RawEvent
         } catch (e) {
-            console.error("[UseEvent] Error fetching:", e)
+            console.error("[useEvent] Error fetching:", e)
             error.value = true
         }
     }
@@ -78,46 +111,55 @@ export function useEvent(id: string) {
         )
     }
 
-    const event = computed<Event[]>(() =>
-        rawEvent.value.map((event) => {
-            const translation = pickTranslation(event.translations)
-            return {
-                id: event.id,
-                startTime: new Date(event.start_time),
-                endTime: new Date(event.end_time),
-                location: event.location || undefined,
-                eventType: event.event_type as EventType,
-                hiddenIfUnavailable: event.is_hidden,
-                requiresRegistration: event.registration_required,
-                image: event.event_photo
-                    ? new URL(event.event_photo)
-                    : undefined,
-                slug: event.slug,
-                totalCapacity: event.global_registration_limit,
-                organizer: event.organiser_group
-                    ? [
-                          {
-                              id: event.organiser_group.id,
-                              name: event.organiser_group.name,
-                          },
-                      ]
-                    : [],
-                title: translation?.title ?? "",
-                ingress: translation?.description,
-                body: translation?.body_text ?? "",
-                comments: [],
-                reactions: [],
-                owningGroups: [],
-                owningPeople: [],
-                participants: [],
-                waitingList: [],
-                recurrenceEndDate: new Date(event.recurrent_end_date),
-            }
-        }),
-    )
+    const event = computed<Event | undefined>(() => {
+        if (!rawEvent.value) return undefined
+        const raw = rawEvent.value
+        const translation = pickTranslation(raw.translations)
 
-    onMounted(() => {
-        fetchEvent(id)
+        return {
+            id: raw.id,
+            startTime: new Date(raw.start_time),
+            endTime: new Date(raw.end_time),
+            location: raw.location || undefined,
+            eventType: raw.event_type as EventType,
+            hiddenIfUnavailable: raw.is_hidden,
+            requiresRegistration: raw.registration_required,
+            image: raw.event_photo ? new URL(raw.event_photo) : undefined,
+            slug: raw.slug,
+            totalCapacity: raw.global_registration_limit,
+            organizer: raw.organiser_group
+                ? [
+                      {
+                          id: raw.organiser_group.id,
+                          name: raw.organiser_group.name,
+                      },
+                  ]
+                : [],
+            title: translation?.title ?? "",
+            ingress: translation?.description,
+            body: translation?.body_text ?? "",
+            comments: [],
+            reactions: [],
+            owningGroups: raw.owning_groups.map((og) => ({
+                id: og.group.id,
+                name: og.group.name,
+            })),
+            owningPeople: raw.owning_individuals.map((oi) => ({
+                username: oi.user.username,
+                firstName: oi.user.first_name,
+                lastName: oi.user.last_name,
+            })),
+            participants: [],
+            waitingList: [],
+            recurrenceEndDate:
+                raw.event_type === "recurrent"
+                    ? new Date(raw.recurrent_end_date)
+                    : undefined,
+        }
     })
+
+    onMounted(fetchEvent)
+    watch(() => toValue(id), fetchEvent)
+
     return { event, error, refresh: fetchEvent }
 }
