@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event                 UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
     price_kr              INTEGER NOT NULL DEFAULT 0,
-    class                 nablaweb_vue.class,
+    class                 nablaweb_vue.class NOT NULL,
     class_capacity        INTEGER NOT NULL DEFAULT 0,
     payment_end           TIMESTAMP WITH TIME ZONE,
     registration_start    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -162,7 +162,6 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/c
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
     event           UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
     username        TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
-    is_registered   BOOLEAN NOT NULL DEFAULT true,
     registered_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     PRIMARY KEY (event, username)
 );

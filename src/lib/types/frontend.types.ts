@@ -114,8 +114,8 @@ export type RegistrationInfo = {
     registrationStart: Date
     registrationEnd: Date
     deregistrationEnd: Date
-    paymentEnd: Date
-    allocatedPlaces: number
+    paymentEnd?: Date
+    allocatedPlaces?: number
     price: number
 }
 

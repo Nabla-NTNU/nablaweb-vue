@@ -1,6 +1,7 @@
 -- Enums used by users
 CREATE TYPE nablaweb_vue.class AS ENUM (
     'ortogonal',
+    'international',
     'kull20',
     'kull21',
     'kull22',

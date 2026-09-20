@@ -60,7 +60,8 @@ async function fetchNablaUser() {
                         username,
                         firstName: first_name,
                         lastName: last_name,
-                        profilePicture: profile_picture
+                        profilePicture: profile_picture,
+                        class
                     `,
                 )
                 .eq("supabase_id", supabaseUser.value?.id)
@@ -71,6 +72,7 @@ async function fetchNablaUser() {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 profilePicture: toURL(data.profilePicture),
+                class: data.class,
             }
         } catch (error) {
             console.error(
@@ -177,6 +179,7 @@ export function useAuth() {
     return {
         username: computed(() => nablaUser.value?.username),
         profilePicture: computed(() => nablaUser.value?.profilePicture),
+        userClass: computed(() => nablaUser.value?.class),
         isAuthenticated: computed(() => !!supabaseUser.value),
         isAdmin: readonly(isAdmin),
 
