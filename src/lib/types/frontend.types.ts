@@ -35,7 +35,7 @@ export type NablaUser = {
     lastName?: string
     profilePicture?: URL
     isActive?: boolean
-    class?: string
+    class?: NablaClass
     memberOf?: NablaGroup[]
     pastMemberOf?: NablaGroup[]
     ntnuEmail?: string
@@ -44,6 +44,17 @@ export type NablaUser = {
     about?: string
     birthday?: Date | null
     website?: URL
+}
+
+export enum NablaClass {
+    international = "international",
+    ortogonal = "ortogonal",
+    kull20 = "kull20",
+    kull21 = "kull21",
+    kull22 = "kull22",
+    kull23 = "kull23",
+    kull24 = "kull24",
+    kull25 = "kull25",
 }
 
 export enum StyleTheme {
@@ -147,7 +158,15 @@ export enum Emote {
     laugh,
 }
 
+export enum EventParticipantStatus {
+    registered = "registered",
+    waitlisted = "waitlisted",
+    cancelled = "cancelled",
+}
+
 export type EventParticipant = {
     user: NablaUser
+    registrationClass?: NablaClass
+    registrationStatus: string
     registrationDate: Date
 }

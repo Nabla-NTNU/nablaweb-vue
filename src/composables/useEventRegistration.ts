@@ -1,5 +1,10 @@
 import { supabase } from "@/lib/supabaseClient"
-import { RegistrationInfo, EventParticipant } from "@/lib/types/frontend.types"
+import {
+    RegistrationInfo,
+    NablaClass,
+    EventParticipant,
+    EventParticipantStatus,
+} from "@/lib/types/frontend.types"
 import {
     Ref,
     ref,
@@ -12,13 +17,15 @@ import {
 import { useAuth } from "@/composables/useAuth"
 
 type RawParticipants = {
-    registered_at: string
     user: {
         username: string
         first_name: string
         last_name: string
         profile_picture: string
     }
+    registration_tier: { id: string; class: string | null } | null
+    status: string
+    registered_at: string
 }
 
 type RawRegistrationTier = {
@@ -43,13 +50,18 @@ export function useEventParticipants(eventid: MaybeRefOrGetter<string>) {
                 .from("nabla_events_participants")
                 .select(
                     `
-                registered_at,
                 user: nabla_users!username (
                     username,
                     first_name,
                     last_name,
                     profile_picture
-                )
+                ),
+                registration_tier: nabla_events_registrations!registration_tier (
+                    id,
+                    class
+                ),
+                status,
+                registered_at
                 `,
                 )
                 .eq("event", toValue(eventid))
@@ -70,6 +82,9 @@ export function useEventParticipants(eventid: MaybeRefOrGetter<string>) {
                     ? new URL(p.user.profile_picture)
                     : undefined,
             },
+            registrationClass: (p.registration_tier?.class ?? undefined) as
+                NablaClass | undefined,
+            registrationStatus: p.status as EventParticipantStatus,
             registrationDate: new Date(p.registered_at),
         })),
     )
@@ -112,22 +127,24 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
         }
     }
 
-    const allTiers = computed<Map<string, RegistrationInfo>>(() => {
-        const map = new Map<string, RegistrationInfo>()
-        for (const tier of rawTiers.value) {
-            map.set(tier.class ?? "default", {
-                allocatedPlaces: tier.class_capacity ?? undefined,
-                paymentEnd: tier.payment_end
-                    ? new Date(tier.payment_end)
-                    : undefined,
-                registrationStart: new Date(tier.registration_start),
-                registrationEnd: new Date(tier.registration_end),
-                deregistrationEnd: new Date(tier.deregistration_end),
-                price: tier.price_kr,
-            })
-        }
-        return map
-    })
+    const allTiers = computed<Map<NablaClass | "default", RegistrationInfo>>(
+        () => {
+            const map = new Map<NablaClass | "default", RegistrationInfo>()
+            for (const tier of rawTiers.value) {
+                map.set(((tier.class as NablaClass) || null) ?? "default", {
+                    allocatedPlaces: tier.class_capacity ?? undefined,
+                    paymentEnd: tier.payment_end
+                        ? new Date(tier.payment_end)
+                        : undefined,
+                    registrationStart: new Date(tier.registration_start),
+                    registrationEnd: new Date(tier.registration_end),
+                    deregistrationEnd: new Date(tier.deregistration_end),
+                    price: tier.price_kr,
+                })
+            }
+            return map
+        },
+    )
 
     const myTier = computed<RawRegistrationTier | undefined>(() => {
         return (
@@ -138,7 +155,9 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
 
     const myRegistrationInfo = computed<RegistrationInfo | undefined>(() =>
         myTier.value
-            ? allTiers.value.get(myTier.value.class ?? "default")
+            ? allTiers.value.get(
+                  ((myTier.value.class as NablaClass) || null) ?? "default",
+              )
             : undefined,
     )
 

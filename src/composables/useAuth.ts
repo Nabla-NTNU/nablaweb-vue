@@ -5,7 +5,7 @@ import type {
     Session,
     AuthError,
 } from "@supabase/supabase-js"
-import type { NablaUser } from "@/lib/types/frontend.types"
+import type { NablaUser, NablaClass } from "@/lib/types/frontend.types"
 
 const supabaseUser = ref<SupabaseUser | null>(null)
 const session = ref<Session | null>(null)
@@ -72,7 +72,7 @@ async function fetchNablaUser() {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 profilePicture: toURL(data.profilePicture),
-                class: data.class,
+                class: data.class as NablaClass,
             }
         } catch (error) {
             console.error(
