@@ -1,5 +1,6 @@
 -- Enums used by users
 CREATE TYPE nablaweb_vue.class AS ENUM (
+    'default', -- If not logged in
     'ortogonal',
     'international',
     'kull20',

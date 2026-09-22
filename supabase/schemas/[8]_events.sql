@@ -7,6 +7,12 @@ CREATE TYPE nablaweb_vue.event_type AS ENUM (
     'undefined'
 );
 
+CREATE TYPE nablaweb_vue.participant_status AS ENUM (
+    'registered',
+    'waitlisted',
+    'cancelled'
+);
+
 -- nabla_events
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
     id                          UUID                    PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -110,8 +116,8 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event                 UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
     price_kr              INTEGER NOT NULL DEFAULT 0,
-    class                 nablaweb_vue.class NOT NULL,
-    class_capacity        INTEGER NOT NULL DEFAULT 0,
+    class                 nablaweb_vue.class,
+    class_capacity        INTEGER,
     payment_end           TIMESTAMP WITH TIME ZONE,
     registration_start    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     registration_end      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -156,13 +162,15 @@ CREATE POLICY "Admins can edit registration windows"
         )
     );
 
-COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/close windows per group for an event';
+COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/close windows per class for an event';
 
 -- nabla_events_participants
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
-    event           UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    username        TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
-    registered_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    event               UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    username             TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
+    registration_tier    UUID REFERENCES nablaweb_vue.nabla_events_registrations(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    status               nablaweb_vue.participant_status NOT NULL DEFAULT 'registered',
+    registered_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     PRIMARY KEY (event, username)
 );
 

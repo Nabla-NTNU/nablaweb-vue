@@ -14,6 +14,10 @@ type NablaGroupDict = { [id: string]: NablaGroup }
 type NablaEvent = Database["nablaweb_vue"]["Tables"]["nabla_events"]["Insert"]
 type NablaEventTranslation =
     Database["nablaweb_vue"]["Tables"]["nabla_events_translations"]["Insert"]
+type NablaEventRegistrationTier =
+    Database["nablaweb_vue"]["Tables"]["nabla_events_registrations"]["Insert"]
+type NablaEventParticipant =
+    Database["nablaweb_vue"]["Tables"]["nabla_events_participants"]["Insert"]
 
 // Need service key - this is standard for local instances
 const supabase = createClient<Database>(
@@ -757,7 +761,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
             location: "R1, Realfagbygget",
             registration_required: true,
             organiser: "arrkom",
-            global_registration_limit: 150,
+            global_registration_limit: 250,
             is_hidden: false,
         },
         {
@@ -852,5 +856,109 @@ if ((await tableRowCount("nabla_events")) > 0) {
         console.error(translationsError)
     } else {
         console.log(`Seeded ${events.length} events with translations.`)
+    }
+
+    console.log("Seeding Registration Tiers...")
+    // Immball and Julebord: a default price plus a discounted first-year tier.
+    // Bedriftspresentasjon: free, default tier only (price_kr: 0 needs no payment_end).
+    const registrationTiers: NablaEventRegistrationTier[] = [
+        {
+            id: crypto.randomUUID(),
+            event: events[0].id!,
+            class: "default",
+            class_capacity: 180,
+            price_kr: 350,
+            payment_end: "2026-09-14T23:59:00+01:00",
+            registration_start: "2026-08-25T12:00:00+01:00",
+            registration_end: "2026-09-14T23:59:00+01:00",
+            deregistration_end: "2026-09-12T23:59:00+01:00",
+        },
+        {
+            id: crypto.randomUUID(),
+            event: events[0].id!,
+            class: "kull25",
+            class_capacity: 250,
+            price_kr: 250,
+            payment_end: "2026-09-14T23:59:00+01:00",
+            registration_start: "2026-08-25T12:00:00+01:00",
+            registration_end: "2026-09-14T23:59:00+01:00",
+            deregistration_end: "2026-09-12T23:59:00+01:00",
+        },
+        {
+            id: crypto.randomUUID(),
+            event: events[1].id!,
+            class: "default",
+            class_capacity: 0,
+            price_kr: 0,
+            payment_end: null,
+            registration_start: "2026-09-01T12:00:00+01:00",
+            registration_end: "2026-09-15T12:00:00+01:00",
+            deregistration_end: "2026-09-14T12:00:00+01:00",
+        },
+        {
+            id: crypto.randomUUID(),
+            event: events[2].id!,
+            class: "default",
+            class_capacity: 50,
+            price_kr: 450,
+            payment_end: "2026-12-03T23:59:00+01:00",
+            registration_start: "2026-11-15T12:00:00+01:00",
+            registration_end: "2026-12-03T23:59:00+01:00",
+            deregistration_end: "2026-12-01T23:59:00+01:00",
+        },
+        {
+            id: crypto.randomUUID(),
+            event: events[2].id!,
+            class: "kull25",
+            price_kr: 300,
+            class_capacity: 100,
+            payment_end: "2026-12-03T23:59:00+01:00",
+            registration_start: "2026-11-15T12:00:00+01:00",
+            registration_end: "2026-12-03T23:59:00+01:00",
+            deregistration_end: "2026-12-01T23:59:00+01:00",
+        },
+    ]
+
+    const { error: registrationsError } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_events_registrations")
+        .upsert(registrationTiers)
+    if (registrationsError) {
+        console.error(registrationsError)
+    } else {
+        console.log(`Seeded ${registrationTiers.length} registration tiers.`)
+    }
+
+    console.log("Seeding Participants...")
+    // Pick a handful of distinct random users to "attend" each event, capped
+    // well under global_registration_limit so it stays plausible.
+    const usernames = Object.keys(users)
+    const participants: NablaEventParticipant[] = []
+
+    for (const event of events) {
+        const attendeeCount = Math.min(40, usernames.length)
+        const picked = new Set<string>()
+        while (picked.size < attendeeCount) {
+            picked.add(getRandomElement(usernames))
+        }
+
+        const eventTiers = registrationTiers.filter((t) => t.event === event.id)
+        const defaultTier = eventTiers.find((t) => t.class === null)
+
+        for (const username of picked) {
+            const userClass = users[username].class
+            const tier =
+                eventTiers.find((t) => t.class === userClass) ?? defaultTier
+
+            participants.push({
+                event: event.id!,
+                username,
+                is_registered: true,
+                registered_at: new Date(
+                    Date.now() - randomInt(0, 14) * 24 * 60 * 60 * 1000,
+                ).toISOString(),
+                registration_tier: tier?.id ?? null,
+            })
+        }
     }
 }
