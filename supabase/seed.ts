@@ -865,7 +865,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         {
             id: crypto.randomUUID(),
             event: events[0].id!,
-            class: "default",
+            class: null,
             class_capacity: 180,
             price_kr: 350,
             payment_end: "2026-09-14T23:59:00+01:00",
@@ -887,8 +887,8 @@ if ((await tableRowCount("nabla_events")) > 0) {
         {
             id: crypto.randomUUID(),
             event: events[1].id!,
-            class: "default",
-            class_capacity: 0,
+            class: null,
+            class_capacity: null, // uncapped - see caveat above if this column is still NOT NULL
             price_kr: 0,
             payment_end: null,
             registration_start: "2026-09-01T12:00:00+01:00",
@@ -898,7 +898,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         {
             id: crypto.randomUUID(),
             event: events[2].id!,
-            class: "default",
+            class: null,
             class_capacity: 50,
             price_kr: 450,
             payment_end: "2026-12-03T23:59:00+01:00",
@@ -910,8 +910,8 @@ if ((await tableRowCount("nabla_events")) > 0) {
             id: crypto.randomUUID(),
             event: events[2].id!,
             class: "kull25",
-            price_kr: 300,
             class_capacity: 100,
+            price_kr: 300,
             payment_end: "2026-12-03T23:59:00+01:00",
             registration_start: "2026-11-15T12:00:00+01:00",
             registration_end: "2026-12-03T23:59:00+01:00",
@@ -953,12 +953,22 @@ if ((await tableRowCount("nabla_events")) > 0) {
             participants.push({
                 event: event.id!,
                 username,
-                is_registered: true,
+                status: "registered",
                 registered_at: new Date(
                     Date.now() - randomInt(0, 14) * 24 * 60 * 60 * 1000,
                 ).toISOString(),
                 registration_tier: tier?.id ?? null,
             })
         }
+    }
+
+    const { error: participantsError } = await supabase
+        .schema("nablaweb_vue")
+        .from("nabla_events_participants")
+        .upsert(participants)
+    if (participantsError) {
+        console.error(participantsError)
+    } else {
+        console.log(`Seeded ${participants.length} event participants.`)
     }
 }
