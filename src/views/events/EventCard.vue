@@ -17,7 +17,8 @@
         {{ event.startTime }}
         <br />
         <div v-for="p in allParticipants" :key="p.user.username">
-            {{ p.user.username }}
+            {{ p.user.firstName }}
+            {{ p.user.lastName }}
         </div>
     </div>
 </template>

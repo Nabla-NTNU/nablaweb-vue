@@ -150,7 +150,6 @@ export function useEvent(id: MaybeRefOrGetter<string>) {
                 lastName: oi.user.last_name,
             })),
             participants: [],
-            waitingList: [],
             recurrenceEndDate:
                 raw.event_type === "recurrent"
                     ? new Date(raw.recurrent_end_date)

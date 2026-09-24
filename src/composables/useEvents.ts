@@ -110,7 +110,6 @@ export function useEvents() {
                 owningGroups: [],
                 owningPeople: [],
                 participants: [],
-                waitingList: [],
                 recurrenceEndDate: new Date(event.recurrent_end_date),
             }
         }),
