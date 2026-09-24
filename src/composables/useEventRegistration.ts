@@ -83,7 +83,8 @@ export function useEventParticipants(eventid: MaybeRefOrGetter<string>) {
                     : undefined,
             },
             registrationClass: (p.registration_tier?.class ?? undefined) as
-                NablaClass | undefined,
+                | NablaClass
+                | undefined,
             registrationStatus: p.status as EventParticipantStatus,
             registrationDate: new Date(p.registered_at),
         })),
@@ -96,7 +97,7 @@ export function useEventParticipants(eventid: MaybeRefOrGetter<string>) {
 }
 
 export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
-    const { userClass } = useAuth()
+    const userData = useAuth()
     const rawTiers: Ref<RawRegistrationTier[]> = ref([])
     const error: Ref<boolean> = ref(false)
 
@@ -148,7 +149,7 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
 
     const myTier = computed<RawRegistrationTier | undefined>(() => {
         return (
-            rawTiers.value.find((t) => t.class === userClass.value) ??
+            rawTiers.value.find((t) => t.class === userData.userClass.value) ??
             rawTiers.value.find((t) => t.class === null)
         )
     })
@@ -161,6 +162,27 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
             : undefined,
     )
 
+    async function register() {
+        if (!userData.isAuthenticated.value || !userData) {
+            console.log("Not allowed!!!!!!!!!!!")
+        }
+
+        const { error: supabaseError } = await supabase
+            .schema("nablaweb_vue")
+            .from("nabla_events_participants")
+            .insert({
+                event: eventId,
+                username: userData.username,
+                registration_tier: userData.userClass,
+                status: "registered",
+                registered_at: Date.now(),
+            })
+
+        if (supabaseError) {
+            console.log("error")
+        }
+    }
+
     onMounted(fetchClasses)
     watch(() => toValue(eventId), fetchClasses)
 
@@ -169,6 +191,7 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
         myTier,
         myRegistrationInfo,
         error,
+        register,
         refresh: fetchClasses,
     }
 }
