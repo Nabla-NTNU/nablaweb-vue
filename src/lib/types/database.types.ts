@@ -20,6 +20,7 @@ export type Database = {
                     is_hidden: boolean
                     location: string
                     organiser: string
+                    recurrent_end_date: string
                     registration_required: boolean
                     slug: string
                     start_time: string
@@ -34,6 +35,7 @@ export type Database = {
                     is_hidden?: boolean
                     location?: string
                     organiser: string
+                    recurrent_end_date?: string
                     registration_required?: boolean
                     slug: string
                     start_time?: string
@@ -48,6 +50,7 @@ export type Database = {
                     is_hidden?: boolean
                     location?: string
                     organiser?: string
+                    recurrent_end_date?: string
                     registration_required?: boolean
                     slug?: string
                     start_time?: string
@@ -197,20 +200,23 @@ export type Database = {
             nabla_events_participants: {
                 Row: {
                     event: string
-                    is_registered: boolean
                     registered_at: string
+                    registration_tier: string | null
+                    status: Database["nablaweb_vue"]["Enums"]["participant_status"]
                     username: string
                 }
                 Insert: {
                     event: string
-                    is_registered?: boolean
                     registered_at?: string
+                    registration_tier?: string | null
+                    status?: Database["nablaweb_vue"]["Enums"]["participant_status"]
                     username: string
                 }
                 Update: {
                     event?: string
-                    is_registered?: boolean
                     registered_at?: string
+                    registration_tier?: string | null
+                    status?: Database["nablaweb_vue"]["Enums"]["participant_status"]
                     username?: string
                 }
                 Relationships: [
@@ -219,6 +225,13 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_participants_registration_tier_fkey"
+                        columns: ["registration_tier"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events_registrations"
                         referencedColumns: ["id"]
                     },
                     {
@@ -265,32 +278,35 @@ export type Database = {
             }
             nabla_events_registrations: {
                 Row: {
+                    class: Database["nablaweb_vue"]["Enums"]["class"] | null
+                    class_capacity: number | null
                     deregistration_end: string
                     event: string
-                    group_price: string
                     id: string
-                    payment_end: string
-                    registering_group: string
+                    payment_end: string | null
+                    price_kr: number
                     registration_end: string
                     registration_start: string
                 }
                 Insert: {
+                    class?: Database["nablaweb_vue"]["Enums"]["class"] | null
+                    class_capacity?: number | null
                     deregistration_end?: string
                     event: string
-                    group_price?: string
                     id?: string
-                    payment_end?: string
-                    registering_group: string
+                    payment_end?: string | null
+                    price_kr?: number
                     registration_end?: string
                     registration_start?: string
                 }
                 Update: {
+                    class?: Database["nablaweb_vue"]["Enums"]["class"] | null
+                    class_capacity?: number | null
                     deregistration_end?: string
                     event?: string
-                    group_price?: string
                     id?: string
-                    payment_end?: string
-                    registering_group?: string
+                    payment_end?: string | null
+                    price_kr?: number
                     registration_end?: string
                     registration_start?: string
                 }
@@ -300,13 +316,6 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
-                    },
-                    {
-                        foreignKeyName: "nabla_events_registrations_registering_group_fkey"
-                        columns: ["registering_group"]
-                        isOneToOne: false
-                        referencedRelation: "nabla_groups"
                         referencedColumns: ["id"]
                     },
                 ]
@@ -618,14 +627,38 @@ export type Database = {
         Enums: {
             class:
                 | "ortogonal"
+                | "international"
                 | "kull20"
                 | "kull21"
                 | "kull22"
                 | "kull23"
                 | "kull24"
                 | "kull25"
-            event_type: "ordinary" | "bedpress" | "payment" | "recurrent"
+            event_type:
+                | "ordinary"
+                | "bedpress"
+                | "payment"
+                | "recurrent"
+                | "undefined"
             group_kind: "Committee" | "Interest group"
+            participant_status: "registered" | "waitlisted" | "cancelled"
+        }
+        CompositeTypes: {
+            [_ in never]: never
+        }
+    }
+    public: {
+        Tables: {
+            [_ in never]: never
+        }
+        Views: {
+            [_ in never]: never
+        }
+        Functions: {
+            [_ in never]: never
+        }
+        Enums: {
+            [_ in never]: never
         }
         CompositeTypes: {
             [_ in never]: never
@@ -755,6 +788,7 @@ export const Constants = {
         Enums: {
             class: [
                 "ortogonal",
+                "international",
                 "kull20",
                 "kull21",
                 "kull22",
@@ -762,8 +796,18 @@ export const Constants = {
                 "kull24",
                 "kull25",
             ],
-            event_type: ["ordinary", "bedpress", "payment", "recurrent"],
+            event_type: [
+                "ordinary",
+                "bedpress",
+                "payment",
+                "recurrent",
+                "undefined",
+            ],
             group_kind: ["Committee", "Interest group"],
+            participant_status: ["registered", "waitlisted", "cancelled"],
         },
+    },
+    public: {
+        Enums: {},
     },
 } as const
