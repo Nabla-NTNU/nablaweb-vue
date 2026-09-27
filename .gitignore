@@ -1,6 +1,9 @@
 # Secrets (should be ignored anyways)
 .env.remote
 
+# Local Supabase keys for seeding
+.env
+
 # Logs
 logs
 *.log

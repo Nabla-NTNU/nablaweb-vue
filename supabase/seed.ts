@@ -21,9 +21,15 @@ type NablaEventParticipant =
 
 // Need service key - this is standard for local instances
 const supabase = createClient<Database>(
-    "http://127.0.0.1:54321",
-    "sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz",
+    process.env.SUPABASE_URL ?? "http://127.0.0.1:54321",
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
 )
+if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error(
+        "Missing SUPABASE_SERVICE_ROLE_KEY. Change .env.example to .env and fill in your local service role key.",
+    )
+    process.exit(1)
+}
 
 const faker = new Faker({
     locale: [nb_NO, sv, en, base], // Faker doesn't support nynorsk atm :((

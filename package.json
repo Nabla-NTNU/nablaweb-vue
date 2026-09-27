@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "seed": "tsx supabase/seed.ts",
+        "seed": "tsx --env-file=.env supabase/seed.ts",
         "gen-types": "supabase gen types typescript --local > src/lib/types/database.types.ts",
         "dev": "vite",
         "build": "vite build",
@@ -16,6 +16,7 @@
         "@intlify/unplugin-vue-i18n": "^11.0.6",
         "@supabase/supabase-js": "^2.49.4",
         "@types/markdown-it": "^14.1.2",
+        "act-cli": "^0.0.2",
         "markdown-it": "^14.1.1",
         "postcss-import": "^16.1.0",
         "tsx": "^4.19.4",
@@ -25,7 +26,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.28.0",
-        "@faker-js/faker": "^9.8.0",
+        "@faker-js/faker": "^10.6.0",
         "@playwright/test": "^1.53.0",
         "@tailwindcss/aspect-ratio": "^0.4.2",
         "@tailwindcss/forms": "^0.5.10",
