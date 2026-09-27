@@ -3,6 +3,7 @@ import { createClient, UserResponse } from "@supabase/supabase-js"
 import pLimit from "p-limit"
 import type { Database } from "../src/lib/types/database.types.js"
 import { randomInt } from "crypto"
+import "dotenv/config"
 
 type NablaUser = Database["nablaweb_vue"]["Tables"]["nabla_users"]["Insert"]
 type NablaGroup = Database["nablaweb_vue"]["Tables"]["nabla_groups"]["Insert"]
@@ -19,17 +20,17 @@ type NablaEventRegistrationTier =
 type NablaEventParticipant =
     Database["nablaweb_vue"]["Tables"]["nabla_events_participants"]["Insert"]
 
-// Need service key - this is standard for local instances
-const supabase = createClient<Database>(
-    process.env.SUPABASE_URL ?? "http://127.0.0.1:54321",
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
 if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     console.error(
-        "Missing SUPABASE_SERVICE_ROLE_KEY. Change .env.example to .env and fill in your local service role key.",
+        "Missing SUPABASE_SERVICE_ROLE_KEY. Try running npm run env:pull.",
     )
     process.exit(1)
 }
+
+const supabase = createClient<Database>(
+    process.env.SUPABASE_URL ?? "http://127.0.0.1:54321",
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+)
 
 const faker = new Faker({
     locale: [nb_NO, sv, en, base], // Faker doesn't support nynorsk atm :((

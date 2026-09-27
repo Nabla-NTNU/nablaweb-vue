@@ -4,7 +4,9 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "seed": "tsx --env-file=.env supabase/seed.ts",
+        "postinstall": "node scripts/setup-env.ts",
+        "env:pull": "tsx scripts/setup-env.ts --force",
+        "seed": "tsx supabase/seed.ts",
         "gen-types": "supabase gen types typescript --local > src/lib/types/database.types.ts",
         "dev": "vite",
         "build": "vite build",
@@ -36,6 +38,7 @@
         "@vitejs/plugin-vue": "^5.1.2",
         "autoprefixer": "^10.4.20",
         "baseline-browser-mapping": "^2.10.7",
+        "dotenv": "^18.0.4",
         "eslint": "^9.28.0",
         "eslint-config-prettier": "^10.1.5",
         "eslint-plugin-vue": "^10.2.0",
