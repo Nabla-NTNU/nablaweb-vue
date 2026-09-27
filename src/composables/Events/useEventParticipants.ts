@@ -26,7 +26,7 @@ type RawParticipants = {
     registered_at: string
 }
 
-export function useEventParticipants(eventid: MaybeRefOrGetter<string>) {
+export function useEventParticipants(eventId: MaybeRefOrGetter<string>) {
     const rawParticipants: Ref<RawParticipants[]> = ref([])
     const error: Ref<boolean> = ref(false)
 
@@ -51,7 +51,7 @@ export function useEventParticipants(eventid: MaybeRefOrGetter<string>) {
                 registered_at
                 `,
                 )
-                .eq("event", toValue(eventid))
+                .eq("event", toValue(eventId))
             if (supabaseError) throw supabaseError
             rawParticipants.value = data as unknown as RawParticipants[]
         } catch (e) {
@@ -76,8 +76,33 @@ export function useEventParticipants(eventid: MaybeRefOrGetter<string>) {
         })),
     )
 
-    onMounted(fetchAllParticipants)
-    watch(() => toValue(eventid), fetchAllParticipants)
+    const getNumberParticipants = async function (
+        status: EventParticipantStatus,
+    ) {
+        try {
+            const { count, error: supabaseError } = await supabase
+                .schema("nablaweb_vue")
+                .from("nabla_events_participants")
+                .select(`status`, { count: `exact`, head: true })
+                .eq("event", toValue(eventId))
+                .eq(`status`, status)
 
-    return { allParticipants, error, refresh: fetchAllParticipants }
+            if (supabaseError) throw supabaseError
+            console.log(count)
+            return count
+        } catch (e) {
+            console.error("[useEventParticipants] Error fetching:", e)
+            error.value = true
+        }
+    }
+
+    onMounted(fetchAllParticipants)
+    watch(() => toValue(eventId), fetchAllParticipants)
+
+    return {
+        allParticipants,
+        error,
+        getNumberParticipants,
+        refresh: fetchAllParticipants,
+    }
 }

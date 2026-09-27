@@ -89,8 +89,13 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
     )
 
     async function register() {
-        if (!userData.isAuthenticated.value || !userData) {
-            console.log("Not allowed!!!!!!!!!!!")
+        if (
+            !userData.isAuthenticated.value ||
+            userData.username.value == undefined ||
+            !userData
+        ) {
+            console.log("Not allowed!")
+            return
         }
 
         const { error: supabaseError } = await supabase
@@ -99,13 +104,13 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
             .insert({
                 event: eventId.toString(),
                 username: userData.username.value.toString(),
-                registration_tier: userData.userClass.value,
+                registration_tier: myTier.value?.id,
                 status: "registered",
-                registered_at: Date.now().toString(),
+                // regristered_at gets set automatically by database
             })
 
         if (supabaseError) {
-            console.log("error")
+            console.log("supabase error")
         }
     }
 
