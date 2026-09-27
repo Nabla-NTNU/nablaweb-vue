@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { useEvents } from "@/composables/useEvents"
+    import { useEvents } from "@/composables/Events/useEvents.js"
     import EventCard from "./EventCard.vue"
 
     const { events } = useEvents()

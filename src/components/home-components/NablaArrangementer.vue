@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { useEvents } from "@/composables/useEvents"
+    import { useEvents } from "@/composables/Events/useEvents"
     import { EventType } from "@/lib/types/frontend.types"
 
     const { events } = useEvents()

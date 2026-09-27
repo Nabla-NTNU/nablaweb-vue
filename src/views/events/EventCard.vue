@@ -1,7 +1,7 @@
 <!-- EventCard.vue -->
 <script setup lang="ts">
     import type { Event } from "@/lib/types/frontend.types"
-    import { useEventParticipants } from "@/composables/useEventRegistration"
+    import { useEventParticipants } from "@/composables/Events/useEventParticipants"
 
     const props = defineProps<{ event: Event }>()
 

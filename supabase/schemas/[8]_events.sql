@@ -166,7 +166,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/c
 
 -- nabla_events_participants
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
-    event               UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event                UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
     username             TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     registration_tier    UUID REFERENCES nablaweb_vue.nabla_events_registrations(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     status               nablaweb_vue.participant_status NOT NULL DEFAULT 'registered',
