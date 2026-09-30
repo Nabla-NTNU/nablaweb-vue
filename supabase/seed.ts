@@ -37,6 +37,13 @@ const faker = new Faker({
 })
 
 // ------------------------------------------------------------
+// Fixed passwords for testing
+const FIXED_TEST_PASSWORDS: Record<string, string> = {
+    admin: "admin123",
+    user: "user123",
+}
+
+// ------------------------------------------------------------
 // Helper to check whether a table already has rows,
 // so each seeding section can skip itself on a rerun instead of
 // erroring
@@ -99,15 +106,13 @@ async function addUsersToSupabase(users: NablaUserDict) {
         throttle(() =>
             supabase.auth.admin.createUser({
                 email: user.ntnu_email,
-                password:
-                    user.username.length >= 6
-                        ? user.username
-                        : user.username.padEnd(6, "0"),
+                password: FIXED_TEST_PASSWORDS[user.username] ?? user.username,
                 email_confirm: true,
             }),
         ),
     )
     const responses: UserResponse[] = await Promise.all(tasks)
+
     console.log(
         `Created ${responses.filter((response) => response.error == null).length} users in supabase`,
     )
