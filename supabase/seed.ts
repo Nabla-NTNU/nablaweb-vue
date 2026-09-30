@@ -99,7 +99,10 @@ async function addUsersToSupabase(users: NablaUserDict) {
         throttle(() =>
             supabase.auth.admin.createUser({
                 email: user.ntnu_email,
-                password: user.username,
+                password:
+                    user.username.length >= 6
+                        ? user.username
+                        : user.username.padEnd(6, "0"),
                 email_confirm: true,
             }),
         ),
