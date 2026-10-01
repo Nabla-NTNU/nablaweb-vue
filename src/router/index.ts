@@ -14,9 +14,15 @@ import NablaContact from "@/views/about/NablaContact.vue"
 import PageNotFoundView from "@/views/error/PageNotFound.vue"
 import NablaLogin from "@/views/NablaLogin.vue"
 
-import { groupPageGuard, groupAdminPageGuard } from "./guards"
+import {
+    groupPageGuard,
+    groupAdminPageGuard,
+    eventPageGuard,
+    eventAdminPageGuard,
+} from "./guards"
 
 import NablaEvent from "@/views/events/NablaEvent.vue"
+import EventAdminPage from "@/views/events/NablaEventAdmin.vue"
 
 const routes = [
     // Hjem
@@ -74,7 +80,19 @@ const routes = [
     // { path: "/ny-student", component: NyStudentView },
     // { path: "/joulekalender", component: UnderKonstruksjonView },
     // { path: "/soknad", component: UnderKonstruksjonView },
-    { path: "/event", component: NablaEvent },
+    { path: "/arrangement", component: NablaEvent },
+    {
+        path: "/arrangement/:id",
+        component: NablaEvent,
+        props: true,
+        beforeEnter: eventPageGuard,
+    },
+    {
+        path: "/arrangement/:id/admin",
+        component: EventAdminPage,
+        props: true,
+        beforeEnter: eventAdminPageGuard,
+    },
 ]
 // Create a router instance
 const router = createRouter({

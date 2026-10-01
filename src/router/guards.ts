@@ -6,6 +6,8 @@ const { username, isAdmin } = useAuth()
 import { doesGroupExist } from "@/composables/useNablaGroup"
 import { isUserGroupLeader } from "@/composables/useNablaGroup"
 
+import { doesEventExist } from "@/composables/Events/useEvent"
+
 // Makes sure group page exists before sending folks away.
 // In the future it'd be nice to show in frontend.
 export async function groupPageGuard(
@@ -51,4 +53,49 @@ export async function groupAdminPageGuard(
         `[guards] User '${username?.value}' not found to have access to group '${groupID}'`,
     )
     return next({ path: `/for-komponenter/komiteer/${groupID}` })
+}
+
+export async function eventPageGuard(
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext,
+) {
+    const eventID = to.params.id as string
+    const eventExists = await doesEventExist(eventID)
+    if (eventExists) {
+        return next(true)
+    } else {
+        console.error(`[guards] groupID '${eventID}' does not exist`)
+        return next({ path: `/for-komponenter/arrangement/ ` })
+    }
+}
+
+export async function eventAdminPageGuard(
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext,
+) {
+    // Allow access to admins (also refreshes username)
+    if (isAdmin.value) {
+        return next(true)
+    }
+
+    // Allow access to event owners
+    const eventID = to.params.id as string
+
+    if (username?.value && eventID) {
+        const userIsEventOwner = await isUserGroupLeader(
+            username.value,
+            eventID,
+        )
+        if (userIsEventOwner) {
+            return next(true)
+        }
+    }
+
+    // Send to group page if guard fails
+    console.error(
+        `[guards] User '${username?.value}' not found to have access to event '${eventID}'`,
+    )
+    return next({ path: `/for-komponenter/arrangement/${eventID}` })
 }

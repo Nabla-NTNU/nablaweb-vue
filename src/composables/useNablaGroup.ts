@@ -202,7 +202,7 @@ export async function doesGroupExist(groupID: string): Promise<boolean> {
         }
         return data.length > 0
     } catch (e) {
-        console.error(`[useNablaGroup] Error fetching group leader: ${e}`)
+        console.error(`[useNablaGroup] Error fetching group: ${e}`)
     }
     return false
 }

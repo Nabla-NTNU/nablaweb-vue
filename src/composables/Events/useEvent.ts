@@ -41,6 +41,14 @@ type RawEvent = {
     }[]
 }
 
+type RawOwningInduviduals = {
+    owning_individuals: {
+        user: {
+            username: string
+        }
+    }[]
+}
+
 export function useEvent(id: MaybeRefOrGetter<string>) {
     const { locale } = useI18n()
     const rawEvent: Ref<RawEvent | null> = ref(null)
@@ -161,4 +169,59 @@ export function useEvent(id: MaybeRefOrGetter<string>) {
     watch(() => toValue(id), fetchEvent)
 
     return { event, error, refresh: fetchEvent }
+}
+
+export async function doesEventExist(id: string): Promise<boolean> {
+    try {
+        const { data, error } = await supabase
+            .schema("nablaweb_vue")
+            .from("nabla_events")
+            .select("id")
+            .eq("id", id)
+        if (error) {
+            throw error
+        }
+        return data.length > 0
+    } catch (e) {
+        console.error(`[useNablaEvent] Error fetching event: ${e}`)
+    }
+    return false
+}
+
+export async function isEventOwner(
+    username: string,
+    id: string,
+): Promise<boolean> {
+    const rawOwningInduviduals: Ref<RawOwningInduviduals | null> = ref(null)
+    try {
+        const { data, error } = await supabase
+            .schema("nablaweb_vue")
+            .from("nabla_events")
+            .select(
+                `
+                    owning_individuals: nabla_events_owner_individuals (
+                        user: nabla_users!username (
+                            username,
+                        )
+                    )
+                `,
+            )
+            .eq("id", id)
+            .single()
+        if (error) {
+            throw error
+        }
+        rawOwningInduviduals.value = data as unknown as RawOwningInduviduals
+        for (const owner in rawOwningInduviduals.value.owning_individuals) {
+            if (
+                rawOwningInduviduals.value.owning_individuals[owner].user
+                    .username == username
+            ) {
+                return true
+            }
+        }
+    } catch (e) {
+        console.error(`[useNablaGroup] Error fetching event owners: ${e}`)
+    }
+    return false
 }
