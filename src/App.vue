@@ -16,7 +16,7 @@
             class="flex flex-1 bg-neutral transition duration-200 ease-in-out"
         >
             <MainContent>
-                <RouterView />
+                <RouterView :key="$route.path" />
             </MainContent>
         </main>
         <Footer />
