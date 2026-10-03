@@ -7,6 +7,7 @@ import { doesGroupExist } from "@/composables/useNablaGroup"
 import { isUserGroupLeader } from "@/composables/useNablaGroup"
 
 import { doesEventExist } from "@/composables/Events/useEvent"
+import { isEventOwner } from "@/composables/Events/useEvent"
 
 // Makes sure group page exists before sending folks away.
 // In the future it'd be nice to show in frontend.
@@ -60,13 +61,13 @@ export async function eventPageGuard(
     from: RouteLocationNormalized,
     next: NavigationGuardNext,
 ) {
-    const eventID = to.params.id as string
-    const eventExists = await doesEventExist(eventID)
+    const eventSlug = to.params.slug as string
+    const eventExists = await doesEventExist(eventSlug)
     if (eventExists) {
         return next(true)
     } else {
-        console.error(`[guards] groupID '${eventID}' does not exist`)
-        return next({ path: `/for-komponenter/arrangement/ ` })
+        console.error(`[guards] eventSlug '${eventSlug}' does not exist`)
+        return next({ path: `/arrangement/ ` })
     }
 }
 
@@ -81,13 +82,10 @@ export async function eventAdminPageGuard(
     }
 
     // Allow access to event owners
-    const eventID = to.params.id as string
+    const eventSlug = to.params.slug as string
 
-    if (username?.value && eventID) {
-        const userIsEventOwner = await isUserGroupLeader(
-            username.value,
-            eventID,
-        )
+    if (username?.value && eventSlug) {
+        const userIsEventOwner = await isEventOwner(username.value, eventSlug)
         if (userIsEventOwner) {
             return next(true)
         }
@@ -95,7 +93,7 @@ export async function eventAdminPageGuard(
 
     // Send to group page if guard fails
     console.error(
-        `[guards] User '${username?.value}' not found to have access to event '${eventID}'`,
+        `[guards] User '${username?.value}' not found to have access to event '${eventSlug}'`,
     )
-    return next({ path: `/for-komponenter/arrangement/${eventID}` })
+    return next({ path: `/arrangement/${eventSlug}` })
 }

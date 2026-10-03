@@ -1,5 +1,10 @@
 import { supabase } from "@/lib/supabaseClient"
-import { Event, EventType } from "@/lib/types/frontend.types"
+import {
+    Event,
+    EventType,
+    EventParticipant,
+    EventParticipantStatus,
+} from "@/lib/types/frontend.types"
 import {
     Ref,
     ref,
@@ -39,6 +44,17 @@ type RawEvent = {
             profile_picture: string
         }
     }[]
+    participants: {
+        user: {
+            username: string
+            first_name: string
+            last_name: string
+            profile_picture: string
+        }
+        registration_tier: { id: string; class: string | null } | null
+        status: string
+        registered_at: string
+    }[]
 }
 
 type RawOwningInduviduals = {
@@ -49,7 +65,7 @@ type RawOwningInduviduals = {
     }[]
 }
 
-export function useEvent(id: MaybeRefOrGetter<string>) {
+export function useEvent(slug: MaybeRefOrGetter<string>) {
     const { locale } = useI18n()
     const rawEvent: Ref<RawEvent | null> = ref(null)
     const error: Ref<boolean> = ref(false)
@@ -97,10 +113,24 @@ export function useEvent(id: MaybeRefOrGetter<string>) {
                             last_name,
                             profile_picture
                         )
+                    ),
+                    participants: nabla_events_participants (
+                        status,
+                        registered_at,
+                        user: nabla_users!username (
+                            username,
+                            first_name,
+                            last_name,
+                            profile_picture
+                        ),
+                        registration_tier: nabla_events_registrations!registration_tier (
+                            id,
+                            class
+                        )
                     )
                 `,
                 )
-                .eq("id", toValue(id))
+                .eq("slug", toValue(slug))
                 .single()
 
             if (supabaseError) throw supabaseError
@@ -117,6 +147,25 @@ export function useEvent(id: MaybeRefOrGetter<string>) {
             translations.find((t) => t.language === "nb") ??
             translations[0]
         )
+    }
+
+    function mapParticipant(
+        p: RawEvent["participants"][number],
+    ): EventParticipant {
+        return {
+            user: {
+                username: p.user.username,
+                firstName: p.user.first_name,
+                lastName: p.user.last_name,
+                profilePicture: p.user.profile_picture
+                    ? new URL(p.user.profile_picture)
+                    : undefined,
+            },
+            registrationClass: (p.registration_tier?.class ?? undefined) as
+                EventParticipant["registrationClass"] | undefined,
+            registrationStatus: p.status as EventParticipantStatus,
+            registrationDate: new Date(p.registered_at),
+        }
     }
 
     const event = computed<Event | undefined>(() => {
@@ -157,7 +206,7 @@ export function useEvent(id: MaybeRefOrGetter<string>) {
                 firstName: oi.user.first_name,
                 lastName: oi.user.last_name,
             })),
-            participants: [],
+            participants: raw.participants.map(mapParticipant),
             recurrenceEndDate:
                 raw.event_type === "recurrent"
                     ? new Date(raw.recurrent_end_date)
@@ -166,18 +215,18 @@ export function useEvent(id: MaybeRefOrGetter<string>) {
     })
 
     onMounted(fetchEvent)
-    watch(() => toValue(id), fetchEvent)
+    watch(() => toValue(slug), fetchEvent)
 
     return { event, error, refresh: fetchEvent }
 }
 
-export async function doesEventExist(id: string): Promise<boolean> {
+export async function doesEventExist(slug: string): Promise<boolean> {
     try {
         const { data, error } = await supabase
             .schema("nablaweb_vue")
             .from("nabla_events")
-            .select("id")
-            .eq("id", id)
+            .select("slug")
+            .eq("slug", slug)
         if (error) {
             throw error
         }
@@ -190,7 +239,7 @@ export async function doesEventExist(id: string): Promise<boolean> {
 
 export async function isEventOwner(
     username: string,
-    id: string,
+    slug: string,
 ): Promise<boolean> {
     const rawOwningInduviduals: Ref<RawOwningInduviduals | null> = ref(null)
     try {
@@ -201,22 +250,19 @@ export async function isEventOwner(
                 `
                     owning_individuals: nabla_events_owner_individuals (
                         user: nabla_users!username (
-                            username,
+                            username
                         )
                     )
                 `,
             )
-            .eq("id", id)
+            .eq("slug", slug)
             .single()
         if (error) {
             throw error
         }
         rawOwningInduviduals.value = data as unknown as RawOwningInduviduals
-        for (const owner in rawOwningInduviduals.value.owning_individuals) {
-            if (
-                rawOwningInduviduals.value.owning_individuals[owner].user
-                    .username == username
-            ) {
+        for (const owner of rawOwningInduviduals.value.owning_individuals) {
+            if (owner.user.username == username) {
                 return true
             }
         }

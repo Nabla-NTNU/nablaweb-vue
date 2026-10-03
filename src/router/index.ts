@@ -82,13 +82,13 @@ const routes = [
     // { path: "/soknad", component: UnderKonstruksjonView },
     { path: "/arrangement", component: NablaEvent },
     {
-        path: "/arrangement/:id",
+        path: "/arrangement/:slug",
         component: NablaEvent,
         props: true,
         beforeEnter: eventPageGuard,
     },
     {
-        path: "/arrangement/:id/admin",
+        path: "/arrangement/:slug/admin",
         component: EventAdminPage,
         props: true,
         beforeEnter: eventAdminPageGuard,

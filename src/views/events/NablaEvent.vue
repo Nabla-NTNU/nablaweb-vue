@@ -3,7 +3,6 @@
     import { computed } from "vue"
     import { useI18n } from "vue-i18n"
     import { useEvent } from "@/composables/Events/useEvent.js"
-    import { useEventParticipants } from "@/composables/Events/useEventParticipants.js"
     const { t } = useI18n()
     import UserCard from "@/components/general/UserCard.vue"
 
@@ -11,9 +10,9 @@
     import GroupCard from "@/components/group-page/GroupCard.vue"
 
     const route = useRoute()
-    const eventID = route.params.id as string //"45b1ccd5-4c01-47a0-a653-56f3d3e095cc"
-    const { event } = useEvent(eventID)
-    const { allParticipants } = useEventParticipants(eventID)
+    const slug = computed(() => route.params.slug as string)
+    //bedriftspresentasjon-example-as || immball-2026 || julebord-2026
+    const { event } = useEvent(slug)
 
     const { username, isAdmin } = useAuth()
 
@@ -60,7 +59,7 @@
                         </h1>
                         <RouterLink
                             v-if="userIsAdmin"
-                            :to="`/arrangementer/${eventID}/admin`"
+                            :to="`/arrangementer/${event.slug}/admin`"
                             class="rounded-lg bg-primary px-4 py-2 text-center font-semibold text-white transition-all duration-300"
                             style="white-space: pre-line"
                         >
@@ -82,27 +81,25 @@
                             >
                                 {{ t("deltakere") }}:
                             </h2>
-                            <div
-                                v-if="allParticipants"
-                                class="flex flex-wrap justify-center gap-6"
-                            >
+                            <div class="flex flex-wrap justify-center gap-6">
                                 <UserCard
-                                    v-for="eventParticipants in allParticipants"
-                                    :key="eventParticipants.user.username"
-                                    :username="eventParticipants.user.username"
+                                    v-for="eventParticipant in event.participants"
+                                    :key="eventParticipant.user.username"
+                                    :username="eventParticipant.user.username"
                                     :first-name="
-                                        eventParticipants.user.firstName
+                                        eventParticipant.user.firstName
                                     "
-                                    :last-name="eventParticipants.user.lastName"
+                                    :last-name="eventParticipant.user.lastName"
                                     :profile-picture="
-                                        eventParticipants.user.profilePicture
+                                        eventParticipant.user.profilePicture
                                     "
                                 />
                             </div>
                         </div>
 
                         Antall deltakere:
-                        {{ allParticipants.length }} / {{ event.totalCapacity }}
+                        {{ event.participants.length }} /
+                        {{ event.totalCapacity }}
                     </div>
                 </div>
 

@@ -112,8 +112,6 @@ export type Event = {
     owningGroups: NablaGroup[]
     owningPeople: NablaUser[]
     participants: EventParticipant[]
-    waitingList: EventParticipant[]
-
     title: string
     ingress?: string
     body: string
