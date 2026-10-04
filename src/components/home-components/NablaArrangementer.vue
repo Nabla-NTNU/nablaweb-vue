@@ -1,6 +1,5 @@
 <script setup lang="ts">
     import { useEvents } from "@/composables/Events/useEvents"
-    import { EventType } from "@/lib/types/frontend.types"
 
     const { events } = useEvents()
 </script>
@@ -15,11 +14,16 @@
             <div
                 class="w-120 font-lato text-l text-fg"
                 v-for="event in events.filter(
-                    (e) => e.eventType !== EventType.bedpress,
+                    (e) => e.eventType !== 'bedpress',
                 )"
                 :key="event.id"
             >
-                {{ event.title }}
+                <router-link
+                    :to="`/arrangement/${event.slug}`"
+                    class="text-link"
+                >
+                    {{ event.title }}
+                </router-link>
             </div>
         </div>
 
@@ -31,11 +35,16 @@
             <div
                 class="w-120 font-lato text-l text-fg"
                 v-for="bedpress in events.filter(
-                    (e) => e.eventType === EventType.bedpress,
+                    (e) => e.eventType === 'bedpress',
                 )"
                 :key="bedpress.id"
             >
-                {{ bedpress.title }}
+                <router-link
+                    :to="`/arrangement/${bedpress.slug}`"
+                    class="text-link"
+                >
+                    {{ bedpress.title }}
+                </router-link>
             </div>
         </div>
     </div>
