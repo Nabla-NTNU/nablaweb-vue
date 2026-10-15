@@ -1,14 +1,3 @@
--- Enums used by users
-CREATE TYPE nablaweb_vue.class AS ENUM (
-    'ortogonal',
-    'kull20',
-    'kull21',
-    'kull22',
-    'kull23',
-    'kull24',
-    'kull25'
-);
-
 -- Actual table
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_users (
     username        TEXT                PRIMARY KEY,
