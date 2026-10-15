@@ -9,6 +9,379 @@ export type Json =
 export type Database = {
     nablaweb_vue: {
         Tables: {
+            nabla_classes: {
+                Row: {
+                    class: string
+                    id: string
+                }
+                Insert: {
+                    class?: string
+                    id: string
+                }
+                Update: {
+                    class?: string
+                    id?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_classes_id_fkey"
+                        columns: ["id"]
+                        isOneToOne: true
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            nabla_events: {
+                Row: {
+                    created_at: string
+                    end_time: string
+                    event_photo: string
+                    event_type: Database["nablaweb_vue"]["Enums"]["event_type"]
+                    global_registration_limit: number
+                    id: string
+                    is_hidden: boolean
+                    location: string
+                    organiser: string
+                    recurrent_end_date: string
+                    registration_required: boolean
+                    slug: string
+                    start_time: string
+                }
+                Insert: {
+                    created_at?: string
+                    end_time?: string
+                    event_photo?: string
+                    event_type?: Database["nablaweb_vue"]["Enums"]["event_type"]
+                    global_registration_limit?: number
+                    id?: string
+                    is_hidden?: boolean
+                    location?: string
+                    organiser: string
+                    recurrent_end_date?: string
+                    registration_required?: boolean
+                    slug: string
+                    start_time?: string
+                }
+                Update: {
+                    created_at?: string
+                    end_time?: string
+                    event_photo?: string
+                    event_type?: Database["nablaweb_vue"]["Enums"]["event_type"]
+                    global_registration_limit?: number
+                    id?: string
+                    is_hidden?: boolean
+                    location?: string
+                    organiser?: string
+                    recurrent_end_date?: string
+                    registration_required?: boolean
+                    slug?: string
+                    start_time?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_organiser_fkey"
+                        columns: ["organiser"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            nabla_events_comment_reactions: {
+                Row: {
+                    comment: string
+                    reaction: string
+                    username: string
+                }
+                Insert: {
+                    comment: string
+                    reaction?: string
+                    username: string
+                }
+                Update: {
+                    comment?: string
+                    reaction?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_comment_reactions_comment_fkey"
+                        columns: ["comment"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events_comments"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_comment_reactions_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_comments: {
+                Row: {
+                    comment: string
+                    created_at: string
+                    event: string
+                    id: string
+                    username: string
+                }
+                Insert: {
+                    comment?: string
+                    created_at?: string
+                    event: string
+                    id?: string
+                    username: string
+                }
+                Update: {
+                    comment?: string
+                    created_at?: string
+                    event?: string
+                    id?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_comments_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_comments_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_owner_groups: {
+                Row: {
+                    event: string
+                    organizing_group: string
+                }
+                Insert: {
+                    event: string
+                    organizing_group: string
+                }
+                Update: {
+                    event?: string
+                    organizing_group?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_owner_groups_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_owner_groups_organizing_group_fkey"
+                        columns: ["organizing_group"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            nabla_events_owner_individuals: {
+                Row: {
+                    event: string
+                    username: string
+                }
+                Insert: {
+                    event: string
+                    username: string
+                }
+                Update: {
+                    event?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_owner_individuals_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_owner_individuals_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_participants: {
+                Row: {
+                    event: string
+                    registered_at: string
+                    registration_tier: string | null
+                    status: Database["nablaweb_vue"]["Enums"]["participant_status"]
+                    username: string
+                }
+                Insert: {
+                    event: string
+                    registered_at?: string
+                    registration_tier?: string | null
+                    status?: Database["nablaweb_vue"]["Enums"]["participant_status"]
+                    username: string
+                }
+                Update: {
+                    event?: string
+                    registered_at?: string
+                    registration_tier?: string | null
+                    status?: Database["nablaweb_vue"]["Enums"]["participant_status"]
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_participants_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_participants_registration_tier_fkey"
+                        columns: ["registration_tier"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events_registrations"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_participants_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_reactions: {
+                Row: {
+                    event: string
+                    reaction: string
+                    username: string
+                }
+                Insert: {
+                    event: string
+                    reaction?: string
+                    username: string
+                }
+                Update: {
+                    event?: string
+                    reaction?: string
+                    username?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_reactions_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_reactions_username_fkey"
+                        columns: ["username"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_users"
+                        referencedColumns: ["username"]
+                    },
+                ]
+            }
+            nabla_events_registrations: {
+                Row: {
+                    deregistration_end: string
+                    event: string
+                    group_capacity: number | null
+                    id: string
+                    nabla_group: string | null
+                    payment_end: string | null
+                    price_kr: number
+                    registration_end: string
+                    registration_start: string
+                }
+                Insert: {
+                    deregistration_end?: string
+                    event: string
+                    group_capacity?: number | null
+                    id?: string
+                    nabla_group?: string | null
+                    payment_end?: string | null
+                    price_kr?: number
+                    registration_end?: string
+                    registration_start?: string
+                }
+                Update: {
+                    deregistration_end?: string
+                    event?: string
+                    group_capacity?: number | null
+                    id?: string
+                    nabla_group?: string | null
+                    payment_end?: string | null
+                    price_kr?: number
+                    registration_end?: string
+                    registration_start?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_registrations_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_registrations_nabla_group_fkey"
+                        columns: ["nabla_group"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            nabla_events_translations: {
+                Row: {
+                    body_text: string
+                    description: string
+                    event: string
+                    language: string
+                    title: string
+                }
+                Insert: {
+                    body_text?: string
+                    description?: string
+                    event: string
+                    language: string
+                    title?: string
+                }
+                Update: {
+                    body_text?: string
+                    description?: string
+                    event?: string
+                    language?: string
+                    title?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_events_translations_event_fkey"
+                        columns: ["event"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
             nabla_group_members: {
                 Row: {
                     date_joined: string
@@ -53,57 +426,76 @@ export type Database = {
             }
             nabla_groups: {
                 Row: {
-                    about: string
                     date_began: string
-                    group_photo: string
                     id: string
                     is_active: boolean
+                    mail_list: string | null
+                    name: string
+                }
+                Insert: {
+                    date_began?: string
+                    id: string
+                    is_active?: boolean
+                    mail_list?: string | null
+                    name: string
+                }
+                Update: {
+                    date_began?: string
+                    id?: string
+                    is_active?: boolean
+                    mail_list?: string | null
+                    name?: string
+                }
+                Relationships: []
+            }
+            nabla_subgroups: {
+                Row: {
+                    about: string
+                    group_photo: string
+                    id: string
                     kind: Database["nablaweb_vue"]["Enums"]["group_kind"]
                     leader: string | null
                     leader_mail: string | null
                     logo: string
-                    mail_list: string | null
-                    name: string
                     trusted_member: string | null
                 }
                 Insert: {
                     about?: string
-                    date_began?: string
                     group_photo?: string
                     id: string
-                    is_active?: boolean
                     kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]
                     leader?: string | null
                     leader_mail?: string | null
                     logo?: string
-                    mail_list?: string | null
-                    name: string
                     trusted_member?: string | null
                 }
                 Update: {
                     about?: string
-                    date_began?: string
                     group_photo?: string
                     id?: string
-                    is_active?: boolean
                     kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]
                     leader?: string | null
                     leader_mail?: string | null
                     logo?: string
-                    mail_list?: string | null
-                    name?: string
                     trusted_member?: string | null
                 }
                 Relationships: [
                     {
-                        foreignKeyName: "nabla_groups_leader_fkey"
+                        foreignKeyName: "nabla_subgroups_id_fkey"
+                        columns: ["id"]
+                        isOneToOne: true
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_subgroups_leader_fkey"
                         columns: ["leader"]
                         isOneToOne: false
                         referencedRelation: "nabla_users"
                         referencedColumns: ["username"]
                     },
                     {
-                        foreignKeyName: "nabla_groups_trusted_member_fkey"
+                        foreignKeyName: "nabla_subgroups_trusted_member_fkey"
                         columns: ["trusted_member"]
                         isOneToOne: false
                         referencedRelation: "nabla_users"
@@ -115,7 +507,6 @@ export type Database = {
                 Row: {
                     about: string
                     birthday: string | null
-                    class: Database["nablaweb_vue"]["Enums"]["class"]
                     first_name: string
                     first_name_last_name_username: string | null
                     is_active: boolean
@@ -132,7 +523,6 @@ export type Database = {
                 Insert: {
                     about?: string
                     birthday?: string | null
-                    class: Database["nablaweb_vue"]["Enums"]["class"]
                     first_name: string
                     first_name_last_name_username?: string | null
                     is_active?: boolean
@@ -149,7 +539,6 @@ export type Database = {
                 Update: {
                     about?: string
                     birthday?: string | null
-                    class?: Database["nablaweb_vue"]["Enums"]["class"]
                     first_name?: string
                     first_name_last_name_username?: string | null
                     is_active?: boolean
@@ -195,22 +584,22 @@ export type Database = {
                 Row: {
                     area_mail: string | null
                     category: string
+                    display_name: string
                     id: string
-                    name: string
                     order: number
                 }
                 Insert: {
                     area_mail?: string | null
                     category: string
+                    display_name: string
                     id: string
-                    name: string
                     order?: number
                 }
                 Update: {
                     area_mail?: string | null
                     category?: string
+                    display_name?: string
                     id?: string
-                    name?: string
                     order?: number
                 }
                 Relationships: [
@@ -225,31 +614,31 @@ export type Database = {
             }
             trusted_member_assignments: {
                 Row: {
-                    area: string
+                    area_id: string
                     order: number
-                    user: string
+                    username: string
                 }
                 Insert: {
-                    area: string
+                    area_id: string
                     order?: number
-                    user: string
+                    username: string
                 }
                 Update: {
-                    area?: string
+                    area_id?: string
                     order?: number
-                    user?: string
+                    username?: string
                 }
                 Relationships: [
                     {
-                        foreignKeyName: "trusted_member_assignments_area_fkey"
-                        columns: ["area"]
+                        foreignKeyName: "trusted_member_assignments_area_id_fkey"
+                        columns: ["area_id"]
                         isOneToOne: false
                         referencedRelation: "trusted_member_areas"
                         referencedColumns: ["id"]
                     },
                     {
-                        foreignKeyName: "trusted_member_assignments_user_fkey"
-                        columns: ["user"]
+                        foreignKeyName: "trusted_member_assignments_username_fkey"
+                        columns: ["username"]
                         isOneToOne: false
                         referencedRelation: "nabla_users"
                         referencedColumns: ["username"]
@@ -282,15 +671,10 @@ export type Database = {
             [_ in never]: never
         }
         Enums: {
-            class:
-                | "ortogonal"
-                | "kull20"
-                | "kull21"
-                | "kull22"
-                | "kull23"
-                | "kull24"
-                | "kull25"
+            event_type:
+                "ordinary" | "bedpress" | "payment" | "recurrent" | "undefined"
             group_kind: "Committee" | "Interest group"
+            participant_status: "registered" | "waitlisted" | "cancelled"
         }
         CompositeTypes: {
             [_ in never]: never
@@ -323,12 +707,12 @@ export type Tables<
     DefaultSchemaTableNameOrOptions extends
         | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
         | { schema: keyof DatabaseWithoutInternals },
-    TableName extends DefaultSchemaTableNameOrOptions extends {
+    TableName extends (DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
               DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-        : never = never,
+        : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -352,11 +736,11 @@ export type TablesInsert<
     DefaultSchemaTableNameOrOptions extends
         | keyof DefaultSchema["Tables"]
         | { schema: keyof DatabaseWithoutInternals },
-    TableName extends DefaultSchemaTableNameOrOptions extends {
+    TableName extends (DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-        : never = never,
+        : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -377,11 +761,11 @@ export type TablesUpdate<
     DefaultSchemaTableNameOrOptions extends
         | keyof DefaultSchema["Tables"]
         | { schema: keyof DatabaseWithoutInternals },
-    TableName extends DefaultSchemaTableNameOrOptions extends {
+    TableName extends (DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-        : never = never,
+        : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -402,11 +786,11 @@ export type Enums<
     DefaultSchemaEnumNameOrOptions extends
         | keyof DefaultSchema["Enums"]
         | { schema: keyof DatabaseWithoutInternals },
-    EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    EnumName extends (DefaultSchemaEnumNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-        : never = never,
+        : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -419,11 +803,11 @@ export type CompositeTypes<
     PublicCompositeTypeNameOrOptions extends
         | keyof DefaultSchema["CompositeTypes"]
         | { schema: keyof DatabaseWithoutInternals },
-    CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-        : never = never,
+        : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -435,16 +819,15 @@ export type CompositeTypes<
 export const Constants = {
     nablaweb_vue: {
         Enums: {
-            class: [
-                "ortogonal",
-                "kull20",
-                "kull21",
-                "kull22",
-                "kull23",
-                "kull24",
-                "kull25",
+            event_type: [
+                "ordinary",
+                "bedpress",
+                "payment",
+                "recurrent",
+                "undefined",
             ],
             group_kind: ["Committee", "Interest group"],
+            participant_status: ["registered", "waitlisted", "cancelled"],
         },
     },
     public: {

@@ -2,19 +2,26 @@
 // undefined: not yet fetched from db. Can write class that fetches unfetched data if we want.
 
 export type NablaGroup = {
-    id: string // Also the URL of the group
+    id: string // Also the URL of the subgroup
     name?: string
     members?: GroupMember[]
+    mailList?: string | null
+    date?: Date
+    isActive?: boolean
+}
+
+export type NablaSubGroup = NablaGroup & {
     kind?: GroupKind
     logo?: URL
-    mailList?: string | null
     leaderMail?: string | null
     leader?: NablaUser
     trustedMember?: NablaUser
     about?: string
     groupPhoto?: URL
-    date?: Date
-    isActive?: boolean
+}
+
+export type NablaClass = NablaGroup & {
+    class?: string
 }
 
 export enum GroupKind {

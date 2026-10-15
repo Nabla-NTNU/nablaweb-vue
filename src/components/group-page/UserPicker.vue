@@ -1,11 +1,11 @@
 <script setup lang="ts">
     import { ref } from "vue"
-    import { GroupMember } from "@/lib/types/frontend.types"
+    import { GroupMember, NablaUser } from "@/lib/types/frontend.types"
     import { useI18n } from "vue-i18n"
     const { t } = useI18n()
 
     defineProps<{
-        current: GroupMember | undefined
+        current: NablaUser | undefined
         members: GroupMember[] | undefined
     }>()
 
@@ -33,7 +33,7 @@
                 <option
                     v-if="
                         member.user.username !==
-                        (current ? current.user.username : '')
+                        (current ? current.username : '')
                     "
                     :value="member.user.username"
                 >

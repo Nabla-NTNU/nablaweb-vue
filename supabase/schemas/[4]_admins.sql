@@ -53,6 +53,48 @@ CREATE POLICY "Admins can edit groups"
         )
     );
 
+CREATE POLICY "Admins can edit subgroups"
+    ON nablaweb_vue.nabla_subgroups
+    FOR ALL
+    TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabladmins AS a
+            JOIN nablaweb_vue.nabla_users AS u
+            ON u.username = a."user"
+            WHERE u.supabase_id = (SELECT auth.uid())
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabladmins AS a
+            JOIN nablaweb_vue.nabla_users AS u
+            ON u.username = a."user"
+            WHERE u.supabase_id = (SELECT auth.uid())
+        )
+    );
+
+
+CREATE POLICY "Admins can edit classes"
+    ON nablaweb_vue.nabla_classes
+    FOR ALL
+    TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabladmins AS a
+            JOIN nablaweb_vue.nabla_users AS u
+            ON u.username = a."user"
+            WHERE u.supabase_id = (SELECT auth.uid())
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabladmins AS a
+            JOIN nablaweb_vue.nabla_users AS u
+            ON u.username = a."user"
+            WHERE u.supabase_id = (SELECT auth.uid())
+        )
+    );
 
 CREATE POLICY "Admins can edit groups memberships"
     ON nablaweb_vue.nabla_group_members
