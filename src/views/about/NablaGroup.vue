@@ -22,7 +22,7 @@
 
     const userIsAdmin = computed(() => {
         if (group.value.leader) {
-            if (group.value.leader.user.username === username.value) {
+            if (group.value.leader.username === username.value) {
                 return true
             }
         }
