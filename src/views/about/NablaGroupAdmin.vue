@@ -26,7 +26,7 @@
         try {
             const { error } = await supabase
                 .schema("nablaweb_vue")
-                .from("nabla_groups")
+                .from("nabla_subgroups")
                 .update({ group_photo: newImage })
                 .eq("id", groupID)
 
@@ -41,7 +41,7 @@
         try {
             const { error } = await supabase
                 .schema("nablaweb_vue")
-                .from("nabla_groups")
+                .from("nabla_subgroups")
                 .update({ about: newAboutText })
                 .eq("id", groupID)
 
@@ -56,12 +56,12 @@
         try {
             const { error } = await supabase
                 .schema("nablaweb_vue")
-                .from("nabla_groups")
+                .from("nabla_subgroups")
                 .update({ leader: newLeaderUsername })
                 .eq("id", groupID)
 
             if (error) throw error
-            else group.value.leader = { user: { username: newLeaderUsername } }
+            else group.value.leader = { username: newLeaderUsername }
         } catch (error) {
             console.error("[Nabla Group Admin] Error saving new leader:", error)
         }
@@ -105,7 +105,6 @@
                 username,
                 firstName: first_name,
                 lastName: last_name,
-                class
             `,
             )
             .or(
