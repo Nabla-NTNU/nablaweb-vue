@@ -9,6 +9,7 @@ import GroupAdminPage from "@/views/about/NablaGroupAdmin.vue"
 import GroupsPage from "@/views/about/NablaGroups.vue"
 
 import NablaContact from "@/views/about/NablaContact.vue"
+import CodeGolfView from "@/views/games/CodeGolf.vue"
 
 // import UnderKonstruksjonView from "@/views/error/UnderKontruksjon.vue"
 import PageNotFoundView from "@/views/error/PageNotFound.vue"
@@ -68,6 +69,8 @@ const routes = [
     // Annet
     { path: "/login", component: NablaLogin },
     { path: "/:catchAll(.*)*", component: PageNotFoundView, props: true },
+    { path: "/games/codegolf", component: CodeGolfView },
+
     // { path: "/sok", component: UnderKonstruksjonView },
     // { path: "/ny-student", component: NyStudentView },
     // { path: "/joulekalender", component: UnderKonstruksjonView },
