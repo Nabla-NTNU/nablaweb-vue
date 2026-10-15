@@ -26,6 +26,11 @@ const faker = new Faker({
     locale: [nb_NO, sv, en, base], // Faker doesn't support nynorsk atm :((
 })
 
+const FIXED_TEST_PASSWORDS: Record<string, string> = {
+    admin: "admin123",
+    user: "user123",
+}
+
 function makeUser(
     firstName: string,
     lastName: string,
@@ -71,7 +76,7 @@ async function addUsersToSupabase(users: NablaUserDict) {
         throttle(() =>
             supabase.auth.admin.createUser({
                 email: user.ntnu_email,
-                password: user.username,
+                password: FIXED_TEST_PASSWORDS[user.username] ?? user.username,
                 email_confirm: true,
             }),
         ),
