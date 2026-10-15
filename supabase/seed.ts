@@ -652,24 +652,39 @@ const usedPairs = new Set<string>(
     classMemberships.map((m) => `${m.user}:${m.group}`),
 )
 
-while (memberships.length < Object.keys(groupEntries).length + 50) {
-    const user = getRandomElement(Object.keys(users))
-    const group = getRandomElement(Object.keys(groupEntries))
-    if (usedPairs.has(`${user}:${group}`)) {
-        continue
+// 1. Ensure every subgroup gets at least a couple of members (e.g., leader, trusted member, plus a random member)
+for (const [groupId, entry] of Object.entries(groupEntries)) {
+    // Add the leader if they exist
+    if (
+        entry.subgroup.leader &&
+        !usedPairs.has(`${entry.subgroup.leader}:${groupId}`)
+    ) {
+        usedPairs.add(`${entry.subgroup.leader}:${groupId}`)
+        memberships.push({
+            user: entry.subgroup.leader,
+            group: groupId,
+            member_role: "Leder",
+            is_active: true,
+            order: memberships.length,
+        })
     }
-    usedPairs.add(`${user}:${group}`)
 
-    const membership: NablaGroupMember = {
-        user: user,
-        group: group,
-        member_role: faker.company.catchPhrase(),
-        is_active: true,
-        order: memberships.length,
+    // Add 3 to 5 random members to this subgroup
+    for (let i = 0; i < 4; i++) {
+        const randomUser = getRandomElement(Object.keys(users))
+        const pairKey = `${randomUser}:${groupId}`
+        if (!usedPairs.has(pairKey)) {
+            usedPairs.add(pairKey)
+            memberships.push({
+                user: randomUser,
+                group: groupId,
+                member_role: faker.company.catchPhrase(),
+                is_active: true,
+                order: memberships.length,
+            })
+        }
     }
-    memberships.push(membership)
 }
-
 type TrustedCategory =
     Database["nablaweb_vue"]["Tables"]["trusted_member_categories"]["Insert"]
 type TrustedArea =

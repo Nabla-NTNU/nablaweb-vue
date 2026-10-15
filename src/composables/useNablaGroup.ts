@@ -135,11 +135,12 @@ async function getSubGroups(): Promise<NablaSubGroup[]> {
                     about,
                     groupPhoto: group_photo,
                     leader: nabla_users!nabla_subgroups_leader_fkey(
-                        username: username,
+                        username,
                         firstName: first_name,
                         lastName: last_name
                     ),
                     trustedMember: nabla_users!nabla_subgroups_trusted_member_fkey(
+                        username,
                         ntnuEmail: ntnu_email,
                         firstName: first_name,
                         lastName: last_name
@@ -161,9 +162,9 @@ async function getSubGroups(): Promise<NablaSubGroup[]> {
                     : undefined,
                 logo: makeURL(sub.logo),
                 mailList: group.mailList,
-                leader: sub.leader,
-                leaderMail: sub.leaderMail,
-                trustedMember: sub.trustedMember,
+                leader: sub.leader ?? undefined,
+                leaderMail: sub.leaderMail ?? undefined,
+                trustedMember: sub.trustedMember ?? undefined,
                 about: sub.about,
                 groupPhoto: makeURL(sub.groupPhoto),
                 date: new Date(group.dateBegan),
