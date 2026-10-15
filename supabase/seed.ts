@@ -51,6 +51,20 @@ function makeUser(
     return user
 }
 
+function makeGroup(
+    id: string,
+    name: string,
+    mail_list?: string,
+    is_active: boolean = true,
+): NablaGroup {
+    return {
+        id,
+        name,
+        mail_list,
+        is_active,
+    }
+}
+
 function makeRandomUsers(n: number): NablaUserDict {
     const users: NablaUserDict = {}
 
@@ -139,7 +153,7 @@ if (adminError) console.error(adminError)
 console.log("Making groups and subgroups...")
 const groupEntries: NablaGroupDict = {
     arrkom: {
-        group: { id: "arrkom", name: "ArrKom", mail_list: "arrkom@nabla.no" },
+        group: makeGroup("arrkom", "ArrKom", "arrkom@nabla.no"),
         subgroup: {
             id: "arrkom",
             kind: "Committee",
@@ -153,11 +167,11 @@ const groupEntries: NablaGroupDict = {
         },
     },
     bedkom: {
-        group: {
-            id: "bedkom",
-            name: "Bedriftskontakten Nabla",
-            mail_list: "bedkom@nabla.no",
-        },
+        group: makeGroup(
+            "bedkom",
+            "Bedriftskontakten Nabla",
+            "bedkom@nabla.no",
+        ),
         subgroup: {
             id: "bedkom",
             kind: "Committee",
@@ -170,7 +184,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     educom: {
-        group: { id: "educom", name: "Educom" },
+        group: makeGroup("educom", "Educom", undefined),
         subgroup: {
             id: "educom",
             kind: "Committee",
@@ -184,7 +198,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     fadderkom: {
-        group: { id: "fadderkom", name: "FadderKom" },
+        group: makeGroup("fadderkom", "FadderKom", undefined),
         subgroup: {
             id: "fadderkom",
             kind: "Committee",
@@ -197,11 +211,11 @@ const groupEntries: NablaGroupDict = {
         },
     },
     kjellerstyret: {
-        group: {
-            id: "kjellerstyret",
-            name: "Kjellerstyret",
-            mail_list: "kjellern.hk18@nabla.no",
-        },
+        group: makeGroup(
+            "kjellerstyret",
+            "Kjellerstyret",
+            "kjellern.hk18@nabla.no",
+        ),
         subgroup: {
             id: "kjellerstyret",
             kind: "Committee",
@@ -215,11 +229,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     kontorkom: {
-        group: {
-            id: "kontorkom",
-            name: "KontorKom",
-            mail_list: "kontorkom@nabla.no",
-        },
+        group: makeGroup("kontorkom", "KontorKom", "kontorkom@nabla.no"),
         subgroup: {
             id: "kontorkom",
             kind: "Committee",
@@ -233,7 +243,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     prokom: {
-        group: { id: "prokom", name: "ProKom", mail_list: "prokom@nabla.no" },
+        group: makeGroup("prokom", "ProKom", "prokom@nabla.no"),
         subgroup: {
             id: "prokom",
             kind: "Committee",
@@ -247,11 +257,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     redaksjonen: {
-        group: {
-            id: "redaksjonen",
-            name: "Redaksjonen",
-            mail_list: "nabladet@nabla.no",
-        },
+        group: makeGroup("redaksjonen", "Redaksjonen", "nabladet@nabla.no"),
         subgroup: {
             id: "redaksjonen",
             kind: "Committee",
@@ -265,11 +271,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     sportskom: {
-        group: {
-            id: "sportskom",
-            name: "SportsKom",
-            mail_list: "sportskom@nabla.no",
-        },
+        group: makeGroup("sportskom", "SportsKom", "sportskom@nabla.no"),
         subgroup: {
             id: "sportskom",
             kind: "Committee",
@@ -283,7 +285,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     styret: {
-        group: { id: "styret", name: "Styret" },
+        group: makeGroup("styret", "Styret", undefined),
         subgroup: {
             id: "styret",
             kind: "Committee",
@@ -296,7 +298,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     webkom: {
-        group: { id: "webkom", name: "WebKom", mail_list: "webkom@nabla.no" },
+        group: makeGroup("webkom", "WebKom", "webkom@nabla.no"),
         subgroup: {
             id: "webkom",
             kind: "Committee",
@@ -310,7 +312,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     casinus: {
-        group: { id: "casinus", name: "Casinus" },
+        group: makeGroup("casinus", "Casinus", undefined),
         subgroup: {
             id: "casinus",
             kind: "Interest group",
@@ -323,11 +325,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     koreolis: {
-        group: {
-            id: "koreolis",
-            name: "Koreolis",
-            mail_list: "koreolis@nabla.no",
-        },
+        group: makeGroup("koreolis", "Koreolis", "koreolis@nabla.no"),
         subgroup: {
             id: "koreolis",
             kind: "Interest group",
@@ -341,7 +339,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     kultkom: {
-        group: { id: "kultkom", name: "Kultkom" },
+        group: makeGroup("kultkom", "Kultkom", undefined),
         subgroup: {
             id: "kultkom",
             kind: "Interest group",
@@ -354,7 +352,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     lopeklubben: {
-        group: { id: "lopeklubben", name: "Løpeklubben" },
+        group: makeGroup("lopeklubben", "Løpeklubben", undefined),
         subgroup: {
             id: "lopeklubben",
             kind: "Interest group",
@@ -366,7 +364,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     makernabla: {
-        group: { id: "makernabla", name: "MakerNabla" },
+        group: makeGroup("makernabla", "MakerNabla", undefined, false),
         subgroup: {
             id: "makernabla",
             kind: "Interest group",
@@ -378,7 +376,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     m3: {
-        group: { id: "m3", name: "Maxwells Muntre Musikanter" },
+        group: makeGroup("m3", "Maxwells Muntre Musikanter", undefined),
         subgroup: {
             id: "m3",
             kind: "Interest group",
@@ -392,11 +390,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     revyen: {
-        group: {
-            id: "revyen",
-            name: "Nablarevyen",
-            mail_list: "revy-alle@nabla.no",
-        },
+        group: makeGroup("revyen", "Nablarevyen", "revy-alle@nabla.no"),
         subgroup: {
             id: "revyen",
             kind: "Interest group",
@@ -409,7 +403,12 @@ const groupEntries: NablaGroupDict = {
         },
     },
     nav: {
-        group: { id: "nav", name: "Nablas Aerodynamiske Venner" },
+        group: makeGroup(
+            "nav",
+            "Nablas Aerodynamiske Venner",
+            undefined,
+            false,
+        ),
         subgroup: {
             id: "nav",
             kind: "Interest group",
@@ -421,7 +420,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     finans: {
-        group: { id: "finans", name: "Nablas finansklubb" },
+        group: makeGroup("finans", "Nablas finansklubb", undefined, false),
         subgroup: {
             id: "finans",
             kind: "Interest group",
@@ -433,7 +432,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     nff: {
-        group: { id: "nff", name: "Nablas Flytende Fysikere" },
+        group: makeGroup("nff", "Nablas Flytende Fysikere", undefined),
         subgroup: {
             id: "nff",
             kind: "Interest group",
@@ -445,7 +444,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     handball: {
-        group: { id: "handball", name: "Nablas håndball-lag" },
+        group: makeGroup("handball", "Nablas håndball-lag", undefined),
         subgroup: {
             id: "handball",
             kind: "Interest group",
@@ -458,7 +457,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     klatregruppa: {
-        group: { id: "klatregruppa", name: "Nablas Klatregruppe" },
+        group: makeGroup("klatregruppa", "Nablas Klatregruppe", undefined),
         subgroup: {
             id: "klatregruppa",
             kind: "Interest group",
@@ -470,7 +469,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     olbryggerlaug: {
-        group: { id: "olbryggerlaug", name: "Nablas Ølbryggerlaug" },
+        group: makeGroup("olbryggerlaug", "Nablas Ølbryggerlaug", undefined),
         subgroup: {
             id: "olbryggerlaug",
             kind: "Interest group",
@@ -484,11 +483,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     postkom: {
-        group: {
-            id: "postkom",
-            name: "PostKom",
-            mail_list: "postkom@nabla.no",
-        },
+        group: makeGroup("postkom", "PostKom", "postkom@nabla.no"),
         subgroup: {
             id: "postkom",
             kind: "Interest group",
@@ -501,7 +496,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     quizkom: {
-        group: { id: "quizkom", name: "QuizKom" },
+        group: makeGroup("quizkom", "QuizKom", undefined),
         subgroup: {
             id: "quizkom",
             kind: "Interest group",
@@ -515,7 +510,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     reka: {
-        group: { id: "reka", name: "ReKa" },
+        group: makeGroup("reka", "ReKa", undefined),
         subgroup: {
             id: "reka",
             kind: "Interest group",
@@ -528,7 +523,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     reven: {
-        group: { id: "reven", name: "ReVen" },
+        group: makeGroup("reven", "ReVen", undefined),
         subgroup: {
             id: "reven",
             kind: "Interest group",
@@ -542,7 +537,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     pod: {
-        group: { id: "pod", name: "Skråttcast" },
+        group: makeGroup("pod", "Skråttcast", undefined),
         subgroup: {
             id: "pod",
             kind: "Interest group",
@@ -556,11 +551,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     gravitones: {
-        group: {
-            id: "gravitones",
-            name: "The Gravitones",
-            mail_list: "gravitones@nabla.no",
-        },
+        group: makeGroup("gravitones", "The Gravitones", "gravitones@nabla.no"),
         subgroup: {
             id: "gravitones",
             kind: "Interest group",
@@ -573,11 +564,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     stokes: {
-        group: {
-            id: "stokes",
-            name: "The Stokes",
-            mail_list: "thestokes@nabla.no",
-        },
+        group: makeGroup("stokes", "The Stokes", "thestokes@nabla.no"),
         subgroup: {
             id: "stokes",
             kind: "Interest group",
@@ -590,11 +577,7 @@ const groupEntries: NablaGroupDict = {
         },
     },
     utfluks: {
-        group: {
-            id: "utfluks",
-            name: "Utfluks",
-            mail_list: "utfluks@nabla.no",
-        },
+        group: makeGroup("utfluks", "Utfluks", "utfluks@nabla.no"),
         subgroup: {
             id: "utfluks",
             kind: "Interest group",
@@ -618,15 +601,19 @@ const { error: errorGroups } = await supabase
     .upsert(groupsList)
 if (errorGroups) {
     console.log("Error inserting nabla_groups:", errorGroups)
+} else {
+    console.log(`Inserted ${groupsList.length} rows into nabla_groups`)
 }
 
-// 2. Insert into nabla_subgroups (child table)
+// 2. Insert into nabla_subgroups (child table) - THIS WAS MISSING PREVIOUSLY!
 const { error: errorSubgroups } = await supabase
     .schema("nablaweb_vue")
     .from("nabla_subgroups")
     .upsert(subgroupsList)
 if (errorSubgroups) {
     console.log("Error inserting nabla_subgroups:", errorSubgroups)
+} else {
+    console.log(`Inserted ${subgroupsList.length} rows into nabla_subgroups`)
 }
 
 console.log("Seeding classes and adding users to classes...")
