@@ -9,6 +9,29 @@ export type Json =
 export type Database = {
     nablaweb_vue: {
         Tables: {
+            nabla_classes: {
+                Row: {
+                    class: string
+                    id: string
+                }
+                Insert: {
+                    class?: string
+                    id: string
+                }
+                Update: {
+                    class?: string
+                    id?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "nabla_classes_id_fkey"
+                        columns: ["id"]
+                        isOneToOne: true
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
             nabla_events: {
                 Row: {
                     created_at: string
@@ -278,33 +301,33 @@ export type Database = {
             }
             nabla_events_registrations: {
                 Row: {
-                    class: Database["nablaweb_vue"]["Enums"]["class"] | null
-                    class_capacity: number | null
                     deregistration_end: string
                     event: string
+                    group_capacity: number | null
                     id: string
+                    nabla_group: string | null
                     payment_end: string | null
                     price_kr: number
                     registration_end: string
                     registration_start: string
                 }
                 Insert: {
-                    class?: Database["nablaweb_vue"]["Enums"]["class"] | null
-                    class_capacity?: number | null
                     deregistration_end?: string
                     event: string
+                    group_capacity?: number | null
                     id?: string
+                    nabla_group?: string | null
                     payment_end?: string | null
                     price_kr?: number
                     registration_end?: string
                     registration_start?: string
                 }
                 Update: {
-                    class?: Database["nablaweb_vue"]["Enums"]["class"] | null
-                    class_capacity?: number | null
                     deregistration_end?: string
                     event?: string
+                    group_capacity?: number | null
                     id?: string
+                    nabla_group?: string | null
                     payment_end?: string | null
                     price_kr?: number
                     registration_end?: string
@@ -316,6 +339,13 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_events_registrations_nabla_group_fkey"
+                        columns: ["nabla_group"]
+                        isOneToOne: false
+                        referencedRelation: "nabla_groups"
                         referencedColumns: ["id"]
                     },
                 ]
@@ -396,57 +426,76 @@ export type Database = {
             }
             nabla_groups: {
                 Row: {
-                    about: string
                     date_began: string
-                    group_photo: string
                     id: string
                     is_active: boolean
+                    mail_list: string | null
+                    name: string
+                }
+                Insert: {
+                    date_began?: string
+                    id: string
+                    is_active?: boolean
+                    mail_list?: string | null
+                    name: string
+                }
+                Update: {
+                    date_began?: string
+                    id?: string
+                    is_active?: boolean
+                    mail_list?: string | null
+                    name?: string
+                }
+                Relationships: []
+            }
+            nabla_subgroups: {
+                Row: {
+                    about: string
+                    group_photo: string
+                    id: string
                     kind: Database["nablaweb_vue"]["Enums"]["group_kind"]
                     leader: string | null
                     leader_mail: string | null
                     logo: string
-                    mail_list: string | null
-                    name: string
                     trusted_member: string | null
                 }
                 Insert: {
                     about?: string
-                    date_began?: string
                     group_photo?: string
                     id: string
-                    is_active?: boolean
                     kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]
                     leader?: string | null
                     leader_mail?: string | null
                     logo?: string
-                    mail_list?: string | null
-                    name: string
                     trusted_member?: string | null
                 }
                 Update: {
                     about?: string
-                    date_began?: string
                     group_photo?: string
                     id?: string
-                    is_active?: boolean
                     kind?: Database["nablaweb_vue"]["Enums"]["group_kind"]
                     leader?: string | null
                     leader_mail?: string | null
                     logo?: string
-                    mail_list?: string | null
-                    name?: string
                     trusted_member?: string | null
                 }
                 Relationships: [
                     {
-                        foreignKeyName: "nabla_groups_leader_fkey"
+                        foreignKeyName: "nabla_subgroups_id_fkey"
+                        columns: ["id"]
+                        isOneToOne: true
+                        referencedRelation: "nabla_groups"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "nabla_subgroups_leader_fkey"
                         columns: ["leader"]
                         isOneToOne: false
                         referencedRelation: "nabla_users"
                         referencedColumns: ["username"]
                     },
                     {
-                        foreignKeyName: "nabla_groups_trusted_member_fkey"
+                        foreignKeyName: "nabla_subgroups_trusted_member_fkey"
                         columns: ["trusted_member"]
                         isOneToOne: false
                         referencedRelation: "nabla_users"
@@ -458,7 +507,6 @@ export type Database = {
                 Row: {
                     about: string
                     birthday: string | null
-                    class: Database["nablaweb_vue"]["Enums"]["class"]
                     first_name: string
                     first_name_last_name_username: string | null
                     is_active: boolean
@@ -475,7 +523,6 @@ export type Database = {
                 Insert: {
                     about?: string
                     birthday?: string | null
-                    class: Database["nablaweb_vue"]["Enums"]["class"]
                     first_name: string
                     first_name_last_name_username?: string | null
                     is_active?: boolean
@@ -492,7 +539,6 @@ export type Database = {
                 Update: {
                     about?: string
                     birthday?: string | null
-                    class?: Database["nablaweb_vue"]["Enums"]["class"]
                     first_name?: string
                     first_name_last_name_username?: string | null
                     is_active?: boolean
@@ -625,21 +671,8 @@ export type Database = {
             [_ in never]: never
         }
         Enums: {
-            class:
-                | "ortogonal"
-                | "international"
-                | "kull20"
-                | "kull21"
-                | "kull22"
-                | "kull23"
-                | "kull24"
-                | "kull25"
             event_type:
-                | "ordinary"
-                | "bedpress"
-                | "payment"
-                | "recurrent"
-                | "undefined"
+                "ordinary" | "bedpress" | "payment" | "recurrent" | "undefined"
             group_kind: "Committee" | "Interest group"
             participant_status: "registered" | "waitlisted" | "cancelled"
         }
@@ -674,12 +707,12 @@ export type Tables<
     DefaultSchemaTableNameOrOptions extends
         | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
         | { schema: keyof DatabaseWithoutInternals },
-    TableName extends DefaultSchemaTableNameOrOptions extends {
+    TableName extends (DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
               DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-        : never = never,
+        : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -703,11 +736,11 @@ export type TablesInsert<
     DefaultSchemaTableNameOrOptions extends
         | keyof DefaultSchema["Tables"]
         | { schema: keyof DatabaseWithoutInternals },
-    TableName extends DefaultSchemaTableNameOrOptions extends {
+    TableName extends (DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-        : never = never,
+        : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -728,11 +761,11 @@ export type TablesUpdate<
     DefaultSchemaTableNameOrOptions extends
         | keyof DefaultSchema["Tables"]
         | { schema: keyof DatabaseWithoutInternals },
-    TableName extends DefaultSchemaTableNameOrOptions extends {
+    TableName extends (DefaultSchemaTableNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-        : never = never,
+        : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -753,11 +786,11 @@ export type Enums<
     DefaultSchemaEnumNameOrOptions extends
         | keyof DefaultSchema["Enums"]
         | { schema: keyof DatabaseWithoutInternals },
-    EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    EnumName extends (DefaultSchemaEnumNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-        : never = never,
+        : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -770,11 +803,11 @@ export type CompositeTypes<
     PublicCompositeTypeNameOrOptions extends
         | keyof DefaultSchema["CompositeTypes"]
         | { schema: keyof DatabaseWithoutInternals },
-    CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
         schema: keyof DatabaseWithoutInternals
     }
         ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-        : never = never,
+        : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
 }
@@ -786,16 +819,6 @@ export type CompositeTypes<
 export const Constants = {
     nablaweb_vue: {
         Enums: {
-            class: [
-                "ortogonal",
-                "international",
-                "kull20",
-                "kull21",
-                "kull22",
-                "kull23",
-                "kull24",
-                "kull25",
-            ],
             event_type: [
                 "ordinary",
                 "bedpress",

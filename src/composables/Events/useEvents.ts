@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabaseClient"
 import { Event, EventType } from "@/lib/types/frontend.types"
+import { makeURL } from "@/composables/useNablaGroup"
 import { Ref, ref, computed, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 
@@ -21,7 +22,11 @@ type RawEvent = {
         description: string
         body_text: string
     }[]
-    organiser_group: { id: string; name: string; logo: string } | null
+    organiser_group: {
+        id: string
+        name: string
+        subgroup: { logo: string }
+    } | null
 }
 
 export function useEvents() {
@@ -56,7 +61,7 @@ export function useEvents() {
                     organiser_group: nabla_groups!organiser (
                         id,
                         name,
-                        logo
+                        subgroup: nabla_subgroups (logo)
                     )
                 `,
                 )
@@ -99,6 +104,9 @@ export function useEvents() {
                           {
                               id: event.organiser_group.id,
                               name: event.organiser_group.name,
+                              logo: makeURL(
+                                  event.organiser_group.subgroup.logo,
+                              ),
                           },
                       ]
                     : [],

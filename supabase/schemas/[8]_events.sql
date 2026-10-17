@@ -34,8 +34,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
 
 ALTER TABLE nablaweb_vue.nabla_events ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view non-hidden events"
     ON nablaweb_vue.nabla_events
@@ -79,8 +77,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_translations (
 
 ALTER TABLE nablaweb_vue.nabla_events_translations ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_translations TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_translations TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view event translations"
     ON nablaweb_vue.nabla_events_translations
@@ -110,14 +106,14 @@ CREATE POLICY "Admins can edit event translations"
 COMMENT ON TABLE nablaweb_vue.nabla_events_translations IS 'Per-language title/description/body for an event';
 
 -- nabla_events_registrations
--- There is one table for each class per event with class pricing
--- If there is no difference in price between classes class is set to NULL and the default is shown
+-- There is one table for each group per event with group pricing
+-- If there is no difference in price between groupes group is set to NULL and the default is shown
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event                 UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
     price_kr              INTEGER NOT NULL DEFAULT 0,
-    class                 nablaweb_vue.class,
-    class_capacity        INTEGER,
+    nabla_group           TEXT REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    nabla_group_capacity  INTEGER,
     payment_end           TIMESTAMP WITH TIME ZONE,
     registration_start    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     registration_end      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -127,15 +123,12 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
 
 );
 
-CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_registrations (event, class)
-    WHERE class IS NOT NULL;
+CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_registrations (event, nabla_group)
+    WHERE nabla_group IS NOT NULL;
 CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_registrations (event)
-    WHERE class IS NULL;
+    WHERE nabla_group IS NULL;
 
 ALTER TABLE nablaweb_vue.nabla_events_registrations ENABLE ROW LEVEL SECURITY;
-
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_registrations TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_registrations TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view registration windows"
     ON nablaweb_vue.nabla_events_registrations
@@ -162,7 +155,7 @@ CREATE POLICY "Admins can edit registration windows"
         )
     );
 
-COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/close windows per class for an event';
+COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/close windows per group for an event';
 
 -- nabla_events_participants
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
@@ -176,8 +169,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
 
 ALTER TABLE nablaweb_vue.nabla_events_participants ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_participants TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_participants TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view participant lists"
     ON nablaweb_vue.nabla_events_participants
@@ -218,9 +209,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_owner_groups (
 
 ALTER TABLE nablaweb_vue.nabla_events_owner_groups ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_owner_groups TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_owner_groups TO authenticated, service_role;
-
 CREATE POLICY "Everyone can view co-organizing groups"
     ON nablaweb_vue.nabla_events_owner_groups
     FOR SELECT
@@ -257,8 +245,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_owner_individuals (
 
 ALTER TABLE nablaweb_vue.nabla_events_owner_individuals ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_owner_individuals TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_owner_individuals TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view individual owners"
     ON nablaweb_vue.nabla_events_owner_individuals
@@ -298,8 +284,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_comments (
 
 ALTER TABLE nablaweb_vue.nabla_events_comments ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_comments TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_comments TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view comments"
     ON nablaweb_vue.nabla_events_comments
@@ -340,8 +324,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_reactions (
 
 ALTER TABLE nablaweb_vue.nabla_events_reactions ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_reactions TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_reactions TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view reactions"
     ON nablaweb_vue.nabla_events_reactions
@@ -380,8 +362,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_comment_reactions (
 
 ALTER TABLE nablaweb_vue.nabla_events_comment_reactions ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT ON TABLE nablaweb_vue.nabla_events_comment_reactions TO anon, authenticated, service_role;
-GRANT INSERT, UPDATE, DELETE ON TABLE nablaweb_vue.nabla_events_comment_reactions TO authenticated, service_role;
 
 CREATE POLICY "Everyone can view comment reactions"
     ON nablaweb_vue.nabla_events_comment_reactions

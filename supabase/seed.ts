@@ -7,11 +7,12 @@ import "dotenv/config"
 
 type NablaUser = Database["nablaweb_vue"]["Tables"]["nabla_users"]["Insert"]
 type NablaGroup = Database["nablaweb_vue"]["Tables"]["nabla_groups"]["Insert"]
+type NablaSubgroup =
+    Database["nablaweb_vue"]["Tables"]["nabla_subgroups"]["Insert"]
+type NablaClass = Database["nablaweb_vue"]["Tables"]["nabla_classes"]["Insert"]
 type NablaGroupMember =
     Database["nablaweb_vue"]["Tables"]["nabla_group_members"]["Insert"]
-type ClassEnum = Database["nablaweb_vue"]["Enums"]["class"]
 type NablaUserDict = { [username: string]: NablaUser }
-type NablaGroupDict = { [id: string]: NablaGroup }
 type NablaEvent = Database["nablaweb_vue"]["Tables"]["nabla_events"]["Insert"]
 type NablaEventTranslation =
     Database["nablaweb_vue"]["Tables"]["nabla_events_translations"]["Insert"]
@@ -25,6 +26,9 @@ if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
         "Missing SUPABASE_SERVICE_ROLE_KEY. Try running npm run env:pull.",
     )
     process.exit(1)
+}
+type NablaGroupDict = {
+    [id: string]: { group: NablaGroup; subgroup: NablaSubgroup }
 }
 
 const supabase = createClient<Database>(
@@ -76,9 +80,22 @@ function makeUser(
         last_name: lastName,
         profile_picture:
             "https://upload.wikimedia.org/wikipedia/commons/0/02/Sea_Otter_%28Enhydra_lutris%29_%2825169790524%29_crop.jpg",
-        class: "kull20" as ClassEnum,
     }
     return user
+}
+
+function makeGroup(
+    id: string,
+    name: string,
+    mail_list?: string,
+    is_active: boolean = true,
+): NablaGroup {
+    return {
+        id,
+        name,
+        mail_list,
+        is_active,
+    }
 }
 
 function makeRandomUsers(n: number): NablaUserDict {
@@ -96,7 +113,7 @@ function makeRandomUsers(n: number): NablaUserDict {
         users[username] = makeUser(firstName, lastName, username)
     }
 
-    return users // no de-duping, but I don't care, shouldn't be an issue
+    return users
 }
 
 async function addUsersToSupabase(users: NablaUserDict) {
@@ -120,7 +137,9 @@ async function addUsersToSupabase(users: NablaUserDict) {
         if (response.data.user) {
             const email = response.data.user.email!
             const username = email.substring(0, email.length - 13)
-            users[username].supabase_id = response.data.user?.id
+            if (users[username]) {
+                users[username].supabase_id = response.data.user?.id
+            }
         }
     }
     return users
@@ -133,8 +152,10 @@ async function addUsersToDB(users: NablaUserDict) {
         .upsert(Object.values(users))
         .select("username")
     console.log(`Inserted ${data?.length} users into nabla_users`)
-    if (error) console.log("Error inserting users to nabla_users")
-    if (error) console.log(error)
+    if (error) {
+        console.log("Error inserting users to nabla_users")
+        console.log(error)
+    }
 }
 
 function getRandomElement(array: string[]) {
@@ -176,27 +197,14 @@ const { error: adminError } = await supabase
     })
 if (adminError) console.error(adminError)
 
-console.log("Making groups...")
-let groups: NablaGroupDict
-if ((await tableRowCount("nabla_groups")) > 0) {
-    console.log("Groups already seeded - reusing existing groups.")
-    const { data: existingGroups, error } = await supabase
-        .schema("nablaweb_vue")
-        .from("nabla_groups")
-        .select("*")
-    if (error) throw error
-    groups = Object.fromEntries(
-        (existingGroups as NablaGroup[]).map((g) => [g.id, g]),
-    )
-} else {
-    // A lot of the images break badly. THhink it's the googleusercontent links
-    const groupDefs: NablaGroupDict = {
-        arrkom: {
-            name: "ArrKom",
+console.log("Making groups and subgroups...")
+const groupEntries: NablaGroupDict = {
+    arrkom: {
+        group: makeGroup("arrkom", "ArrKom", "arrkom@nabla.no"),
+        subgroup: {
             id: "arrkom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/IMG_0306_HcJuzGf.jpg.250x250_q85_crop-smart.jpg",
-            mail_list: "arrkom@nabla.no",
             leader_mail: "arrsjef@nabla.no",
             about: faker.lorem.text(),
             leader: getRandomElement(Object.keys(users)),
@@ -204,20 +212,27 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcOBN0lTkj6KlhMZh2-auUo_fZWROoupD8MP7s4HX3mWZGmgdHArYsrQONBCKkJbU4P5oerMFRvxEYI61ShI4o_WORi3aSixAvaP0OXtMz3e02oysiTqa3LMy6CFUKZCfDP-5l5Jev7YjAANeYHJJoT2q0?key=aeJqyczQFfxPqAbucOqYxBAM",
         },
-        bedkom: {
-            name: "Bedriftskontakten Nabla",
+    },
+    bedkom: {
+        group: makeGroup(
+            "bedkom",
+            "Bedriftskontakten Nabla",
+            "bedkom@nabla.no",
+        ),
+        subgroup: {
             id: "bedkom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Ny_BN-logo-2_FLQ8NVr.jpg.250x250_q85_crop-smart.png",
-            mail_list: "bedkom@nabla.no",
             leader_mail: "bedriftskontakt@nabla.no",
             about: faker.lorem.text(),
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
             group_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
         },
-        educom: {
-            name: "Educom",
+    },
+    educom: {
+        group: makeGroup("educom", "Educom", undefined),
+        subgroup: {
             id: "educom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/edukom.jpg.250x250_q85_crop-smart.jpg",
@@ -228,8 +243,10 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://lh7-rt.googleusercontent.com/docsz/AD_4nXciCrS_lM0nIUT-sRSQ4KySZwkB-xITYUpyWQpJiYynXjm21fPHLsWd8ouLX0wLUz2ttyIw_ea_mOkuuR4gft7obb-eagUUh1oaSm1mfDFez0f1zoO4k0gzvM2Ys229n3a6MYXPFC90oa8Yt2_zqkYz3_c?key=aeJqyczQFfxPqAbucOqYxBAM",
         },
-        fadderkom: {
-            name: "FadderKom",
+    },
+    fadderkom: {
+        group: makeGroup("fadderkom", "FadderKom", undefined),
+        subgroup: {
             id: "fadderkom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Skjermbilde_2024-11-06_kl._08.17.07.png.250x250_q85_crop-smart.png",
@@ -239,12 +256,17 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://lh7-rt.googleusercontent.com/docsz/AD_4nXftykOYRdyz1BUXGUbB_c4LL06VAT82mABdN_VrmkaGK40cbcP37F-zTcV2q3Bo8F7iEls0e2ksUr4EuwvImQ9yYDwG_ywe0-eP38v49-dEVDyy2fvbA5FJCAOEg-pBYYEwbIBBfd0Mj3lZwmy_DK9TPuDn?key=KyKQVimNYgblVFL0RAGYWJpc",
         },
-        kjellerstyret: {
-            name: "Kjellerstyret",
+    },
+    kjellerstyret: {
+        group: makeGroup(
+            "kjellerstyret",
+            "Kjellerstyret",
+            "kjellern.hk18@nabla.no",
+        ),
+        subgroup: {
             id: "kjellerstyret",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/kjellerstyret_dDWDFE9.png.250x250_q85_crop-smart.png.250x250_q85_crop-smart.png",
-            mail_list: "kjellern.hk18@nabla.no",
             leader_mail: "kjellersjef@nabla.no",
             about: faker.lorem.paragraphs(),
             leader: getRandomElement(Object.keys(users)),
@@ -252,12 +274,13 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://lh7-rt.googleusercontent.com/docsz/AD_4nXe4MH5vyqY0EpjCWbVARuCBwrkYYF1a02soMPSAciZSaPXFYVoTXvLqZWh4TCRjgHICAunUc8HGpK74wbd_s7OApNZX9X038BUNhr7ugESwWNHt46KtHSzKaVb9dW1eNUd_N61yhbdUgyh9OW3J-lf5wwE?key=Ub7xtpmS0D3jF3uiC4Wgdvhi",
         },
-        kontorkom: {
-            name: "KontorKom",
+    },
+    kontorkom: {
+        group: makeGroup("kontorkom", "KontorKom", "kontorkom@nabla.no"),
+        subgroup: {
             id: "kontorkom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kontorkom_Logo.jpg.250x250_q85_crop-smart.jpg",
-            mail_list: "kontorkom@nabla.no",
             leader_mail: "leder.kontorkom@nabla.no",
             about: faker.lorem.paragraph(),
             leader: getRandomElement(Object.keys(users)),
@@ -265,12 +288,13 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://lh7-rt.googleusercontent.com/docsz/AD_4nXc2sD9zUyyPowNu3gcaf4tYj6pSFYfUujQ0wQ4-40KVb1Pa-0CP0zeUUwBbBWM4Y517-KnlIweRcllEQxIu3DHFBuGyk7Ts4w9L6unUygm1NvPeCSiI1GEvSGP3s6m32bnRmp2Uwg?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
         },
-        prokom: {
+    },
+    prokom: {
+        group: makeGroup("prokom", "ProKom", "prokom@nabla.no"),
+        subgroup: {
             id: "prokom",
-            name: "ProKom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Prokom-ikon-monokrom.jpg.250x250_q85_crop-smart.jpg",
-            mail_list: "prokom@nabla.no",
             leader_mail: "leder.prokom@nabla.no",
             about: faker.lorem.text(),
             leader: getRandomElement(Object.keys(users)),
@@ -278,12 +302,13 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/com_pictures/HU5A9317.jpeg",
         },
-        redaksjonen: {
+    },
+    redaksjonen: {
+        group: makeGroup("redaksjonen", "Redaksjonen", "nabladet@nabla.no"),
+        subgroup: {
             id: "redaksjonen",
-            name: "Redaksjonen",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/redaksjonen_logo.jpg.250x250_q85_crop-smart.jpg",
-            mail_list: "nabladet@nabla.no",
             leader_mail: "redaktor@nabla.no",
             about: faker.lorem.text(),
             leader: getRandomElement(Object.keys(users)),
@@ -291,8 +316,10 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/content/Nabladet_logo_bla.JPG",
         },
-        sportskom: {
-            name: "SportsKom",
+    },
+    sportskom: {
+        group: makeGroup("sportskom", "SportsKom", "sportskom@nabla.no"),
+        subgroup: {
             id: "sportskom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/sportskom.png.250x250_q85_crop-smart.png",
@@ -303,8 +330,10 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-163.jpg",
         },
-        styret: {
-            name: "Styret",
+    },
+    styret: {
+        group: makeGroup("styret", "Styret", undefined),
+        subgroup: {
             id: "styret",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/styret.jpeg.250x250_q85_crop-smart.jpg",
@@ -314,12 +343,13 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
         },
-        webkom: {
+    },
+    webkom: {
+        group: makeGroup("webkom", "WebKom", "webkom@nabla.no"),
+        subgroup: {
             id: "webkom",
-            name: "WebKom",
             kind: "Committee",
             logo: "https://nabla.no/media/thumbnails/uploads/news_pictures/webkom-logo_cd43LtI.png.250x250_q85_crop-smart.png",
-            mail_list: "webkom@nabla.no",
             leader_mail: "websjef@nabla.no",
             about: faker.lorem.text(),
             group_photo:
@@ -327,8 +357,10 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             leader: "admin",
             trusted_member: getRandomElement(Object.keys(users)),
         },
-        casinus: {
-            name: "Casinus",
+    },
+    casinus: {
+        group: makeGroup("casinus", "Casinus", undefined),
+        subgroup: {
             id: "casinus",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Casinus_2.png.250x250_q85_crop-smart.png",
@@ -338,12 +370,13 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://lh7-rt.googleusercontent.com/docsz/AD_4nXd04_Y2dquwJ2nhmcTVY8vStUNCQmIZUqA8RBPs-nJDG_KoJ3C_-EA_vt-4dw-QEHmW4GbIgS3476nSApEu0DbGbb3goKWOX9VqssqL2U6hDP5SlgHJpWWU049jYSJVv8FTZOq-DQ?key=WJSp9qahF5-MtEm6b_9b_Qkh",
         },
-        koreolis: {
-            name: "Koreolis",
+    },
+    koreolis: {
+        group: makeGroup("koreolis", "Koreolis", "koreolis@nabla.no"),
+        subgroup: {
             id: "koreolis",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/koreolis_logo.jpg.250x250_q85_crop-smart.jpg",
-            mail_list: "koreolis@nabla.no",
             leader_mail: "koreolis.kraften@nabla.no",
             about: faker.lorem.text(),
             leader: getRandomElement(Object.keys(users)),
@@ -351,9 +384,11 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/content/koreolis-2025.jpeg",
         },
-        kultkom: {
+    },
+    kultkom: {
+        group: makeGroup("kultkom", "Kultkom", undefined),
+        subgroup: {
             id: "kultkom",
-            name: "Kultkom",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Kultkom.png.250x250_q85_crop-smart.png",
             about: faker.lorem.text(),
@@ -362,29 +397,35 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/content/nabla_under_gruppe_kultkom.jpg",
         },
-        lopeklubben: {
+    },
+    lopeklubben: {
+        group: makeGroup("lopeklubben", "Løpeklubben", undefined),
+        subgroup: {
             id: "lopeklubben",
-            name: "Løpeklubben",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lopelogo.png.250x250_q85_crop-smart.png",
             about: faker.lorem.paragraphs(),
+            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
-            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
         },
-        makernabla: {
+    },
+    makernabla: {
+        group: makeGroup("makernabla", "MakerNabla", undefined, false),
+        subgroup: {
             id: "makernabla",
-            name: "MakerNabla",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/maker_nabla_vrtWpwO.jpg.250x250_q85_crop-smart.jpg",
             about: faker.lorem.paragraphs(),
+            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
-            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
         },
-        m3: {
+    },
+    m3: {
+        group: makeGroup("m3", "Maxwells Muntre Musikanter", undefined),
+        subgroup: {
             id: "m3",
-            name: "Maxwells Muntre Musikanter",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Maxwells_logo_1ob4IqE.png.250x250_q85_crop-smart.png",
             leader_mail: "maxwells.muntre@nabla.no",
@@ -394,73 +435,90 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/com_pictures/nabla_under_gruppe_foto-091.jpg",
         },
-        revyen: {
-            // Hey if the revue is not a group but its own thing... Should this only be the "styret", and everyone else be in a reparate group?
-            id: "revyen", //Should this maybe be revyen?
-            name: "Nablarevyen",
+    },
+    revyen: {
+        group: makeGroup("revyen", "Nablarevyen", "revy-alle@nabla.no"),
+        subgroup: {
+            id: "revyen",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/revyen.jpg.250x250_q85_crop-smart.jpg",
-            mail_list: "revy-alle@nabla.no",
             leader_mail: "revy@nabla.no",
             about: faker.lorem.text(),
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
             group_photo: "https://nabla.no/media/uploads/content/HU5A9343.jpg",
         },
-        nav: {
+    },
+    nav: {
+        group: makeGroup(
+            "nav",
+            "Nablas Aerodynamiske Venner",
+            undefined,
+            false,
+        ),
+        subgroup: {
             id: "nav",
-            name: "Nablas Aerodynamiske Venner",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/NAV_prof1.PNG.250x250_q85_crop-smart.png",
             about: faker.lorem.text(),
+            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
-            group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG", // THIS IS A PROBLEM - GROUP PHOTO CAN BE NULL
         },
-        finans: {
+    },
+    finans: {
+        group: makeGroup("finans", "Nablas finansklubb", undefined, false),
+        subgroup: {
             id: "finans",
-            name: "Nablas finansklubb",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/5F7AA176-901B-4E5A-AB0F-0AE26615B52B_1_201_a.jpeg.250x250_q85_crop-smart.jpg",
             about: faker.lorem.text(),
+            group_photo: "https://nabla.no/media/p1330291.jpg",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
-            group_photo: "https://nabla.no/media/p1330291.jpg",
         },
-        nff: {
+    },
+    nff: {
+        group: makeGroup("nff", "Nablas Flytende Fysikere", undefined),
+        subgroup: {
             id: "nff",
-            name: "Nablas Flytende Fysikere",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Nff-Logo-1.png.250x250_q85_crop-smart.jpg",
             about: faker.lorem.paragraphs(2),
+            group_photo: "https://nabla.no/media/uploads/content/P1270300.jpg",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
-            group_photo: "https://nabla.no/media/uploads/content/P1270300.jpg",
         },
-        handball: {
+    },
+    handball: {
+        group: makeGroup("handball", "Nablas håndball-lag", undefined),
+        subgroup: {
             id: "handball",
-            name: "Nablas håndball-lag",
             kind: "Interest group",
             logo: "https://nabla.no/static/img/nabla-black.svg",
             about: faker.lorem.paragraph(3),
-            leader: getRandomElement(Object.keys(users)),
-            trusted_member: getRandomElement(Object.keys(users)),
             group_photo:
                 "https://lh7-rt.googleusercontent.com/docsz/AD_4nXcPoGs6cAvR6_xpKCkxwPhUmiTb2cfvZhE5_Jp3-itV027PIzVsZyQSr1z26tkqV-Nrg85GxxVIPdtU001kdac8OQI9yCDG54MMQ0MaTKQJf0zlKeyXQ4e8Oq5pkO2zNTs_GrAOeQ?key=R7qQlOHoIBRTjk8sIFz5f_Zu",
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
         },
-        klatregruppa: {
+    },
+    klatregruppa: {
+        group: makeGroup("klatregruppa", "Nablas Klatregruppe", undefined),
+        subgroup: {
             id: "klatregruppa",
-            name: "Nablas Klatregruppe",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/klatregrLogo4.png.250x250_q85_crop-smart.png",
             about: faker.lorem.paragraph(5),
+            group_photo: "https://nabla.no/media/uploads/content/P1270842.jpg",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
-            group_photo: "https://nabla.no/media/uploads/content/P1270842.jpg",
         },
-        olbryggerlaug: {
+    },
+    olbryggerlaug: {
+        group: makeGroup("olbryggerlaug", "Nablas Ølbryggerlaug", undefined),
+        subgroup: {
             id: "olbryggerlaug",
-            name: "Nablas Ølbryggerlaug",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/lauget.jpg.250x250_q85_crop-smart.jpg",
             leader_mail: "bryggemester@nabla.no",
@@ -470,143 +528,215 @@ if ((await tableRowCount("nabla_groups")) > 0) {
             group_photo:
                 "https://nabla.no/media/uploads/content/nabla_under_gruppe_ølbryggerlaug_2425.jpg",
         },
-        postkom: {
+    },
+    postkom: {
+        group: makeGroup("postkom", "PostKom", "postkom@nabla.no"),
+        subgroup: {
             id: "postkom",
-            name: "PostKom",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/PostKom_logo.png.250x250_q85_crop-smart.jpg",
-            mail_list: "postkom@nabla.no",
             about: faker.lorem.paragraphs(5),
-            leader: getRandomElement(Object.keys(users)),
-            trusted_member: getRandomElement(Object.keys(users)),
             group_photo:
                 "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-169.jpg",
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
         },
-        quizkom: {
+    },
+    quizkom: {
+        group: makeGroup("quizkom", "QuizKom", undefined),
+        subgroup: {
             id: "quizkom",
-            name: "QuizKom",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Quizkom-logo.png.250x250_q85_crop-smart.jpg",
             leader_mail: "quizkom@nabla.no",
             about: faker.lorem.sentence(2),
-            leader: getRandomElement(Object.keys(users)),
-            trusted_member: getRandomElement(Object.keys(users)),
             group_photo:
                 "https://nabla.no/media/uploads/content/quizkom-102.jpg",
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
         },
-        reka: {
+    },
+    reka: {
+        group: makeGroup("reka", "ReKa", undefined),
+        subgroup: {
             id: "reka",
-            name: "ReKa",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
             leader_mail: "reka@nabla.no",
             about: faker.lorem.text(),
+            group_photo: "https://nabla.no/media/uploads/content/Reka.JPG",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
-            group_photo: "https://nabla.no/media/uploads/content/Reka.JPG",
         },
-        reven: {
+    },
+    reven: {
+        group: makeGroup("reven", "ReVen", undefined),
+        subgroup: {
             id: "reven",
-            name: "ReVen",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Reka_Reven.png.250x250_q85_crop-smart.png",
             leader_mail: "reven@nabla.no",
             about: faker.lorem.text(),
-            leader: getRandomElement(Object.keys(users)),
-            trusted_member: getRandomElement(Object.keys(users)),
             group_photo:
                 "https://nabla.no/media/uploads/content/reven-2025.jpg",
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
         },
-        pod: {
+    },
+    pod: {
+        group: makeGroup("pod", "Skråttcast", undefined),
+        subgroup: {
             id: "pod",
-            name: "Skråttcast",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/skråttcast2_zxdIEaA.jpg.250x250_q85_crop-smart.jpg",
             leader_mail: "skraattcast@nabla.no",
             about: faker.lorem.text(),
-            leader: getRandomElement(Object.keys(users)),
-            trusted_member: getRandomElement(Object.keys(users)),
             group_photo:
                 "http://nabla.no/media/uploads/content/skrattcast-2025.jpg",
-        },
-        gravitones: {
-            id: "gravitones",
-            name: "The Gravitones",
-            kind: "Interest group",
-            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/GravSvart_NpvzpPp.png.250x250_q85_crop-smart.png",
-            mail_list: "gravitones@nabla.no",
-            about: faker.lorem.text(),
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
+        },
+    },
+    gravitones: {
+        group: makeGroup("gravitones", "The Gravitones", "gravitones@nabla.no"),
+        subgroup: {
+            id: "gravitones",
+            kind: "Interest group",
+            logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/GravSvart_NpvzpPp.png.250x250_q85_crop-smart.png",
+            about: faker.lorem.text(),
             group_photo:
                 "https://nabla.no/media/uploads/content/gravitones2425.jpg",
+            leader: getRandomElement(Object.keys(users)),
+            trusted_member: getRandomElement(Object.keys(users)),
         },
-        stokes: {
+    },
+    stokes: {
+        group: makeGroup("stokes", "The Stokes", "thestokes@nabla.no"),
+        subgroup: {
             id: "stokes",
-            name: "The Stokes",
             kind: "Interest group",
             logo: "https://nabla.no/media/thumbnails/uploads/com_pictures/Stokes_logo.PNG.250x250_q85_crop-smart.png",
-            mail_list: "thestokes@nabla.no",
             leader_mail: "lederstokes@nabla.no",
             about: `<img src: "https://nabla.no/media/uploads/content/TheStokes.jpg" width="100%"> <br> ${faker.lorem.text()}`,
             group_photo: "https://nabla.no/media/uploads/content/TheStokes.jpg",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
         },
-        utfluks: {
+    },
+    utfluks: {
+        group: makeGroup("utfluks", "Utfluks", "utfluks@nabla.no"),
+        subgroup: {
             id: "utfluks",
-            name: "Utfluks",
             kind: "Interest group",
             logo: "https://nabla.no/static/img/nabla-black.svg",
-            mail_list: "utfluks@nabla.no",
             about: faker.lorem.text(),
             group_photo: "https://nabla.no/media/uploads/content/Utfluks.JPG",
             leader: getRandomElement(Object.keys(users)),
             trusted_member: getRandomElement(Object.keys(users)),
         },
-    }
-
-    const { error: error1 } = await supabase
-        .schema("nablaweb_vue")
-        .from("nabla_groups")
-        .upsert(Object.values(groupDefs))
-    if (error1) {
-        console.log(error1)
-    }
-    groups = groupDefs
+    },
 }
+
+// Extract base groups and subgroups for individual upserting
+const groupsList = Object.values(groupEntries).map((e) => e.group)
+const subgroupsList = Object.values(groupEntries).map((e) => e.subgroup)
+
+// 1. Insert into nabla_groups first (parent table)
+const { error: errorGroups } = await supabase
+    .schema("nablaweb_vue")
+    .from("nabla_groups")
+    .upsert(groupsList)
+if (errorGroups) {
+    console.log("Error inserting nabla_groups:", errorGroups)
+} else {
+    console.log(`Inserted ${groupsList.length} rows into nabla_groups`)
+}
+
+// 2. Insert into nabla_subgroups (child table)
+const { error: errorSubgroups } = await supabase
+    .schema("nablaweb_vue")
+    .from("nabla_subgroups")
+    .upsert(subgroupsList)
+if (errorSubgroups) {
+    console.log("Error inserting nabla_subgroups:", errorSubgroups)
+} else {
+    console.log(`Inserted ${subgroupsList.length} rows into nabla_subgroups`)
+}
+
+console.log("Seeding classes and adding users to classes...")
+const classYears = ["kull25", "kull24", "kull23", "kull22", "kull21", "kull20"]
+const classGroups: NablaGroup[] = classYears.map((c) => ({
+    id: c,
+    name: `Fysmat ${c.replace("kull", "")}`,
+}))
+
+const classRows: NablaClass[] = classYears.map((c) => ({
+    id: c,
+    class: c,
+}))
+
+// Upsert class entities into nabla_groups and nabla_classes
+await supabase.schema("nablaweb_vue").from("nabla_groups").upsert(classGroups)
+await supabase.schema("nablaweb_vue").from("nabla_classes").upsert(classRows)
+
+// Assign each user to a random class group via nabla_group_members
+const classMemberships: NablaGroupMember[] = Object.keys(users).map(
+    (username, index) => {
+        const randomClassId = getRandomElement(classYears)
+        return {
+            user: username,
+            group: randomClassId,
+            member_role: "Student",
+            is_active: true,
+            order: index,
+        }
+    },
+)
 
 console.log("Populating groups with members...")
-if ((await tableRowCount("nabla_group_members")) > 0) {
-    console.log("Group memberships already seeded - skipping.")
-} else {
-    const memberships: NablaGroupMember[] = []
-    const usedPairs = new Set<string>()
-    while (memberships.length < Object.keys(groups).length * 15) {
-        const user = getRandomElement(Object.keys(users))
-        const group = getRandomElement(Object.keys(groups))
-        if (usedPairs.has(`${user}:${group}`)) {
-            continue
-        }
-        usedPairs.add(`${user}:${group}`)
+const memberships: NablaGroupMember[] = [...classMemberships]
+const usedPairs = new Set<string>(
+    classMemberships.map((m) => `${m.user}:${m.group}`),
+)
 
-        const membership: NablaGroupMember = {
-            user: user,
-            group: group,
-            member_role: faker.company.catchPhrase(),
+// 1. Ensure every subgroup gets at least a couple of members (e.g., leader, trusted member, plus a random member)
+for (const [groupId, entry] of Object.entries(groupEntries)) {
+    // Add the leader if they exist
+    if (
+        entry.subgroup.leader &&
+        !usedPairs.has(`${entry.subgroup.leader}:${groupId}`)
+    ) {
+        usedPairs.add(`${entry.subgroup.leader}:${groupId}`)
+        memberships.push({
+            user: entry.subgroup.leader,
+            group: groupId,
+            member_role: "Leder",
             is_active: true,
             order: memberships.length,
-        }
-        memberships.push(membership)
+        })
     }
 
-    const { error } = await supabase
-        .schema("nablaweb_vue")
-        .from("nabla_group_members")
-        .upsert(memberships)
-
-    if (error) console.log(error)
+    // Add 3 to 5 random members to this subgroup
+    for (let i = 0; i < 4; i++) {
+        const randomUser = getRandomElement(Object.keys(users))
+        const pairKey = `${randomUser}:${groupId}`
+        if (!usedPairs.has(pairKey)) {
+            usedPairs.add(pairKey)
+            memberships.push({
+                user: randomUser,
+                group: groupId,
+                member_role: faker.company.catchPhrase(),
+                is_active: true,
+                order: memberships.length,
+            })
+        }
+    }
 }
+const { error: membershipError } = await supabase
+    .schema("nablaweb_vue")
+    .from("nabla_group_members")
+    .upsert(memberships)
+if (membershipError) console.error(membershipError)
 
 type TrustedCategory =
     Database["nablaweb_vue"]["Tables"]["trusted_member_categories"]["Insert"]
@@ -874,47 +1004,61 @@ if ((await tableRowCount("nabla_events")) > 0) {
     }
 
     console.log("Seeding Registration Tiers...")
-    // Immball and Julebord: a default price plus a discounted first-year tier.
-    // Bedriftspresentasjon: free, default tier only (price_kr: 0 needs no payment_end).
+    // Tiers are keyed by group: a class (kull25) or a subgroup (arrkom).
+    // nabla_group: null is the default tier for anyone without a matching group.
     const registrationTiers: NablaEventRegistrationTier[] = [
+        // Immball: default 350, first-years 250, ArrKom members 200
         {
             id: crypto.randomUUID(),
             event: events[0].id!,
-            class: null,
-            class_capacity: 180,
+            nabla_group: null,
+            nabla_group_capacity: 180,
             price_kr: 350,
-            payment_end: "2026-09-14T23:59:00+01:00",
-            registration_start: "2026-08-25T12:00:00+01:00",
-            registration_end: "2026-09-14T23:59:00+01:00",
-            deregistration_end: "2026-09-12T23:59:00+01:00",
+            payment_end: "2026-09-14T23:59:00+02:00",
+            registration_start: "2026-08-25T12:00:00+02:00",
+            registration_end: "2026-09-14T23:59:00+02:00",
+            deregistration_end: "2026-09-12T23:59:00+02:00",
         },
         {
             id: crypto.randomUUID(),
             event: events[0].id!,
-            class: "kull25",
-            class_capacity: 250,
+            nabla_group: "kull25",
+            nabla_group_capacity: 250,
             price_kr: 250,
-            payment_end: "2026-09-14T23:59:00+01:00",
-            registration_start: "2026-08-25T12:00:00+01:00",
-            registration_end: "2026-09-14T23:59:00+01:00",
-            deregistration_end: "2026-09-12T23:59:00+01:00",
+            payment_end: "2026-09-14T23:59:00+02:00",
+            registration_start: "2026-08-25T12:00:00+02:00",
+            registration_end: "2026-09-14T23:59:00+02:00",
+            deregistration_end: "2026-09-12T23:59:00+02:00",
         },
+        {
+            id: crypto.randomUUID(),
+            event: events[0].id!,
+            nabla_group: "arrkom",
+            nabla_group_capacity: 20,
+            price_kr: 200,
+            payment_end: "2026-09-14T23:59:00+02:00",
+            registration_start: "2026-08-25T12:00:00+02:00",
+            registration_end: "2026-09-14T23:59:00+02:00",
+            deregistration_end: "2026-09-12T23:59:00+02:00",
+        },
+        // Bedriftspresentasjon: free, default tier only
         {
             id: crypto.randomUUID(),
             event: events[1].id!,
-            class: null,
-            class_capacity: null, // uncapped - see caveat above if this column is still NOT NULL
+            nabla_group: null,
+            nabla_group_capacity: null,
             price_kr: 0,
             payment_end: null,
-            registration_start: "2026-09-01T12:00:00+01:00",
-            registration_end: "2026-09-15T12:00:00+01:00",
-            deregistration_end: "2026-09-14T12:00:00+01:00",
+            registration_start: "2026-09-01T12:00:00+02:00",
+            registration_end: "2026-09-15T12:00:00+02:00",
+            deregistration_end: "2026-09-14T12:00:00+02:00",
         },
+        // Julebord: default 450, first-years 300
         {
             id: crypto.randomUUID(),
             event: events[2].id!,
-            class: null,
-            class_capacity: 50,
+            nabla_group: null,
+            nabla_group_capacity: 50,
             price_kr: 450,
             payment_end: "2026-12-03T23:59:00+01:00",
             registration_start: "2026-11-15T12:00:00+01:00",
@@ -924,8 +1068,8 @@ if ((await tableRowCount("nabla_events")) > 0) {
         {
             id: crypto.randomUUID(),
             event: events[2].id!,
-            class: "kull25",
-            class_capacity: 100,
+            nabla_group: "kull25",
+            nabla_group_capacity: 100,
             price_kr: 300,
             payment_end: "2026-12-03T23:59:00+01:00",
             registration_start: "2026-11-15T12:00:00+01:00",
@@ -945,25 +1089,60 @@ if ((await tableRowCount("nabla_events")) > 0) {
     }
 
     console.log("Seeding Participants...")
-    // Pick a handful of distinct random users to "attend" each event, capped
-    // well under global_registration_limit so it stays plausible.
+    // Which groups each user belongs to (classes and subgroups), and the reverse
+    const groupsByUser = new Map<string, string[]>()
+    const membersByGroup = new Map<string, string[]>()
+    for (const m of memberships) {
+        groupsByUser.set(m.user, [...(groupsByUser.get(m.user) ?? []), m.group])
+        membersByGroup.set(m.group, [
+            ...(membersByGroup.get(m.group) ?? []),
+            m.user,
+        ])
+    }
+
     const usernames = Object.keys(users)
     const participants: NablaEventParticipant[] = []
 
     for (const event of events) {
-        const attendeeCount = Math.min(40, usernames.length)
+        // Stay under the event's own limit
+        const limit = event.global_registration_limit ?? 0
+        const attendeeCount = Math.min(
+            40,
+            limit > 0 ? Math.floor(limit * 0.8) : 40,
+            usernames.length,
+        )
+
+        const eventTiers = registrationTiers.filter((t) => t.event === event.id)
+        const defaultTier = eventTiers.find((t) => !t.nabla_group)
+
+        // Make sure every group-specific tier gets a few attendees,
+        // then fill the rest with random users
         const picked = new Set<string>()
+        for (const tier of eventTiers) {
+            if (!tier.nabla_group) continue
+            const members = membersByGroup.get(tier.nabla_group) ?? []
+            for (const username of faker.helpers.arrayElements(
+                members,
+                Math.min(6, members.length),
+            )) {
+                if (picked.size < attendeeCount) picked.add(username)
+            }
+        }
         while (picked.size < attendeeCount) {
             picked.add(getRandomElement(usernames))
         }
 
-        const eventTiers = registrationTiers.filter((t) => t.event === event.id)
-        const defaultTier = eventTiers.find((t) => t.class === null)
-
         for (const username of picked) {
-            const userClass = users[username].class
+            // Register under a random one of the user's own groups that has a
+            // tier for this event, otherwise under the default tier
+            const userGroups = groupsByUser.get(username) ?? []
+            const matchingTiers = eventTiers.filter(
+                (t) => t.nabla_group && userGroups.includes(t.nabla_group),
+            )
             const tier =
-                eventTiers.find((t) => t.class === userClass) ?? defaultTier
+                matchingTiers.length > 0
+                    ? faker.helpers.arrayElement(matchingTiers)
+                    : defaultTier
 
             participants.push({
                 event: event.id!,

@@ -7,7 +7,7 @@
 
     const props = defineProps<{
         members: GroupMember[]
-        notRemovable: GroupMember[]
+        notRemovable: NablaUser[]
         foundUsers: NablaUser[]
     }>()
 
@@ -173,7 +173,7 @@
                             :disabled="
                                 notRemovable.some(
                                     (nonRemovableMember) =>
-                                        nonRemovableMember.user.username ==
+                                        nonRemovableMember.username ==
                                         member.user.username,
                                 )
                             "

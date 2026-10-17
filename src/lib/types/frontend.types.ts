@@ -2,19 +2,26 @@
 // undefined: not yet fetched from db. Can write class that fetches unfetched data if we want.
 
 export type NablaGroup = {
-    id: string // Also the URL of the group
+    id: string // Also the URL of the subgroup
     name?: string
     members?: GroupMember[]
+    mailList?: string | null
+    date?: Date
+    isActive?: boolean
+}
+
+export type NablaSubGroup = NablaGroup & {
     kind?: GroupKind
     logo?: URL
-    mailList?: string | null
     leaderMail?: string | null
     leader?: NablaUser
     trustedMember?: NablaUser
     about?: string
     groupPhoto?: URL
-    date?: Date
-    isActive?: boolean
+}
+
+export type NablaClass = NablaGroup & {
+    class?: string
 }
 
 export enum GroupKind {
@@ -44,17 +51,6 @@ export type NablaUser = {
     about?: string
     birthday?: Date | null
     website?: URL
-}
-
-export enum NablaClass {
-    international = "international",
-    ortogonal = "ortogonal",
-    kull20 = "kull20",
-    kull21 = "kull21",
-    kull22 = "kull22",
-    kull23 = "kull23",
-    kull24 = "kull24",
-    kull25 = "kull25",
 }
 
 export enum StyleTheme {
@@ -103,13 +99,13 @@ export type Event = {
     image?: URL
     link?: URL
     requiresRegistration: boolean
-    organizer?: NablaGroup[]
+    organizer?: NablaSubGroup[]
     totalCapacity?: number
     hiddenIfUnavailable: boolean
     registrationRules?: Map<string, RegistrationInfo> // string is group name
     comments: EventComment[]
     reactions: Reaction[]
-    owningGroups: NablaGroup[]
+    owningGroups: NablaSubGroup[]
     owningPeople: NablaUser[]
     participants: EventParticipant[]
     title: string

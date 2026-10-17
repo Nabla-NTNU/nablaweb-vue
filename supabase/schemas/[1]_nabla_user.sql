@@ -1,15 +1,3 @@
--- Enums used by users
-CREATE TYPE nablaweb_vue.class AS ENUM (
-    'ortogonal',
-    'international',
-    'kull20',
-    'kull21',
-    'kull22',
-    'kull23',
-    'kull24',
-    'kull25'
-);
-
 -- Actual table
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_users (
     username        TEXT                PRIMARY KEY,
@@ -18,7 +6,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_users (
     list_email      TEXT                NOT NULL UNIQUE,
     first_name      TEXT                NOT NULL,
     last_name       TEXT                NOT NULL,
-    class           nablaweb_vue.class  NOT NULL,
     profile_picture TEXT                NOT NULL DEFAULT '',
     about           text                NOT NULL DEFAULT '',
     website         text                NOT NULL DEFAULT '',
@@ -36,7 +23,7 @@ CREATE INDEX ON nablaweb_vue.nabla_users USING btree (first_name_last_name_usern
 -- Security
 ALTER TABLE nablaweb_vue.nabla_users ENABLE ROW LEVEL SECURITY;
 
-GRANT SELECT (username, first_name, last_name, class, profile_picture) ON TABLE nablaweb_vue.nabla_users TO anon;
+GRANT SELECT (username, first_name, last_name, profile_picture) ON TABLE nablaweb_vue.nabla_users TO anon;
 GRANT SELECT ON TABLE nablaweb_vue.nabla_users TO authenticated, service_role;
 
 CREATE POLICY "Everyone can see user data"

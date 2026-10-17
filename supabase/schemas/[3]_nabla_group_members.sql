@@ -28,7 +28,7 @@ CREATE POLICY "Group leaders can edit their group's members"
     TO authenticated
     USING (
         EXISTS (
-            SELECT 1 FROM nablaweb_vue.nabla_groups as g
+            SELECT 1 FROM nablaweb_vue.nabla_subgroups as g
             JOIN nablaweb_vue.nabla_users as u
             ON u.username = g.leader
             WHERE u.supabase_id = (SELECT auth.uid())
@@ -37,7 +37,7 @@ CREATE POLICY "Group leaders can edit their group's members"
     )
     WITH CHECK(
         EXISTS (
-            SELECT 1 FROM nablaweb_vue.nabla_groups as g
+            SELECT 1 FROM nablaweb_vue.nabla_subgroups as g
             JOIN nablaweb_vue.nabla_users as u
             ON u.username = g.leader
             WHERE u.supabase_id = (SELECT auth.uid())
