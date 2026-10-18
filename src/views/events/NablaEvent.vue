@@ -112,7 +112,7 @@
                     <h2
                         class="group mb-4 flex items-center text-subtitle-2 font-semibold tracking-tight"
                     >
-                        {{ t("Ansvarlige") }}:
+                        {{ t("ansvarlige") }}:
                     </h2>
                     <div class="flex flex-wrap justify-center gap-6">
                         <UserCard

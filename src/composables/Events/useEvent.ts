@@ -15,6 +15,7 @@ import {
     watch,
 } from "vue"
 import { useI18n } from "vue-i18n"
+import { makeURL } from "../useNablaGroup"
 
 type RawEvent = {
     id: string
@@ -34,8 +35,18 @@ type RawEvent = {
         description: string
         body_text: string
     }[]
-    organiser_group: { id: string; name: string; logo: string } | null
-    owning_groups: { group: { id: string; name: string; logo: string } }[]
+    organiser_group: {
+        id: string
+        name: string
+        subgroup: { logo: string }
+    } | null
+    owning_groups: {
+        group: {
+            id: string
+            name: string
+            subgroup: { logo: string }
+        }
+    }[]
     owning_individuals: {
         user: {
             username: string
@@ -51,7 +62,14 @@ type RawEvent = {
             last_name: string
             profile_picture: string
         }
-        registration_tier: { id: string; class: string | null } | null
+        registration_tier: {
+            id: string
+            group: {
+                id: string
+                name: string
+                class: string | null
+            }
+        } | null
         status: string
         registered_at: string
     }[]
@@ -97,13 +115,13 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                     organiser_group: nabla_groups!organiser (
                         id,
                         name,
-                        logo
+                        subgroup: nabla_subgroups(logo)
                     ),
                     owning_groups: nabla_events_owner_groups (
                         group: nabla_groups!organizing_group (
                             id,
                             name,
-                            logo
+                            subgroup: nabla_subgroups(logo)
                         )
                     ),
                     owning_individuals: nabla_events_owner_individuals (
@@ -123,10 +141,14 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                             last_name,
                             profile_picture
                         ),
-                        registration_tier: nabla_events_registrations!registration_tier (
+                    registration_tier: nabla_events_registrations!nabla_events_participants_registration_tier_fkey (
+                        id,
+                        nabla_group,
+                        group: nabla_groups!nabla_events_registrations_nabla_group_fkey (
                             id,
-                            class
+                            name
                         )
+)
                     )
                 `,
                 )
@@ -152,6 +174,8 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
     function mapParticipant(
         p: RawEvent["participants"][number],
     ): EventParticipant {
+        const group = p.registration_tier?.group
+
         return {
             user: {
                 username: p.user.username,
@@ -161,8 +185,13 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                     ? new URL(p.user.profile_picture)
                     : undefined,
             },
-            registrationClass: (p.registration_tier?.class ?? undefined) as
-                EventParticipant["registrationClass"] | undefined,
+            registrationClass: group
+                ? {
+                      id: group.id,
+                      name: group.name,
+                      class: group.class ?? undefined,
+                  }
+                : undefined,
             registrationStatus: p.status as EventParticipantStatus,
             registrationDate: new Date(p.registered_at),
         }
@@ -189,6 +218,7 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                       {
                           id: raw.organiser_group.id,
                           name: raw.organiser_group.name,
+                          logo: makeURL(raw.organiser_group.subgroup.logo),
                       },
                   ]
                 : [],
@@ -200,6 +230,7 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
             owningGroups: raw.owning_groups.map((og) => ({
                 id: og.group.id,
                 name: og.group.name,
+                //logo: og.group.subgroup.logo
             })),
             owningPeople: raw.owning_individuals.map((oi) => ({
                 username: oi.user.username,
