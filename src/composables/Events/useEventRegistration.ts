@@ -1,7 +1,6 @@
 import { supabase } from "@/lib/supabaseClient"
 import { RegistrationInfo } from "@/lib/types/frontend.types"
 import { useUser } from "@/composables/useNablaUser"
-import { useAuth } from "@/composables/useAuth"
 import {
     Ref,
     ref,
@@ -23,9 +22,11 @@ type RawRegistrationTier = {
     deregistration_end: string
 }
 
-export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
-    const { username } = useAuth()
-    const userData = username.value ? useUser(username.value) : undefined
+export function useEventRegistration(
+    slug: MaybeRefOrGetter<string>,
+    username: string,
+) {
+    const userData = useUser(username)
 
     const rawTiers: Ref<RawRegistrationTier[]> = ref([])
     const error: Ref<boolean> = ref(false)
@@ -102,21 +103,14 @@ export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
     // does not display just the default tier for a moment
     const loadingGroups = computed(() => userData?.isLoading.value ?? false)
 
-    async function register(tier: RegistrationInfo): Promise<boolean> {
-        if (!username.value) {
-            console.error(
-                "[useEventRegistration] Must be logged in to register",
-            )
-            return false
-        }
-
+    async function register(username: string): Promise<boolean> {
         const { error: supabaseError } = await supabase
             .schema("nablaweb_vue")
             .from("nabla_events_participants")
             .insert({
                 event: toValue(slug),
-                username: username.value,
-                registration_tier: tier.id,
+                username: username,
+                registration_tier: defaultTier.value?.id,
                 status: "registered",
                 // registered_at gets set automatically by the database
             })
@@ -132,19 +126,12 @@ export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
     }
 
     async function unregister(): Promise<boolean> {
-        if (!username.value) {
-            console.error(
-                "[useEventRegistration] Must be logged in to unregister",
-            )
-            return false
-        }
-
         const { data, error: supabaseError } = await supabase
             .schema("nablaweb_vue")
             .from("nabla_events_participants")
             .delete()
             .eq("event", toValue(slug))
-            .eq("username", username.value)
+            .eq("username", username)
             .select()
 
         if (supabaseError) {

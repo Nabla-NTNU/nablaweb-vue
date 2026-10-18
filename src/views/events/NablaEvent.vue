@@ -14,17 +14,19 @@
     const slug = computed(() => route.params.slug as string)
     //bedriftspresentasjon-example-as || immball-2026 || julebord-2026
     const { event, refresh } = useEvent(slug)
-    const { defaultTier, register, unregister } = useEventRegistration(slug)
-
     async function registerDefault() {
-        if (defaultTier.value !== undefined) {
-            await register(defaultTier.value)
+        if (username.value !== undefined) {
+            const { register } = useEventRegistration(slug, username.value)
+            await register(username.value)
             refresh()
         }
     }
     async function unregisterAndRefresh() {
-        await unregister()
-        refresh()
+        if (username.value !== undefined) {
+            const { unregister } = useEventRegistration(slug, username.value)
+            await unregister()
+            refresh()
+        }
     }
 
     const { username, isAdmin } = useAuth()
@@ -141,9 +143,18 @@
                 </div>
             </div>
 
-            <button @click="registerDefault">Register</button>
+            <button
+                v-if="
+                    !event.participants
+                        .map((participant) => participant.user.username)
+                        .includes(username || '')
+                "
+                @click="registerDefault"
+            >
+                Register
+            </button>
 
-            <button @click="unregisterAndRefresh">Unregister</button>
+            <button v-else @click="unregisterAndRefresh">Unregister</button>
 
             <div v-if="event.organizer">
                 <h2
