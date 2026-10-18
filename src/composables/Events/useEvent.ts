@@ -18,7 +18,6 @@ import { useI18n } from "vue-i18n"
 import { makeURL } from "../useNablaGroup"
 
 type RawEvent = {
-    id: string
     start_time: string
     end_time: string
     location: string
@@ -95,7 +94,6 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                 .from("nabla_events")
                 .select(
                     `
-                    id,
                     start_time,
                     end_time,
                     location,
@@ -203,7 +201,6 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
         const translation = pickTranslation(raw.translations)
 
         return {
-            id: raw.id,
             startTime: new Date(raw.start_time),
             endTime: new Date(raw.end_time),
             location: raw.location || undefined,

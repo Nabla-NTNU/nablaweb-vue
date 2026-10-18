@@ -5,7 +5,6 @@ import { Ref, ref, computed, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 
 type RawEvent = {
-    id: string
     start_time: string
     end_time: string
     location: string
@@ -41,7 +40,6 @@ export function useEvents() {
                 .from("nabla_events")
                 .select(
                     `
-                    id,
                     start_time,
                     end_time,
                     location,
@@ -87,7 +85,6 @@ export function useEvents() {
         rawEvents.value.map((event) => {
             const translation = pickTranslation(event.translations)
             return {
-                id: event.id,
                 startTime: new Date(event.start_time),
                 endTime: new Date(event.end_time),
                 location: event.location || undefined,

@@ -90,7 +90,6 @@ export type TrustedCategory = {
 }
 
 export type Event = {
-    id: string
     startTime: Date
     endTime?: Date
     location?: string

@@ -23,7 +23,7 @@ type RawRegistrationTier = {
     deregistration_end: string
 }
 
-export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
+export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
     const { username } = useAuth()
     const userData = username.value ? useUser(username.value) : undefined
 
@@ -50,7 +50,7 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
                     deregistration_end
                 `,
                 )
-                .eq("event", toValue(eventId))
+                .eq("event", toValue(slug))
 
             if (supabaseError) throw supabaseError
             rawTiers.value = data as unknown as RawRegistrationTier[]
@@ -114,7 +114,7 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
             .schema("nablaweb_vue")
             .from("nabla_events_participants")
             .insert({
-                event: toValue(eventId),
+                event: toValue(slug),
                 username: username.value,
                 registration_tier: tier.id,
                 status: "registered",
@@ -131,8 +131,35 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
         return true
     }
 
+    async function unregister(): Promise<boolean> {
+        if (!username.value) {
+            console.error(
+                "[useEventRegistration] Must be logged in to unregister",
+            )
+            return false
+        }
+
+        const { data, error: supabaseError } = await supabase
+            .schema("nablaweb_vue")
+            .from("nabla_events_participants")
+            .delete()
+            .eq("event", toValue(slug))
+            .eq("username", username.value)
+            .select()
+
+        if (supabaseError) {
+            console.error(
+                "[useEventRegistration] Error unregistering:",
+                supabaseError,
+            )
+            return false
+        }
+        // Nothing deleted means not registered, or past the deregistration deadline
+        return (data?.length ?? 0) > 0
+    }
+
     onMounted(fetchTiers)
-    watch(() => toValue(eventId), fetchTiers)
+    watch(() => toValue(slug), fetchTiers)
 
     return {
         allTiers,
@@ -141,6 +168,7 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
         loadingGroups,
         error,
         register,
+        unregister,
         refresh: fetchTiers,
     }
 }

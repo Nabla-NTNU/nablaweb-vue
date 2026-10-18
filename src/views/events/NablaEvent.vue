@@ -3,6 +3,7 @@
     import { computed } from "vue"
     import { useI18n } from "vue-i18n"
     import { useEvent } from "@/composables/Events/useEvent.js"
+    import { useEventRegistration } from "@/composables/Events/useEventRegistration"
     const { t } = useI18n()
     import UserCard from "@/components/general/UserCard.vue"
 
@@ -12,7 +13,19 @@
     const route = useRoute()
     const slug = computed(() => route.params.slug as string)
     //bedriftspresentasjon-example-as || immball-2026 || julebord-2026
-    const { event } = useEvent(slug)
+    const { event, refresh } = useEvent(slug)
+    const { defaultTier, register, unregister } = useEventRegistration(slug)
+
+    async function registerDefault() {
+        if (defaultTier.value !== undefined) {
+            await register(defaultTier.value)
+            refresh()
+        }
+    }
+    async function unregisterAndRefresh() {
+        await unregister()
+        refresh()
+    }
 
     const { username, isAdmin } = useAuth()
 
@@ -127,6 +140,11 @@
                     {{ t("kontakt_arrangør") }}
                 </div>
             </div>
+
+            <button @click="registerDefault">Register</button>
+
+            <button @click="unregisterAndRefresh">Unregister</button>
+
             <div v-if="event.organizer">
                 <h2
                     class="group mb-4 flex items-center text-subtitle-2 font-semibold tracking-tight"

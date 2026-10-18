@@ -39,7 +39,6 @@ export type Database = {
                     event_photo: string
                     event_type: Database["nablaweb_vue"]["Enums"]["event_type"]
                     global_registration_limit: number
-                    id: string
                     is_hidden: boolean
                     location: string
                     organiser: string
@@ -54,7 +53,6 @@ export type Database = {
                     event_photo?: string
                     event_type?: Database["nablaweb_vue"]["Enums"]["event_type"]
                     global_registration_limit?: number
-                    id?: string
                     is_hidden?: boolean
                     location?: string
                     organiser: string
@@ -69,7 +67,6 @@ export type Database = {
                     event_photo?: string
                     event_type?: Database["nablaweb_vue"]["Enums"]["event_type"]
                     global_registration_limit?: number
-                    id?: string
                     is_hidden?: boolean
                     location?: string
                     organiser?: string
@@ -149,7 +146,7 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
+                        referencedColumns: ["slug"]
                     },
                     {
                         foreignKeyName: "nabla_events_comments_username_fkey"
@@ -179,7 +176,7 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
+                        referencedColumns: ["slug"]
                     },
                     {
                         foreignKeyName: "nabla_events_owner_groups_organizing_group_fkey"
@@ -209,7 +206,7 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
+                        referencedColumns: ["slug"]
                     },
                     {
                         foreignKeyName: "nabla_events_owner_individuals_username_fkey"
@@ -248,7 +245,7 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
+                        referencedColumns: ["slug"]
                     },
                     {
                         foreignKeyName: "nabla_events_participants_registration_tier_fkey"
@@ -288,7 +285,7 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
+                        referencedColumns: ["slug"]
                     },
                     {
                         foreignKeyName: "nabla_events_reactions_username_fkey"
@@ -303,9 +300,9 @@ export type Database = {
                 Row: {
                     deregistration_end: string
                     event: string
-                    group_capacity: number | null
                     id: string
                     nabla_group: string | null
+                    nabla_group_capacity: number | null
                     payment_end: string | null
                     price_kr: number
                     registration_end: string
@@ -314,9 +311,9 @@ export type Database = {
                 Insert: {
                     deregistration_end?: string
                     event: string
-                    group_capacity?: number | null
                     id?: string
                     nabla_group?: string | null
+                    nabla_group_capacity?: number | null
                     payment_end?: string | null
                     price_kr?: number
                     registration_end?: string
@@ -325,9 +322,9 @@ export type Database = {
                 Update: {
                     deregistration_end?: string
                     event?: string
-                    group_capacity?: number | null
                     id?: string
                     nabla_group?: string | null
+                    nabla_group_capacity?: number | null
                     payment_end?: string | null
                     price_kr?: number
                     registration_end?: string
@@ -339,7 +336,7 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
+                        referencedColumns: ["slug"]
                     },
                     {
                         foreignKeyName: "nabla_events_registrations_nabla_group_fkey"
@@ -378,7 +375,7 @@ export type Database = {
                         columns: ["event"]
                         isOneToOne: false
                         referencedRelation: "nabla_events"
-                        referencedColumns: ["id"]
+                        referencedColumns: ["slug"]
                     },
                 ]
             }

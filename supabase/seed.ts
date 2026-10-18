@@ -896,7 +896,6 @@ if ((await tableRowCount("nabla_events")) > 0) {
 } else {
     const events: NablaEvent[] = [
         {
-            id: crypto.randomUUID(),
             slug: "immball-2026",
             event_type: "payment",
             event_photo:
@@ -910,7 +909,6 @@ if ((await tableRowCount("nabla_events")) > 0) {
             is_hidden: false,
         },
         {
-            id: crypto.randomUUID(),
             slug: "bedriftspresentasjon-example-as",
             event_type: "bedpress",
             event_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
@@ -923,8 +921,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
             is_hidden: false,
         },
         {
-            id: crypto.randomUUID(),
-            slug: "julebord-2026",
+            slug: "julebohr-2026",
             event_type: "payment",
             event_photo:
                 "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
@@ -946,7 +943,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
 
     const translations: NablaEventTranslation[] = [
         {
-            event: events[0].id!,
+            event: events[0].slug!,
             language: "nb",
             title: "Immatrikuleringsball",
             description:
@@ -954,7 +951,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
             body_text: faker.lorem.paragraphs(2),
         },
         {
-            event: events[0].id!,
+            event: events[0].slug!,
             language: "en",
             title: "Admissions ball",
             description:
@@ -962,29 +959,29 @@ if ((await tableRowCount("nabla_events")) > 0) {
             body_text: faker.lorem.paragraphs(2),
         },
         {
-            event: events[1].id!,
+            event: events[1].slug!,
             language: "nb",
             title: "Bedriftspresentasjon: Example AS",
             description: "Bli kjent med Example AS over pizza og mingling.",
             body_text: faker.lorem.paragraphs(2),
         },
         {
-            event: events[1].id!,
+            event: events[1].slug!,
             language: "en",
             title: "Company presentation: Example AS",
             description: "Get to know Example AS over pizza and mingling.",
             body_text: faker.lorem.paragraphs(2),
         },
         {
-            event: events[2].id!,
+            event: events[2].slug!,
             language: "nb",
-            title: "Julebord",
+            title: "Julebohr",
             description:
-                "Årets julebord i realfagkantina - god mat og godt selskap.",
+                "Årets julebohr i realfagkantina - god mat og godt selskap.",
             body_text: faker.lorem.paragraphs(3),
         },
         {
-            event: events[2].id!,
+            event: events[2].slug!,
             language: "en",
             title: "Christmas dinner",
             description:
@@ -1010,7 +1007,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         // Immball: default 350, first-years 250, ArrKom members 200
         {
             id: crypto.randomUUID(),
-            event: events[0].id!,
+            event: events[0].slug!,
             nabla_group: null,
             nabla_group_capacity: 180,
             price_kr: 350,
@@ -1021,7 +1018,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         },
         {
             id: crypto.randomUUID(),
-            event: events[0].id!,
+            event: events[0].slug!,
             nabla_group: "kull25",
             nabla_group_capacity: 250,
             price_kr: 250,
@@ -1032,7 +1029,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         },
         {
             id: crypto.randomUUID(),
-            event: events[0].id!,
+            event: events[0].slug!,
             nabla_group: "arrkom",
             nabla_group_capacity: 20,
             price_kr: 200,
@@ -1044,7 +1041,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         // Bedriftspresentasjon: free, default tier only
         {
             id: crypto.randomUUID(),
-            event: events[1].id!,
+            event: events[1].slug!,
             nabla_group: null,
             nabla_group_capacity: null,
             price_kr: 0,
@@ -1056,7 +1053,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         // Julebord: default 450, first-years 300
         {
             id: crypto.randomUUID(),
-            event: events[2].id!,
+            event: events[2].slug!,
             nabla_group: null,
             nabla_group_capacity: 50,
             price_kr: 450,
@@ -1067,7 +1064,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
         },
         {
             id: crypto.randomUUID(),
-            event: events[2].id!,
+            event: events[2].slug!,
             nabla_group: "kull25",
             nabla_group_capacity: 100,
             price_kr: 300,
@@ -1145,7 +1142,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
                     : defaultTier
 
             participants.push({
-                event: event.id!,
+                event: event.slug!,
                 username,
                 status: "registered",
                 registered_at: new Date(

@@ -15,7 +15,7 @@ CREATE TYPE nablaweb_vue.participant_status AS ENUM (
 
 -- nabla_events
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
-    id                          UUID                    PRIMARY KEY DEFAULT gen_random_uuid(),
+    slug                        TEXT                    PRIMARY KEY,
     start_time                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     end_time                    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     location                    TEXT                    NOT NULL DEFAULT '',
@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
     registration_required       BOOLEAN                 NOT NULL DEFAULT true,
     organiser                   TEXT                    NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     event_photo                 TEXT                    NOT NULL DEFAULT '',
-    slug                        TEXT                    NOT NULL UNIQUE,
     global_registration_limit   INTEGER                 NOT NULL DEFAULT 0,
     recurrent_end_date          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     created_at                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -67,7 +66,7 @@ COMMENT ON COLUMN nablaweb_vue.nabla_events.slug IS 'URL-facing identifier for t
 
 -- nabla_events_translations
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_translations (
-    event           UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event           TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     language        TEXT NOT NULL CHECK (language IN ('nb', 'en')),
     title           TEXT NOT NULL DEFAULT '',
     description     TEXT NOT NULL DEFAULT '',
@@ -110,7 +109,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_translations IS 'Per-language title/d
 -- If there is no difference in price between groupes group is set to NULL and the default is shown
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    event                 UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event                 TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     price_kr              INTEGER NOT NULL DEFAULT 0,
     nabla_group           TEXT REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     nabla_group_capacity  INTEGER,
@@ -159,7 +158,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/c
 
 -- nabla_events_participants
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
-    event                UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event                TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     username             TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     registration_tier    UUID REFERENCES nablaweb_vue.nabla_events_registrations(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     status               nablaweb_vue.participant_status NOT NULL DEFAULT 'registered',
@@ -195,14 +194,63 @@ CREATE POLICY "Admins can edit participant lists"
         )
     );
 
--- Needs adding later: users registering/unregistering themselves,
--- e.g. `USING ((SELECT auth.uid()) = (SELECT supabase_id FROM nabla_users WHERE username = nabla_events_participants.username))`
+CREATE POLICY "Users can register themselves"
+    ON nablaweb_vue.nabla_events_participants
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (
+        status = 'registered'
+        -- stops people back-dating themselves in the waiting list order
+        AND registered_at = now()
+        -- only for yourself
+        AND EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabla_users u
+            WHERE u.username = nablaweb_vue.nabla_events_participants.username
+              AND u.supabase_id = (SELECT auth.uid())
+        )
+        -- under a tier of this event you may use, while registration is open
+        AND EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabla_events_registrations r
+            WHERE r.id = nablaweb_vue.nabla_events_participants.registration_tier
+              AND r.event = nablaweb_vue.nabla_events_participants.event
+              AND now() BETWEEN r.registration_start AND r.registration_end
+              AND (
+                  r.nabla_group IS NULL
+                  OR EXISTS (
+                      SELECT 1 FROM nablaweb_vue.nabla_group_members m
+                      WHERE m."group" = r.nabla_group
+                        AND m."user" = nablaweb_vue.nabla_events_participants.username
+                        AND m.is_active
+                  )
+              )
+        )
+    );
+
+CREATE POLICY "Users can unregister themselves"
+    ON nablaweb_vue.nabla_events_participants
+    FOR DELETE
+    TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1 FROM nablaweb_vue.nabla_users u
+            WHERE u.username = nablaweb_vue.nabla_events_participants.username
+              AND u.supabase_id = (SELECT auth.uid())
+        )
+        AND (
+            nablaweb_vue.nabla_events_participants.registration_tier IS NULL
+            OR EXISTS (
+                SELECT 1 FROM nablaweb_vue.nabla_events_registrations r
+                WHERE r.id = nablaweb_vue.nabla_events_participants.registration_tier
+                  AND now() <= r.deregistration_end
+            )
+        )
+    );
 
 COMMENT ON TABLE nablaweb_vue.nabla_events_participants IS 'Users registered/attending a given event';
 
 -- nabla_events_owner_groups
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_owner_groups (
-    event               UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event               TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     organizing_group    TEXT NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (event, organizing_group)
 );
@@ -238,7 +286,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_owner_groups IS 'Additional groups co
 
 -- nabla_events_owner_individuals
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_owner_individuals (
-    event       UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event       TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     username    TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (event, username)
 );
@@ -276,7 +324,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_owner_individuals IS 'Individual user
 -- nabla_events_comments
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_comments (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    event        UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event        TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     username     TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     comment      TEXT NOT NULL DEFAULT '',
     created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
@@ -316,7 +364,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_comments IS 'Comments left on an even
 
 -- nabla_events_reactions
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_reactions (
-    event       UUID NOT NULL REFERENCES nablaweb_vue.nabla_events(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    event       TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     username    TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
     reaction    TEXT NOT NULL DEFAULT '',
     PRIMARY KEY (event, username, reaction)
