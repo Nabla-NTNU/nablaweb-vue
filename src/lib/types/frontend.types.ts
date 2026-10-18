@@ -95,7 +95,7 @@ export type Event = {
     endTime?: Date
     location?: string
     eventType: EventType
-    slug?: string
+    slug: string
     image?: URL
     link?: URL
     requiresRegistration: boolean
@@ -116,6 +116,9 @@ export type Event = {
 }
 
 export type RegistrationInfo = {
+    id: string
+    groupId?: string // Undefined -> default tier
+    groupName?: string
     registrationStart: Date
     registrationEnd: Date
     deregistrationEnd: Date

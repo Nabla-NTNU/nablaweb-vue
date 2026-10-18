@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabaseClient"
-import { RegistrationInfo, NablaClass } from "@/lib/types/frontend.types"
+import { RegistrationInfo } from "@/lib/types/frontend.types"
+import { useUser } from "@/composables/useNablaUser"
+import { useAuth } from "@/composables/useAuth"
 import {
     Ref,
     ref,
@@ -9,13 +11,12 @@ import {
     toValue,
     watch,
 } from "vue"
-import { useAuth } from "@/composables/useAuth"
 
 type RawRegistrationTier = {
     id: string
     price_kr: number
-    class: string | null
-    class_capacity: number | null
+    nabla_group: { id: string; name: string } | null
+    nabla_group_capacity: number | null
     payment_end: string | null
     registration_start: string
     registration_end: string
@@ -23,11 +24,13 @@ type RawRegistrationTier = {
 }
 
 export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
-    const userData = useAuth()
+    const { username } = useAuth()
+    const userData = username.value ? useUser(username.value) : undefined
+
     const rawTiers: Ref<RawRegistrationTier[]> = ref([])
     const error: Ref<boolean> = ref(false)
 
-    async function fetchClasses() {
+    async function fetchTiers() {
         try {
             const { data, error: supabaseError } = await supabase
                 .schema("nablaweb_vue")
@@ -36,8 +39,11 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
                     `
                     id,
                     price_kr,
-                    class,
-                    class_capacity,
+                    nabla_group: nabla_groups!nabla_group (
+                        id,
+                        name
+                    ),
+                    nabla_group_capacity,
                     payment_end,
                     registration_start,
                     registration_end,
@@ -54,75 +60,87 @@ export function useEventRegistration(eventId: MaybeRefOrGetter<string>) {
         }
     }
 
-    const allTiers = computed<Map<NablaClass | "default", RegistrationInfo>>(
-        () => {
-            const map = new Map<NablaClass | "default", RegistrationInfo>()
-            for (const tier of rawTiers.value) {
-                map.set(((tier.class as NablaClass) || null) ?? "default", {
-                    allocatedPlaces: tier.class_capacity ?? undefined,
-                    paymentEnd: tier.payment_end
-                        ? new Date(tier.payment_end)
-                        : undefined,
-                    registrationStart: new Date(tier.registration_start),
-                    registrationEnd: new Date(tier.registration_end),
-                    deregistrationEnd: new Date(tier.deregistration_end),
-                    price: tier.price_kr,
-                })
-            }
-            return map
-        },
+    function toRegistrationInfo(tier: RawRegistrationTier): RegistrationInfo {
+        return {
+            id: tier.id,
+            groupId: tier.nabla_group?.id,
+            groupName: tier.nabla_group?.name,
+            allocatedPlaces: tier.nabla_group_capacity ?? undefined,
+            paymentEnd: tier.payment_end
+                ? new Date(tier.payment_end)
+                : undefined,
+            registrationStart: new Date(tier.registration_start),
+            registrationEnd: new Date(tier.registration_end),
+            deregistrationEnd: new Date(tier.deregistration_end),
+            price: tier.price_kr,
+        }
+    }
+
+    const allTiers = computed<RegistrationInfo[]>(() =>
+        rawTiers.value.map(toRegistrationInfo),
     )
 
-    const myTier = computed<RawRegistrationTier | undefined>(() => {
-        return (
-            rawTiers.value.find((t) => t.class === userData.userClass.value) ??
-            rawTiers.value.find((t) => t.class === null)
-        )
+    // Tier everyone can use
+    const defaultTier = computed<RegistrationInfo | undefined>(() => {
+        const tier = rawTiers.value.find((t) => t.nabla_group === null)
+        return tier ? toRegistrationInfo(tier) : undefined
     })
 
-    const myRegistrationInfo = computed<RegistrationInfo | undefined>(() =>
-        myTier.value
-            ? allTiers.value.get(
-                  ((myTier.value.class as NablaClass) || null) ?? "default",
-              )
-            : undefined,
-    )
+    const eligibleTiers = computed<RegistrationInfo[]>(() => {
+        const myGroupIds = new Set(
+            userData?.user.value?.memberOf?.map((g) => g.id) ?? [],
+        )
+        return rawTiers.value
+            .filter(
+                (t) =>
+                    t.nabla_group !== null && myGroupIds.has(t.nabla_group.id),
+            )
+            .map(toRegistrationInfo)
+    })
 
-    async function register() {
-        if (
-            !userData.isAuthenticated.value ||
-            userData.username.value == undefined ||
-            !userData
-        ) {
-            console.log("Not allowed!")
-            return
+    // True while the user's group memberships are still loading, so the UI
+    // does not display just the default tier for a moment
+    const loadingGroups = computed(() => userData?.isLoading.value ?? false)
+
+    async function register(tier: RegistrationInfo): Promise<boolean> {
+        if (!username.value) {
+            console.error(
+                "[useEventRegistration] Must be logged in to register",
+            )
+            return false
         }
 
         const { error: supabaseError } = await supabase
             .schema("nablaweb_vue")
             .from("nabla_events_participants")
             .insert({
-                event: eventId.toString(),
-                username: userData.username.value.toString(),
-                registration_tier: myTier.value?.id,
+                event: toValue(eventId),
+                username: username.value,
+                registration_tier: tier.id,
                 status: "registered",
-                // regristered_at gets set automatically by database
+                // registered_at gets set automatically by the database
             })
 
         if (supabaseError) {
-            console.log("supabase error")
+            console.error(
+                "[useEventRegistration] Error registering:",
+                supabaseError,
+            )
+            return false
         }
+        return true
     }
 
-    onMounted(fetchClasses)
-    watch(() => toValue(eventId), fetchClasses)
+    onMounted(fetchTiers)
+    watch(() => toValue(eventId), fetchTiers)
 
     return {
         allTiers,
-        myTier,
-        myRegistrationInfo,
+        defaultTier,
+        eligibleTiers,
+        loadingGroups,
         error,
         register,
-        refresh: fetchClasses,
+        refresh: fetchTiers,
     }
 }

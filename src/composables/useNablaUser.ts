@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient"
 import { QueryData } from "@supabase/supabase-js"
 import { Ref, ref, onMounted } from "vue"
-import { NablaUser, NablaGroup, GroupKind } from "@/lib/types/frontend.types"
+import { NablaUser, NablaGroup } from "@/lib/types/frontend.types"
 
 async function getUserData(username: string) {
     try {
@@ -15,7 +15,6 @@ async function getUserData(username: string) {
                 lastName: last_name,
                 profilePicture: profile_picture,
                 isActive: is_active,
-                class,
                 listEmail: list_email,
                 publicEmail: public_email,
                 ntnuEmail: ntnu_email,
@@ -49,13 +48,7 @@ async function getMembershipData(username: string) {
                 group: nabla_groups(
                     id,
                     name,
-                    kind,
-                    logo,
                     mailList: mail_list,
-                    leaderMail: leader_mail,
-                    leader,
-                    about,
-                    groupPhoto: group_photo,
                     dateBegan: date_began,
                     isActive: is_active
                 )
@@ -91,7 +84,6 @@ export function useUser(username: string) {
                     ? new URL(userData.profilePicture)
                     : undefined,
                 isActive: userData.isActive,
-                class: userData.class,
                 memberOf: [],
                 ntnuEmail: userData.ntnuEmail,
                 listEmail: userData.listEmail,
@@ -122,15 +114,7 @@ export function useUser(username: string) {
                 const group: NablaGroup = {
                     id: data.id,
                     name: data.name,
-                    kind:
-                        data.kind in GroupKind
-                            ? (data.kind as GroupKind)
-                            : undefined, // Will fail silently for unknown GroupKinds
-                    logo: new URL(data.logo),
                     mailList: data.mailList,
-                    leader: { user: { username: data.leader! } },
-                    about: data.about,
-                    groupPhoto: new URL(data.groupPhoto),
                     date: new Date(data.dateBegan),
                     isActive: data.isActive,
                 }
