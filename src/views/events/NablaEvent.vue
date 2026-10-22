@@ -53,13 +53,66 @@
     <!-- Photos take a while to load. Would be nice to show a pulsating svg while photoLoaded is false.-->
     <div class="mx-auto 2xl:flex">
         <div v-if="event" class="flex max-w-[1440px] flex-grow flex-col">
-            <div class="flex max-w-[500px] flex-grow flex-col pl-16 pt-4">
-                <img
-                    v-if="event?.image"
-                    onload="//photoLoaded = true"
-                    :src="event?.image.href"
-                    alt="Bilde av medlemmene i gruppen"
-                />
+            <div class="mx-auto flex flex-row gap-8">
+                <div
+                    class="flex w-full max-w-[500px] shrink-0 flex-grow pl-16 pt-4"
+                >
+                    <img
+                        v-if="event?.image"
+                        onload="//photoLoaded = true"
+                        :src="event?.image.href"
+                        alt="Bilde av medlemmene i gruppen"
+                    />
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex flex-1 pr-6">
+                        <div class="flex px-2 text-m-bold">
+                            Arrangementet starter:
+                        </div>
+                        <div class="flex">
+                            {{ event.startTime.toLocaleDateString("no") }}
+                        </div>
+                        <div class="flex px-2">
+                            {{ event.startTime.toLocaleTimeString("no") }}
+                        </div>
+                    </div>
+
+                    <div v-if="event.endTime" class="flex flex-1 pr-6">
+                        <div class="flex px-2 text-m-bold">
+                            Arrangementet slutter:
+                        </div>
+                        <div class="flex">
+                            {{ event.endTime.toLocaleDateString("no") }}
+                        </div>
+                        <div class="flex px-2">
+                            {{ event.endTime.toLocaleTimeString("no") }}
+                        </div>
+                    </div>
+
+                    <div class="flex flex-1 pr-6">
+                        <div class="text-m-bold">Sted:</div>
+                        <div class="px-2">{{ event.location }}</div>
+                    </div>
+
+                    <div
+                        class="flex shrink-0 flex-wrap justify-center gap-6 pl-16"
+                    >
+                        <div v-if="event.organizer">
+                            <h2
+                                class="group mb-4 flex items-center justify-center text-subtitle-2 font-semibold tracking-tight"
+                            >
+                                {{ t("arrangert_av") }}:
+                            </h2>
+                            <GroupCard
+                                v-for="organizer in event.organizer"
+                                :id="organizer.id"
+                                :key="organizer.id"
+                                :name="organizer.name"
+                                :logo="organizer.logo"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div
@@ -116,61 +169,46 @@
                         {{ event.participants.length }} /
                         {{ event.totalCapacity }}
                     </div>
-                </div>
 
-                <div class="flex-1 pr-6">Start Time: {{ event.startTime }}</div>
-                <div v-if="event.endTime" class="flex-1 pr-6">
-                    End Time: {{ event.endTime }}
-                </div>
-
-                <div v-if="event.owningPeople">
-                    <h2
-                        class="group mb-4 flex items-center text-subtitle-2 font-semibold tracking-tight"
+                    <button
+                        class="max-w-[200px] rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
+                        v-if="
+                            !event.participants
+                                .map((participant) => participant.user.username)
+                                .includes(username || '')
+                        "
+                        @click="registerDefault"
                     >
-                        {{ t("ansvarlige") }}:
-                    </h2>
-                    <div class="flex flex-wrap justify-center gap-6">
-                        <UserCard
-                            v-for="eventOwner in event.owningPeople"
-                            :key="eventOwner.username"
-                            :username="eventOwner.username"
-                            :first-name="eventOwner.firstName"
-                            :last-name="eventOwner.lastName"
-                            :profile-picture="eventOwner.profilePicture"
-                        />
-                    </div>
-                    {{ t("kontakt_arrangør") }}
+                        Register
+                    </button>
+
+                    <button
+                        class="max-w-[200px] rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
+                        v-else
+                        @click="unregisterAndRefresh"
+                    >
+                        Unregister
+                    </button>
                 </div>
             </div>
 
-            <button
-                v-if="
-                    !event.participants
-                        .map((participant) => participant.user.username)
-                        .includes(username || '')
-                "
-                @click="registerDefault"
-            >
-                Register
-            </button>
-
-            <button v-else @click="unregisterAndRefresh">Unregister</button>
-
-            <div v-if="event.organizer">
+            <div v-if="event.owningPeople.length > 0">
                 <h2
                     class="group mb-4 flex items-center text-subtitle-2 font-semibold tracking-tight"
                 >
-                    {{ t("arrangert_av") }}:
+                    {{ t("ansvarlige") }} :
                 </h2>
                 <div class="flex flex-wrap justify-center gap-6">
-                    <GroupCard
-                        v-for="organizer in event.organizer"
-                        :id="organizer.id"
-                        :key="organizer.id"
-                        :name="organizer.name"
-                        :logo="organizer.logo"
+                    <UserCard
+                        v-for="eventOwner in event.owningPeople"
+                        :key="eventOwner.username"
+                        :username="eventOwner.username"
+                        :first-name="eventOwner.firstName"
+                        :last-name="eventOwner.lastName"
+                        :profile-picture="eventOwner.profilePicture"
                     />
                 </div>
+                {{ t("kontakt_arrangør") }}
             </div>
         </div>
     </div>
