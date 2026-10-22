@@ -1,5 +1,8 @@
 <script setup lang="ts">
     import { useI18n } from "vue-i18n"
+
+    import NablaTable from "@/components/general/NablaTable.vue"
+
     const { t } = useI18n()
 </script>
 
@@ -9,6 +12,36 @@
             Webkoms Godegolf
         </h1>
         {{ t("introtekst") }}
+    </div>
+
+    <div style="float: right">
+        <NablaTable :column-titles="[t('stilling'), t('navn'), t('mail')]">
+            <tr>
+                <td>{{ t("alle") + " " + t("gruppeledere") }}</td>
+                <td>-</td>
+                <td>gruppeledere@nabla.no</td>
+            </tr>
+            <tr>
+                <td>{{ t("bnokonomi") }}</td>
+                <td>Martin Viken</td>
+                <td>bnokonomi@nabla.no</td>
+            </tr>
+            <tr>
+                <td>Eureka-{{ t("ansvarlig") }}</td>
+                <td>Mikkel Brastad</td>
+                <td>eureka@nabla.no</td>
+            </tr>
+        </NablaTable>
+    </div>
+
+    <div class="mx-10 my-4">
+        <div class="relative w-full min-w-[200px]">
+            <textarea
+                class="py-2.5 font-sans text-sm h-[850px] w-[850px] resize-none rounded-[10px] bg-white px-3 font-normal text-black outline-none transition-none focus:outline-none"
+                style="border: 6px solid #004677; box-sizing: border-box"
+                placeholder=" "
+            ></textarea>
+        </div>
     </div>
 </template>
 
