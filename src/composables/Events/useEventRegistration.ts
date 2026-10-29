@@ -1,5 +1,8 @@
 import { supabase } from "@/lib/supabaseClient"
-import { RegistrationInfo } from "@/lib/types/frontend.types"
+import {
+    EventParticipantStatus,
+    RegistrationInfo,
+} from "@/lib/types/frontend.types"
 import { useUser } from "@/composables/useNablaUser"
 import {
     Ref,
@@ -27,7 +30,6 @@ export function useEventRegistration(
     username: string,
 ) {
     const userData = useUser(username)
-
     const rawTiers: Ref<RawRegistrationTier[]> = ref([])
     const error: Ref<boolean> = ref(false)
 
@@ -77,16 +79,6 @@ export function useEventRegistration(
         }
     }
 
-    const allTiers = computed<RegistrationInfo[]>(() =>
-        rawTiers.value.map(toRegistrationInfo),
-    )
-
-    // Tier everyone can use
-    const defaultTier = computed<RegistrationInfo | undefined>(() => {
-        const tier = rawTiers.value.find((t) => t.nabla_group === null)
-        return tier ? toRegistrationInfo(tier) : undefined
-    })
-
     const eligibleTiers = computed<RegistrationInfo[]>(() => {
         const myGroupIds = new Set(
             userData?.user.value?.memberOf?.map((g) => g.id) ?? [],
@@ -98,62 +90,47 @@ export function useEventRegistration(
             )
             .map(toRegistrationInfo)
     })
-
     // True while the user's group memberships are still loading, so the UI
     // does not display just the default tier for a moment
     const loadingGroups = computed(() => userData?.isLoading.value ?? false)
 
-    async function register(username: string): Promise<boolean> {
-        const { error: supabaseError } = await supabase
+    async function register(): Promise<EventParticipantStatus | null> {
+        const { data, error: supabaseError } = await supabase
             .schema("nablaweb_vue")
-            .from("nabla_events_participants")
-            .insert({
-                event: toValue(slug),
-                username: username,
-                registration_tier: defaultTier.value?.id,
-                status: "registered",
-                // registered_at gets set automatically by the database
-            })
+            .rpc("register_for_event", { p_event: toValue(slug) })
 
         if (supabaseError) {
             console.error(
                 "[useEventRegistration] Error registering:",
-                supabaseError,
+                supabaseError.message,
+            )
+            return null
+        }
+        return data as EventParticipantStatus // "registered" or "waitlisted"
+    }
+
+    async function unregister(): Promise<boolean> {
+        const { error: supabaseError } = await supabase
+            .schema("nablaweb_vue")
+            .rpc("cancel_registration", { p_event: toValue(slug) })
+
+        if (supabaseError) {
+            console.error(
+                "[useEventRegistration] Error unregistering:",
+                supabaseError.message,
             )
             return false
         }
         return true
     }
 
-    async function unregister(): Promise<boolean> {
-        const { data, error: supabaseError } = await supabase
-            .schema("nablaweb_vue")
-            .from("nabla_events_participants")
-            .delete()
-            .eq("event", toValue(slug))
-            .eq("username", username)
-            .select()
-
-        if (supabaseError) {
-            console.error(
-                "[useEventRegistration] Error unregistering:",
-                supabaseError,
-            )
-            return false
-        }
-        // Nothing deleted means not registered, or past the deregistration deadline
-        return (data?.length ?? 0) > 0
-    }
-
     onMounted(fetchTiers)
     watch(() => toValue(slug), fetchTiers)
 
     return {
-        allTiers,
-        defaultTier,
         eligibleTiers,
-        loadingGroups,
         error,
+        loadingGroups,
         register,
         unregister,
         refresh: fetchTiers,

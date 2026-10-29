@@ -194,59 +194,134 @@ CREATE POLICY "Admins can edit participant lists"
         )
     );
 
-CREATE POLICY "Users can register themselves"
-    ON nablaweb_vue.nabla_events_participants
-    FOR INSERT
-    TO authenticated
-    WITH CHECK (
-        status = 'registered'
-        -- stops people back-dating themselves in the waiting list order
-        AND registered_at = now()
-        -- only for yourself
-        AND EXISTS (
-            SELECT 1 FROM nablaweb_vue.nabla_users u
-            WHERE u.username = nablaweb_vue.nabla_events_participants.username
-              AND u.supabase_id = (SELECT auth.uid())
-        )
-        -- under a tier of this event you may use, while registration is open
-        AND EXISTS (
-            SELECT 1 FROM nablaweb_vue.nabla_events_registrations r
-            WHERE r.id = nablaweb_vue.nabla_events_participants.registration_tier
-              AND r.event = nablaweb_vue.nabla_events_participants.event
-              AND now() BETWEEN r.registration_start AND r.registration_end
-              AND (
-                  r.nabla_group IS NULL
-                  OR EXISTS (
-                      SELECT 1 FROM nablaweb_vue.nabla_group_members m
-                      WHERE m."group" = r.nabla_group
-                        AND m."user" = nablaweb_vue.nabla_events_participants.username
-                        AND m.is_active
-                  )
-              )
-        )
-    );
-
-CREATE POLICY "Users can unregister themselves"
-    ON nablaweb_vue.nabla_events_participants
-    FOR DELETE
-    TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM nablaweb_vue.nabla_users u
-            WHERE u.username = nablaweb_vue.nabla_events_participants.username
-              AND u.supabase_id = (SELECT auth.uid())
-        )
-        AND (
-            nablaweb_vue.nabla_events_participants.registration_tier IS NULL
-            OR EXISTS (
-                SELECT 1 FROM nablaweb_vue.nabla_events_registrations r
-                WHERE r.id = nablaweb_vue.nabla_events_participants.registration_tier
-                  AND now() <= r.deregistration_end
-            )
-        )
-    );
-
 COMMENT ON TABLE nablaweb_vue.nabla_events_participants IS 'Users registered/attending a given event';
+
+
+CREATE OR REPLACE FUNCTION nablaweb_vue.register_for_event(p_event TEXT)
+RETURNS nablaweb_vue.participant_status
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = nablaweb_vue
+AS $$
+DECLARE
+    v_username   TEXT;
+    v_limit      INTEGER;
+    v_tier       nabla_events_registrations%ROWTYPE;
+    v_status     participant_status;
+    v_registered INTEGER;
+    v_tier_taken INTEGER;
+BEGIN
+    SELECT username INTO v_username FROM nabla_users WHERE supabase_id = auth.uid();
+    IF v_username IS NULL THEN
+        RAISE EXCEPTION 'Not logged in';
+    END IF;
+
+    SELECT global_registration_limit INTO v_limit
+    FROM nabla_events
+    WHERE slug = p_event AND registration_required AND NOT is_hidden
+    FOR UPDATE;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Unknown event, or it does not take registrations';
+    END IF;
+
+    -- Open tiers the user qualifies for (default tier or one of their groups):
+    -- tiers with room first, then the cheapest
+    SELECT r.* INTO v_tier
+    FROM nabla_events_registrations r
+    WHERE r.event = p_event
+      AND now() BETWEEN r.registration_start AND r.registration_end
+      AND (
+          r.nabla_group IS NULL
+          OR EXISTS (
+              SELECT 1 FROM nabla_group_members m
+              WHERE m."group" = r.nabla_group AND m."user" = v_username AND m.is_active
+          )
+      )
+    ORDER BY
+        (r.nabla_group_capacity IS NOT NULL AND (
+            SELECT count(*) FROM nabla_events_participants p
+            WHERE p.registration_tier = r.id AND p.status = 'registered'
+        ) >= r.nabla_group_capacity),
+        r.price_kr,
+        (r.nabla_group IS NULL)
+    LIMIT 1;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Registration is not open for you';
+    END IF;
+
+    SELECT count(*) INTO v_registered FROM nabla_events_participants
+    WHERE event = p_event AND status = 'registered';
+
+    SELECT count(*) INTO v_tier_taken FROM nabla_events_participants
+    WHERE registration_tier = v_tier.id AND status = 'registered';
+
+    -- A global limit of 0 means no limit
+    IF (v_limit > 0 AND v_registered >= v_limit)
+       OR (v_tier.nabla_group_capacity IS NOT NULL
+           AND v_tier_taken >= v_tier.nabla_group_capacity) THEN
+        v_status := 'waitlisted';
+    ELSE
+        v_status := 'registered';
+    END IF;
+
+    -- A cancelled registration is reused. An active one is left alone.
+    INSERT INTO nabla_events_participants (event, username, registration_tier, status, registered_at)
+    VALUES (p_event, v_username, v_tier.id, v_status, now())
+    ON CONFLICT (event, username) DO UPDATE
+        SET registration_tier = EXCLUDED.registration_tier,
+            status = EXCLUDED.status,
+            registered_at = now()
+        WHERE nabla_events_participants.status = 'cancelled';
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Already registered';
+    END IF;
+
+    RETURN v_status;
+END;
+$$;
+
+
+
+
+CREATE OR REPLACE FUNCTION nablaweb_vue.cancel_registration(p_event TEXT)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = nablaweb_vue
+AS $$
+DECLARE
+    v_username TEXT;
+BEGIN
+    SELECT username INTO v_username FROM nabla_users WHERE supabase_id = auth.uid();
+    IF v_username IS NULL THEN
+        RAISE EXCEPTION 'Not logged in';
+    END IF;
+
+    UPDATE nabla_events_participants p
+    SET status = 'cancelled'
+    WHERE p.event = p_event
+      AND p.username = v_username
+      AND p.status IN ('registered', 'waitlisted')
+      AND (
+          p.registration_tier IS NULL
+          OR EXISTS (
+              SELECT 1 FROM nabla_events_registrations r
+              WHERE r.id = p.registration_tier AND now() <= r.deregistration_end
+          )
+      );
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Nothing to cancel (already unregistered, not registered, or past the deregistration deadline)';
+    END IF;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION nablaweb_vue.register_for_event(TEXT) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION nablaweb_vue.cancel_registration(TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION nablaweb_vue.register_for_event(TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION nablaweb_vue.cancel_registration(TEXT) TO authenticated;
+
+
 
 -- nabla_events_owner_groups
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_owner_groups (
