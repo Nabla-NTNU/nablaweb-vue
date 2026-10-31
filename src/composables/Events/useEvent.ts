@@ -55,6 +55,8 @@ type RawEvent = {
         }
     }[]
     participants: {
+        status: string
+        registered_at: string
         user: {
             username: string
             first_name: string
@@ -66,11 +68,8 @@ type RawEvent = {
             group: {
                 id: string
                 name: string
-                class: string | null
-            }
+            } | null
         } | null
-        status: string
-        registered_at: string
     }[]
 }
 
@@ -139,13 +138,15 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                             last_name,
                             profile_picture
                         ),
-                    registration_tier: nabla_events_registrations!nabla_events_participants_registration_tier_fkey (
-                        id,
-                        nabla_group,
-                        group: nabla_groups!nabla_events_registrations_nabla_group_fkey (
+                        registration_tier: nabla_events_registrations!nabla_events_participants_registration_tier_fkey (
                             id,
-                            name
+                            group: nabla_groups!nabla_events_registrations_nabla_group_fkey (
+                                id,
+                                name
+                            )
                         )
+                    )
+
 )
                     )
                 `,
@@ -183,11 +184,10 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                     ? new URL(p.user.profile_picture)
                     : undefined,
             },
-            registrationClass: group
+            registrationGroup: group
                 ? {
                       id: group.id,
                       name: group.name,
-                      class: group.class ?? undefined,
                   }
                 : undefined,
             registrationStatus: p.status as EventParticipantStatus,
@@ -199,6 +199,7 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
         if (!rawEvent.value) return undefined
         const raw = rawEvent.value
         const translation = pickTranslation(raw.translations)
+        const participants = raw.participants.map(mapParticipant)
 
         return {
             startTime: new Date(raw.start_time),
@@ -234,7 +235,18 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                 firstName: oi.user.first_name,
                 lastName: oi.user.last_name,
             })),
-            participants: raw.participants.map(mapParticipant),
+            registeredParticipants: participants.filter(
+                (p) =>
+                    p.registrationStatus === EventParticipantStatus.registered,
+            ),
+            cancelledParticipants: participants.filter(
+                (p) =>
+                    p.registrationStatus === EventParticipantStatus.cancelled,
+            ),
+            waitlistedParticipants: participants.filter(
+                (p) =>
+                    p.registrationStatus === EventParticipantStatus.waitlisted,
+            ),
             recurrenceEndDate:
                 raw.event_type === "recurrent"
                     ? new Date(raw.recurrent_end_date)

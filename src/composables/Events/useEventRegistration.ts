@@ -3,6 +3,7 @@ import {
     EventParticipantStatus,
     RegistrationInfo,
 } from "@/lib/types/frontend.types"
+import { useAuth } from "@/composables/useAuth"
 import { useUser } from "@/composables/useNablaUser"
 import {
     Ref,
@@ -25,12 +26,10 @@ type RawRegistrationTier = {
     deregistration_end: string
 }
 
-export function useEventRegistration(
-    slug: MaybeRefOrGetter<string>,
-    username: string,
-) {
-    const userData = useUser(username)
+export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
     const rawTiers: Ref<RawRegistrationTier[]> = ref([])
+    const { username } = useAuth()
+    const userData = username.value ? useUser(username.value) : undefined
     const error: Ref<boolean> = ref(false)
 
     async function fetchTiers() {

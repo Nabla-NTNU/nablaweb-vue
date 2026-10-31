@@ -4,32 +4,35 @@
     import { useI18n } from "vue-i18n"
     import { useEvent } from "@/composables/Events/useEvent.js"
     import { useEventRegistration } from "@/composables/Events/useEventRegistration"
+
     const { t } = useI18n()
     import UserCard from "@/components/general/UserCard.vue"
 
     import { useAuth } from "@/composables/useAuth.js"
     import GroupCard from "@/components/group-page/GroupCard.vue"
+    import { EventParticipantStatus } from "@/lib/types/frontend.types"
 
     const route = useRoute()
     const slug = computed(() => route.params.slug as string)
-    //bedriftspresentasjon-example-as || immball-2026 || julebord-2026
     const { event, refresh } = useEvent(slug)
-    async function registerDefault() {
-        if (username.value !== undefined) {
-            const { register } = useEventRegistration(slug, username.value)
-            await register(username.value)
-            refresh()
-        }
+    const { username, isAdmin } = useAuth()
+    const { register, unregister } = useEventRegistration(slug)
+
+    async function registerAndRefresh() {
+        await register()
+        await refresh()
     }
     async function unregisterAndRefresh() {
-        if (username.value !== undefined) {
-            const { unregister } = useEventRegistration(slug, username.value)
-            await unregister()
-            refresh()
-        }
+        await unregister()
+        await refresh()
     }
-
-    const { username, isAdmin } = useAuth()
+    const myParticipation = computed(() => {
+        if (!event.value || !username.value) return undefined
+        return [
+            ...event.value.registeredParticipants,
+            ...event.value.waitlistedParticipants,
+        ].find((p) => p.user.username === username.value)
+    })
 
     const userIsAdmin = computed(() => {
         if (isAdmin.value) {
@@ -127,7 +130,7 @@
                         </h1>
                         <RouterLink
                             v-if="userIsAdmin"
-                            :to="`/arrangementer/${event.slug}/admin`"
+                            :to="`/arrangement/${event.slug}/admin`"
                             class="rounded-lg bg-primary px-4 py-2 text-center font-semibold text-white transition-all duration-300"
                             style="white-space: pre-line"
                         >
@@ -143,7 +146,7 @@
                         {{ event.body }}
                     </article>
                     <div v-if="event.requiresRegistration">
-                        <div v-if="event.participants">
+                        <div v-if="event.registeredParticipants">
                             <h2
                                 class="group mb-4 flex items-center text-subtitle-2 font-semibold tracking-tight"
                             >
@@ -151,7 +154,7 @@
                             </h2>
                             <div class="flex flex-wrap justify-center gap-6">
                                 <UserCard
-                                    v-for="eventParticipant in event.participants"
+                                    v-for="eventParticipant in event.registeredParticipants"
                                     :key="eventParticipant.user.username"
                                     :username="eventParticipant.user.username"
                                     :first-name="
@@ -166,29 +169,31 @@
                         </div>
 
                         Antall deltakere:
-                        {{ event.participants.length }} /
+                        {{ event.registeredParticipants.length }} /
                         {{ event.totalCapacity }}
                     </div>
+                    <template v-if="username">
+                        <button
+                            class="max-w-[200px] rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
+                            v-if="!myParticipation"
+                            @click="registerAndRefresh"
+                        >
+                            {{ t("registrer") }}
+                        </button>
 
-                    <button
-                        class="max-w-[200px] rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
-                        v-if="
-                            !event.participants
-                                .map((participant) => participant.user.username)
-                                .includes(username || '')
-                        "
-                        @click="registerDefault"
-                    >
-                        Register
-                    </button>
-
-                    <button
-                        class="max-w-[200px] rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
-                        v-else
-                        @click="unregisterAndRefresh"
-                    >
-                        Unregister
-                    </button>
+                        <button
+                            class="max-w-[200px] rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
+                            v-else
+                            @click="unregisterAndRefresh"
+                        >
+                            {{
+                                myParticipation.registrationStatus ===
+                                EventParticipantStatus.waitlisted
+                                    ? t("meld_av_venteliste")
+                                    : t("avregistrer")
+                            }}
+                        </button>
+                    </template>
                 </div>
             </div>
 
@@ -221,6 +226,9 @@ nb:
     ansvarlige: Ansvarlige
     kontakt_arrangør: Ta kontakt med arrangørene dersom du har noen spørsmål angående arrangementet!
     arrangert_av: "Arrangert av"
+    registrer: "Registrer"
+    avregistrer: "Avregistrer"
+    meld_av_venteliste: "Fjern fra venteliste"
 
 en:
     adminpanel: "Secret Button \n (Admin page)"
@@ -228,4 +236,7 @@ en:
     ansvarlige: Organizers
     kontakt_arrangør: Contact the organizers if you have any questions about the event!
     arrangert_av: "Organized by"
+    registrer: "Register"
+    avregistrer: "Unregister"
+    venteliste: "Leave waiting list"
 </i18n>

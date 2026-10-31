@@ -106,7 +106,9 @@ export type Event = {
     reactions: Reaction[]
     owningGroups: NablaSubGroup[]
     owningPeople: NablaUser[]
-    participants: EventParticipant[]
+    registeredParticipants: EventParticipant[]
+    cancelledParticipants: EventParticipant[]
+    waitlistedParticipants: EventParticipant[]
     title: string
     ingress?: string
     body: string
@@ -162,7 +164,7 @@ export enum EventParticipantStatus {
 
 export type EventParticipant = {
     user: NablaUser
-    registrationClass?: NablaClass
-    registrationStatus: string
+    registrationGroup?: NablaGroup
+    registrationStatus: EventParticipantStatus
     registrationDate: Date
 }
