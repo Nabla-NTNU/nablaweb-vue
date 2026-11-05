@@ -1,0 +1,1 @@
+<template>Adminside</template>

@@ -42,7 +42,7 @@ export type NablaUser = {
     lastName?: string
     profilePicture?: URL
     isActive?: boolean
-    class?: string
+    class?: NablaClass
     memberOf?: NablaGroup[]
     pastMemberOf?: NablaGroup[]
     ntnuEmail?: string
@@ -87,4 +87,84 @@ export type TrustedCategory = {
     displayName: string
     order: number
     areas: TrustedArea[]
+}
+
+export type Event = {
+    startTime: Date
+    endTime?: Date
+    location?: string
+    eventType: EventType
+    slug: string
+    image?: URL
+    link?: URL
+    requiresRegistration: boolean
+    organizer?: NablaSubGroup[]
+    totalCapacity?: number
+    hiddenIfUnavailable: boolean
+    registrationRules?: Map<string, RegistrationInfo> // string is group name
+    comments: EventComment[]
+    reactions: Reaction[]
+    owningGroups: NablaSubGroup[]
+    owningPeople: NablaUser[]
+    registeredParticipants: EventParticipant[]
+    cancelledParticipants: EventParticipant[]
+    waitlistedParticipants: EventParticipant[]
+    title: string
+    ingress?: string
+    body: string
+
+    recurrenceEndDate?: Date
+}
+
+export type RegistrationInfo = {
+    id: string
+    groupId?: string // Undefined -> default tier
+    groupName?: string
+    registrationStart: Date
+    registrationEnd: Date
+    deregistrationEnd: Date
+    paymentEnd?: Date
+    allocatedPlaces?: number
+    price: number
+}
+
+export enum EventType {
+    bedpress = "bedpress",
+    ordinary = "ordinary",
+    payment = "payment",
+    recurrent = "recurrent",
+    undefined = "undefined",
+}
+
+export type EventComment = {
+    user: NablaUser
+    text: string
+    reactions: Reaction[]
+}
+
+export type Reaction = {
+    user: NablaUser
+    reactionType: Emote
+}
+
+export enum Emote {
+    like,
+    dislike,
+    nabla,
+    heart,
+    angry,
+    laugh,
+}
+
+export enum EventParticipantStatus {
+    registered = "registered",
+    waitlisted = "waitlisted",
+    cancelled = "cancelled",
+}
+
+export type EventParticipant = {
+    user: NablaUser
+    registrationGroup?: NablaGroup
+    registrationStatus: EventParticipantStatus
+    registrationDate: Date
 }

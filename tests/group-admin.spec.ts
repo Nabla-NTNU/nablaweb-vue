@@ -9,7 +9,7 @@ test("Groups are editable by an admin", async ({ page }) => {
     await page.getByRole("link", { name: "Profil" }).click()
     await expect(page).toHaveURL("http://localhost:5173/login")
     await page.getByRole("textbox", { name: "NTNU Brukernavn" }).fill("admin")
-    await page.getByRole("textbox", { name: "Passord" }).fill("admin")
+    await page.getByRole("textbox", { name: "Passord" }).fill("admin123")
     await page.locator("[type=submit]").click()
     await expect(page).toHaveURL("http://localhost:5173")
 

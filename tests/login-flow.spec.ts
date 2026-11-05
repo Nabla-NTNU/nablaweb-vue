@@ -7,7 +7,7 @@ test("Login by pressing the profile link", async ({ page }) => {
     await page.getByRole("link", { name: "Profil" }).click()
     await expect(page).toHaveURL("http://localhost:5173/login")
     await page.getByRole("textbox", { name: "NTNU Brukernavn" }).fill("user")
-    await page.getByRole("textbox", { name: "Passord" }).fill("user")
+    await page.getByRole("textbox", { name: "Passord" }).fill("user123")
     await page.locator("[type=submit]").click()
 
     // Make sure login is finished and have been forwarded back
