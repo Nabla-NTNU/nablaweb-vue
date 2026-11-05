@@ -716,8 +716,8 @@ for (const [groupId, entry] of Object.entries(groupEntries)) {
         })
     }
 
-    // Add 3 to 5 random members to this subgroup
-    for (let i = 0; i < 4; i++) {
+    // Addding users to subgroups
+    for (let i = 0; i < 19; i++) {
         const randomUser = getRandomElement(Object.keys(users))
         const pairKey = `${randomUser}:${groupId}`
         if (!usedPairs.has(pairKey)) {
