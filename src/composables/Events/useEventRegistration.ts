@@ -78,6 +78,7 @@ export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
         }
     }
 
+    // For frontend
     const eligibleTiers = computed<RegistrationInfo[]>(() => {
         const myGroupIds = new Set(
             userData?.user.value?.memberOf?.map((g) => g.id) ?? [],
@@ -93,6 +94,7 @@ export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
     // does not display just the default tier for a moment
     const loadingGroups = computed(() => userData?.isLoading.value ?? false)
 
+    // Security definer handles logic for registering
     async function register(): Promise<EventParticipantStatus | null> {
         const { data, error: supabaseError } = await supabase
             .schema("nablaweb_vue")
