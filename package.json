@@ -5,7 +5,6 @@
     "type": "module",
     "scripts": {
         "postinstall": "node scripts/setup-env.ts",
-        "env:pull": "tsx scripts/setup-env.ts --force",
         "seed": "tsx supabase/seed.ts",
         "gen-types": "supabase gen types typescript --local > src/lib/types/database.types.ts",
         "dev": "vite",

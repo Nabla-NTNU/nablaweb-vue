@@ -9,19 +9,15 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - uses: supabase/setup-cli@v1
+    - uses: supabase/setup-cli@v3
+      with:
+        version: ^2
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Start supabase instance
       run: supabase start
-    - name: Write Supabase env file
-      run: |
-        {
-          echo "SUPABASE_URL=$(supabase status -o env | grep '^API_URL=' | cut -d '=' -f2- | tr -d '\"')"
-          echo "SUPABASE_SERVICE_ROLE_KEY=$(supabase status -o env | grep '^SERVICE_ROLE_KEY=' | cut -d '=' -f2- | tr -d '\"')"
-        } > .env
     - name: Seed database
       run: npm run seed
     - name: Run Playwright tests

@@ -3,7 +3,6 @@ import { createClient, UserResponse } from "@supabase/supabase-js"
 import pLimit from "p-limit"
 import type { Database } from "../src/lib/types/database.types.js"
 import { randomInt } from "crypto"
-import "dotenv/config"
 
 type NablaUser = Database["nablaweb_vue"]["Tables"]["nabla_users"]["Insert"]
 type NablaGroup = Database["nablaweb_vue"]["Tables"]["nabla_groups"]["Insert"]
@@ -21,19 +20,13 @@ type NablaEventRegistrationTier =
 type NablaEventParticipant =
     Database["nablaweb_vue"]["Tables"]["nabla_events_participants"]["Insert"]
 
-if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.error(
-        "Missing SUPABASE_SERVICE_ROLE_KEY. Try running npm run env:pull.",
-    )
-    process.exit(1)
-}
 type NablaGroupDict = {
     [id: string]: { group: NablaGroup; subgroup: NablaSubgroup }
 }
 
 const supabase = createClient<Database>(
-    process.env.SUPABASE_URL ?? "http://127.0.0.1:54321",
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    "http://127.0.0.1:54321",
+    "sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz",
 )
 
 const faker = new Faker({
