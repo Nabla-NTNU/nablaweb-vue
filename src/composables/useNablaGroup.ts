@@ -6,7 +6,7 @@ import {
     GroupKind,
 } from "@/lib/types/frontend.types"
 
-export function makeURL(str: string): URL | undefined {
+function makeURL(str: string): URL | undefined {
     try {
         return new URL(str)
     } catch (error) {

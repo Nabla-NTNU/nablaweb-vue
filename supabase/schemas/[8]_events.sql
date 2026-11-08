@@ -3,7 +3,6 @@ CREATE TYPE nablaweb_vue.event_type AS ENUM (
     'ordinary',
     'bedpress',
     'payment',
-    'recurrent',
     'undefined'
 );
 
@@ -16,18 +15,25 @@ CREATE TYPE nablaweb_vue.participant_status AS ENUM (
 -- nabla_events
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events (
     slug                        TEXT                    PRIMARY KEY,
-    start_time                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    end_time                    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    start_time                  TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_time                    TIMESTAMP WITH TIME ZONE NOT NULL  CHECK (end_time >= start_time),
     location                    TEXT                    NOT NULL DEFAULT '',
     event_type                  nablaweb_vue.event_type NOT NULL DEFAULT 'ordinary',
     is_hidden                   BOOLEAN                 NOT NULL DEFAULT false,
     registration_required       BOOLEAN                 NOT NULL DEFAULT true,
     organiser                   TEXT                    NOT NULL REFERENCES nablaweb_vue.nabla_groups(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    event_photo                 TEXT                    NOT NULL DEFAULT '',
-    global_registration_limit   INTEGER                 NOT NULL DEFAULT 0,
-    recurrent_end_date          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    created_at                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-    CHECK (end_time > start_time)
+    event_photo_url             TEXT                    NOT NULL DEFAULT '',
+    total_registration_limit    INTEGER                 NOT NULL DEFAULT 0,
+    nb_title                    TEXT                    NOT NULL DEFAULT '',
+    nb_description              TEXT                    NOT NULL DEFAULT '',
+    nb_body_text                TEXT                    NOT NULL DEFAULT '',
+    en_title                    TEXT                    NOT NULL DEFAULT '',
+    en_description              TEXT                    NOT NULL DEFAULT '',
+    en_body_text                TEXT                    NOT NULL DEFAULT '',
+    nn_title                    TEXT                    NOT NULL DEFAULT '',
+    nn_description              TEXT                    NOT NULL DEFAULT '',
+    nn_body_text                TEXT                    NOT NULL DEFAULT '',
+    created_at                  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
     -- Prikker, gjør dette i nabla_user? beta-feature
 );
 
@@ -64,50 +70,11 @@ CREATE POLICY "Admins can edit events"
 COMMENT ON TABLE nablaweb_vue.nabla_events IS 'Events organised by Nabla groups';
 COMMENT ON COLUMN nablaweb_vue.nabla_events.slug IS 'URL-facing identifier for the event, e.g. used at /events/<slug>';
 
--- nabla_events_translations
-CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_translations (
-    event           TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
-    language        TEXT NOT NULL CHECK (language IN ('nb', 'en')),
-    title           TEXT NOT NULL DEFAULT '',
-    description     TEXT NOT NULL DEFAULT '',
-    body_text       TEXT NOT NULL DEFAULT '',
-    PRIMARY KEY (event, language)
-);
 
-ALTER TABLE nablaweb_vue.nabla_events_translations ENABLE ROW LEVEL SECURITY;
-
-
-CREATE POLICY "Everyone can view event translations"
-    ON nablaweb_vue.nabla_events_translations
-    FOR SELECT
-    TO anon, authenticated, service_role
-    USING (true);
-
-CREATE POLICY "Admins can edit event translations"
-    ON nablaweb_vue.nabla_events_translations
-    FOR ALL
-    TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM nablaweb_vue.nabladmins AS a
-            JOIN nablaweb_vue.nabla_users AS u ON u.username = a."user"
-            WHERE u.supabase_id = (SELECT auth.uid())
-        )
-    )
-    WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM nablaweb_vue.nabladmins AS a
-            JOIN nablaweb_vue.nabla_users AS u ON u.username = a."user"
-            WHERE u.supabase_id = (SELECT auth.uid())
-        )
-    );
-
-COMMENT ON TABLE nablaweb_vue.nabla_events_translations IS 'Per-language title/description/body for an event';
-
--- nabla_events_registrations
+-- nabla_events_quotas
 -- There is one table for each group per event with group pricing
 -- If there is no difference in price between groupes group is set to NULL and the default is shown
-CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
+CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_quotas (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event                 TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     price_kr              INTEGER NOT NULL DEFAULT 0,
@@ -118,25 +85,26 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_registrations (
     registration_end      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     deregistration_end    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
 
+
     CHECK (price_kr = 0 OR payment_end is NOT NULL)
 
 );
 
-CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_registrations (event, nabla_group)
+CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_quotas (event, nabla_group)
     WHERE nabla_group IS NOT NULL;
-CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_registrations (event)
+CREATE UNIQUE INDEX ON nablaweb_vue.nabla_events_quotas (event)
     WHERE nabla_group IS NULL;
 
-ALTER TABLE nablaweb_vue.nabla_events_registrations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE nablaweb_vue.nabla_events_quotas ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Everyone can view registration windows"
-    ON nablaweb_vue.nabla_events_registrations
+    ON nablaweb_vue.nabla_events_quotas
     FOR SELECT
     TO anon, authenticated, service_role
     USING (true);
 
 CREATE POLICY "Admins can edit registration windows"
-    ON nablaweb_vue.nabla_events_registrations
+    ON nablaweb_vue.nabla_events_quotas
     FOR ALL
     TO authenticated
     USING (
@@ -154,14 +122,14 @@ CREATE POLICY "Admins can edit registration windows"
         )
     );
 
-COMMENT ON TABLE nablaweb_vue.nabla_events_registrations IS 'Registration open/close windows per group for an event';
+COMMENT ON TABLE nablaweb_vue.nabla_events_quotas IS 'Registration open/close windows per group for an event';
 
 -- nabla_events_participants
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
     event                TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     username             TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
-    registration_tier    UUID REFERENCES nablaweb_vue.nabla_events_registrations(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    status               nablaweb_vue.participant_status NOT NULL DEFAULT 'registered',
+    quota                UUID REFERENCES nablaweb_vue.nabla_events_quotas(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    status               nablaweb_vue.participant_status NOT NULL DEFAULT 'registered', 
     registered_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     PRIMARY KEY (event, username)
 );
@@ -206,7 +174,7 @@ AS $$
 DECLARE
     v_username   TEXT;
     v_limit      INTEGER;
-    v_tier       nabla_events_registrations%ROWTYPE;
+    v_tier       nabla_events_quotas%ROWTYPE;
     v_status     participant_status;
     v_registered INTEGER;
     v_tier_taken INTEGER;
@@ -216,7 +184,7 @@ BEGIN
         RAISE EXCEPTION 'Not logged in';
     END IF;
 
-    SELECT global_registration_limit INTO v_limit
+    SELECT total_registration_limit INTO v_limit
     FROM nabla_events
     WHERE slug = p_event AND registration_required AND NOT is_hidden
     FOR UPDATE;
@@ -227,7 +195,7 @@ BEGIN
     -- Open tiers the user qualifies for (default tier or one of their groups):
     -- tiers with room first, then the cheapest
     SELECT r.* INTO v_tier
-    FROM nabla_events_registrations r
+    FROM nabla_events_quotas r
     WHERE r.event = p_event
       AND now() BETWEEN r.registration_start AND r.registration_end
       AND (
@@ -240,7 +208,7 @@ BEGIN
     ORDER BY
         (r.nabla_group_capacity IS NOT NULL AND (
             SELECT count(*) FROM nabla_events_participants p
-            WHERE p.registration_tier = r.id AND p.status = 'registered'
+            WHERE p.quota = r.id AND p.status = 'registered'
         ) >= r.nabla_group_capacity),
         r.price_kr,
         (r.nabla_group IS NULL)
@@ -253,9 +221,9 @@ BEGIN
     WHERE event = p_event AND status = 'registered';
 
     SELECT count(*) INTO v_tier_taken FROM nabla_events_participants
-    WHERE registration_tier = v_tier.id AND status = 'registered';
+    WHERE quota = v_tier.id AND status = 'registered';
 
-    -- A global limit of 0 means no limit
+    -- A total limit of 0 means no limit
     IF (v_limit > 0 AND v_registered >= v_limit)
        OR (v_tier.nabla_group_capacity IS NOT NULL
            AND v_tier_taken >= v_tier.nabla_group_capacity) THEN
@@ -265,10 +233,10 @@ BEGIN
     END IF;
 
     -- A cancelled registration is reused. An active one is left alone.
-    INSERT INTO nabla_events_participants (event, username, registration_tier, status, registered_at)
+    INSERT INTO nabla_events_participants (event, username, quota, status, registered_at)
     VALUES (p_event, v_username, v_tier.id, v_status, now())
     ON CONFLICT (event, username) DO UPDATE
-        SET registration_tier = EXCLUDED.registration_tier,
+        SET quota = EXCLUDED.quota,
             status = EXCLUDED.status,
             registered_at = now()
         WHERE nabla_events_participants.status = 'cancelled';
@@ -303,10 +271,10 @@ BEGIN
       AND p.username = v_username
       AND p.status IN ('registered', 'waitlisted')
       AND (
-          p.registration_tier IS NULL
+          p.quota IS NULL
           OR EXISTS (
-              SELECT 1 FROM nabla_events_registrations r
-              WHERE r.id = p.registration_tier AND now() <= r.deregistration_end
+              SELECT 1 FROM nabla_events_quotas r
+              WHERE r.id = p.quota AND now() <= r.deregistration_end
           )
       );
 
@@ -407,7 +375,6 @@ CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_comments (
 
 ALTER TABLE nablaweb_vue.nabla_events_comments ENABLE ROW LEVEL SECURITY;
 
-
 CREATE POLICY "Everyone can view comments"
     ON nablaweb_vue.nabla_events_comments
     FOR SELECT
@@ -441,7 +408,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_comments IS 'Comments left on an even
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_reactions (
     event       TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     username    TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
-    reaction    TEXT NOT NULL DEFAULT '',
+    reaction    CHARACTER NOT NULL DEFAULT '',
     PRIMARY KEY (event, username, reaction)
 );
 
@@ -479,7 +446,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_reactions IS 'Emoji/reaction response
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_comment_reactions (
     comment     UUID NOT NULL REFERENCES nablaweb_vue.nabla_events_comments(id) ON UPDATE CASCADE ON DELETE CASCADE,
     username    TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
-    reaction    TEXT NOT NULL DEFAULT '',
+    reaction    CHARACTER NOT NULL DEFAULT '',
     PRIMARY KEY (comment, username, reaction)
 );
 

@@ -15,7 +15,15 @@ import {
     watch,
 } from "vue"
 import { useI18n } from "vue-i18n"
-import { makeURL } from "../useNablaGroup"
+
+function makeURL(str: string): URL | undefined {
+    try {
+        return new URL(str)
+    } catch (error) {
+        console.log(`[useNablaEvent] Invalid URL: ${str}`, error)
+        return undefined
+    }
+}
 
 type RawEvent = {
     start_time: string
@@ -26,8 +34,7 @@ type RawEvent = {
     registration_required: boolean
     event_photo: string
     slug: string
-    global_registration_limit: number
-    recurrent_end_date: string
+    total_registration_limit: number
     translations: {
         language: "nb" | "en"
         title: string
@@ -63,7 +70,7 @@ type RawEvent = {
             last_name: string
             profile_picture: string
         }
-        registration_tier: {
+        quota: {
             id: string
             group: {
                 id: string
@@ -99,10 +106,9 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                     event_type,
                     is_hidden,
                     registration_required,
-                    event_photo,
+                    event_photo_url,
                     slug,
-                    global_registration_limit,
-                    recurrent_end_date,
+                    total_registration_limit ,
                     translations: nabla_events_translations (
                         language,
                         title,
@@ -138,9 +144,9 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                             last_name,
                             profile_picture
                         ),
-                        registration_tier: nabla_events_registrations!nabla_events_participants_registration_tier_fkey (
+                        registration_quota: nabla_events_quotas!nabla_events_participants_registration_quota_fkey (
                             id,
-                            group: nabla_groups!nabla_events_registrations_nabla_group_fkey (
+                            group: nabla_groups!nabla_events_quotas_nabla_group_fkey (
                                 id,
                                 name
                             )
@@ -173,7 +179,7 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
     function mapParticipant(
         p: RawEvent["participants"][number],
     ): EventParticipant {
-        const group = p.registration_tier?.group
+        const group = p.registration_quota?.group
 
         return {
             user: {
@@ -184,7 +190,7 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                     ? new URL(p.user.profile_picture)
                     : undefined,
             },
-            registrationGroup: group
+            quota: group
                 ? {
                       id: group.id,
                       name: group.name,
@@ -210,7 +216,7 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
             requiresRegistration: raw.registration_required,
             image: raw.event_photo ? new URL(raw.event_photo) : undefined,
             slug: raw.slug,
-            totalCapacity: raw.global_registration_limit,
+            totalCapacity: raw.total_registration_limit,
             organizer: raw.organiser_group
                 ? [
                       {
@@ -247,10 +253,6 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                 (p) =>
                     p.registrationStatus === EventParticipantStatus.waitlisted,
             ),
-            recurrenceEndDate:
-                raw.event_type === "recurrent"
-                    ? new Date(raw.recurrent_end_date)
-                    : undefined,
         }
     })
 

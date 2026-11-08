@@ -101,22 +101,17 @@ export type Event = {
     organizer?: NablaSubGroup[]
     totalCapacity?: number
     hiddenIfUnavailable: boolean
-    registrationRules?: Map<string, RegistrationInfo> // string is group name
+    registrationRules?: Map<string, Quota> // string is group name
     comments: EventComment[]
     reactions: Reaction[]
     owningGroups: NablaSubGroup[]
     owningPeople: NablaUser[]
-    registeredParticipants: EventParticipant[]
-    cancelledParticipants: EventParticipant[]
-    waitlistedParticipants: EventParticipant[]
     title: string
     ingress?: string
     body: string
-
-    recurrenceEndDate?: Date
 }
 
-export type RegistrationInfo = {
+export type Quota = {
     id: string
     groupId?: string // Undefined -> default tier
     groupName?: string
@@ -164,7 +159,7 @@ export enum EventParticipantStatus {
 
 export type EventParticipant = {
     user: NablaUser
-    registrationGroup?: NablaGroup
+    quota?: Quota
     registrationStatus: EventParticipantStatus
     registrationDate: Date
 }

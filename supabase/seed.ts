@@ -13,10 +13,8 @@ type NablaGroupMember =
     Database["nablaweb_vue"]["Tables"]["nabla_group_members"]["Insert"]
 type NablaUserDict = { [username: string]: NablaUser }
 type NablaEvent = Database["nablaweb_vue"]["Tables"]["nabla_events"]["Insert"]
-type NablaEventTranslation =
-    Database["nablaweb_vue"]["Tables"]["nabla_events_translations"]["Insert"]
-type NablaEventRegistrationTier =
-    Database["nablaweb_vue"]["Tables"]["nabla_events_registrations"]["Insert"]
+type NablaEventQuota =
+    Database["nablaweb_vue"]["Tables"]["nabla_events_quotas"]["Insert"]
 type NablaEventParticipant =
     Database["nablaweb_vue"]["Tables"]["nabla_events_participants"]["Insert"]
 
@@ -887,44 +885,79 @@ console.log("Seeding Events...")
 if ((await tableRowCount("nabla_events")) > 0) {
     console.log("Events already seeded - skipping.")
 } else {
+    // Titles, descriptions and body texts now live directly on the event
+    // as nb_*, en_* and nn_* columns, so there is no translations table.
     const events: NablaEvent[] = [
         {
             slug: "immball-2026",
             event_type: "payment",
-            event_photo:
+            event_photo_url:
                 "https://nabla.no/media/uploads/content/nabla_under_gruppe_foto-004.jpg",
-            start_time: "2026-09-17T18:00:00+01:00",
-            end_time: "2026-09-17T23:59:00+01:00",
+            start_time: "2026-09-17T18:00:00+02:00",
+            end_time: "2026-09-17T23:59:00+02:00",
             location: "R1, Realfagbygget",
             registration_required: true,
             organiser: "arrkom",
-            global_registration_limit: 250,
+            total_registration_limit: 250,
             is_hidden: false,
+            nb_title: "Immatrikuleringsball",
+            nb_description:
+                "Finn frem finstasen og gjør dere klare for årets begivenhet i Nabla. Immball blir den 17. september på frimurerlogen",
+            nb_body_text: faker.lorem.paragraphs(2),
+            en_title: "Admissions ball",
+            en_description:
+                "Get ready for this year's event in Nabla. The Admissions ball will be held on September 17th at the Freemason's Lodge.",
+            en_body_text: faker.lorem.paragraphs(2),
+            nn_title: "Immatrikuleringsball",
+            nn_description:
+                "Finn fram finstasen og gjer deg klar for årets hending i Nabla. Immball blir den 17. september på frimurarlogen.",
+            nn_body_text: faker.lorem.paragraphs(2),
         },
         {
             slug: "bedriftspresentasjon-example-as",
             event_type: "bedpress",
-            event_photo: "https://nabla.no/media/uploads/content/bn201.jpg",
-            start_time: "2026-09-15T17:15:00+01:00",
-            end_time: "2026-09-15T19:00:00+01:00",
+            event_photo_url: "https://nabla.no/media/uploads/content/bn201.jpg",
+            start_time: "2026-09-15T17:15:00+02:00",
+            end_time: "2026-09-15T19:00:00+02:00",
             location: "KJEL21, Kjelhuset",
             registration_required: true,
             organiser: "bedkom",
-            global_registration_limit: 30,
+            total_registration_limit: 30,
             is_hidden: false,
+            nb_title: "Bedriftspresentasjon: Example AS",
+            nb_description: "Bli kjent med Example AS over pizza og mingling.",
+            nb_body_text: faker.lorem.paragraphs(2),
+            en_title: "Company presentation: Example AS",
+            en_description: "Get to know Example AS over pizza and mingling.",
+            en_body_text: faker.lorem.paragraphs(2),
+            nn_title: "Bedriftspresentasjon: Example AS",
+            nn_description: "Bli kjend med Example AS over pizza og mingling.",
+            nn_body_text: faker.lorem.paragraphs(2),
         },
         {
             slug: "julebohr-2026",
             event_type: "payment",
-            event_photo:
+            event_photo_url:
                 "https://nabla.no/media/uploads/com_pictures/HU5A1682.jpg",
             start_time: "2026-12-05T19:00:00+01:00",
             end_time: "2026-12-05T23:00:00+01:00",
             location: "Realfagkantina, Realfagbygget",
             registration_required: true,
             organiser: "arrkom",
-            global_registration_limit: 100,
+            total_registration_limit: 100,
             is_hidden: false,
+            nb_title: "Julebohr",
+            nb_description:
+                "Årets julebohr i realfagkantina - god mat og godt selskap.",
+            nb_body_text: faker.lorem.paragraphs(3),
+            en_title: "Christmas dinner",
+            en_description:
+                "This year's Christmas dinner in the realfagkantina - good food and good company.",
+            en_body_text: faker.lorem.paragraphs(3),
+            nn_title: "Julebohr",
+            nn_description:
+                "Årets julebohr i realfagkantina - god mat og godt selskap.",
+            nn_body_text: faker.lorem.paragraphs(3),
         },
     ]
 
@@ -932,71 +965,17 @@ if ((await tableRowCount("nabla_events")) > 0) {
         .schema("nablaweb_vue")
         .from("nabla_events")
         .upsert(events)
-    if (eventsError) console.error(eventsError)
-
-    const translations: NablaEventTranslation[] = [
-        {
-            event: events[0].slug!,
-            language: "nb",
-            title: "Immatrikuleringsball",
-            description:
-                "Finn frem finstasen og gjør dere klare for årets begivenhet i Nabla. Immball blir den 17. september på frimurerlogen",
-            body_text: faker.lorem.paragraphs(2),
-        },
-        {
-            event: events[0].slug!,
-            language: "en",
-            title: "Admissions ball",
-            description:
-                "Get ready for this year's event in Nabla. The Admissions ball will be held on September 17th at the Freemason's Lodge.",
-            body_text: faker.lorem.paragraphs(2),
-        },
-        {
-            event: events[1].slug!,
-            language: "nb",
-            title: "Bedriftspresentasjon: Example AS",
-            description: "Bli kjent med Example AS over pizza og mingling.",
-            body_text: faker.lorem.paragraphs(2),
-        },
-        {
-            event: events[1].slug!,
-            language: "en",
-            title: "Company presentation: Example AS",
-            description: "Get to know Example AS over pizza and mingling.",
-            body_text: faker.lorem.paragraphs(2),
-        },
-        {
-            event: events[2].slug!,
-            language: "nb",
-            title: "Julebohr",
-            description:
-                "Årets julebohr i realfagkantina - god mat og godt selskap.",
-            body_text: faker.lorem.paragraphs(3),
-        },
-        {
-            event: events[2].slug!,
-            language: "en",
-            title: "Christmas dinner",
-            description:
-                "This year's Christmas dinner in the realfagkantina - good food and good company.",
-            body_text: faker.lorem.paragraphs(3),
-        },
-    ]
-
-    const { error: translationsError } = await supabase
-        .schema("nablaweb_vue")
-        .from("nabla_events_translations")
-        .upsert(translations)
-    if (translationsError) {
-        console.error(translationsError)
+    if (eventsError) {
+        console.error(eventsError)
     } else {
-        console.log(`Seeded ${events.length} events with translations.`)
+        console.log(`Seeded ${events.length} events.`)
     }
 
-    console.log("Seeding Registration Tiers...")
-    // Tiers are keyed by group: a class (kull25) or a subgroup (arrkom).
-    // nabla_group: null is the default tier for anyone without a matching group.
-    const registrationTiers: NablaEventRegistrationTier[] = [
+    console.log("Seeding Event Quotas...")
+    // Quotas are keyed by group: a class (kull25) or a subgroup (arrkom).
+    // nabla_group: null is the default quota for anyone without a matching group.
+    // Note: price_kr > 0 requires payment_end (CHECK constraint).
+    const quotas: NablaEventQuota[] = [
         // Immball: default 350, first-years 250, ArrKom members 200
         {
             id: crypto.randomUUID(),
@@ -1031,7 +1010,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
             registration_end: "2027-12-14T23:59:00+02:00",
             deregistration_end: "2027-12-12T23:59:00+02:00",
         },
-        // Bedriftspresentasjon: free, default tier only
+        // Bedriftspresentasjon: free, default quota only
         {
             id: crypto.randomUUID(),
             event: events[1].slug!,
@@ -1068,14 +1047,14 @@ if ((await tableRowCount("nabla_events")) > 0) {
         },
     ]
 
-    const { error: registrationsError } = await supabase
+    const { error: quotasError } = await supabase
         .schema("nablaweb_vue")
-        .from("nabla_events_registrations")
-        .upsert(registrationTiers)
-    if (registrationsError) {
-        console.error(registrationsError)
+        .from("nabla_events_quotas")
+        .upsert(quotas)
+    if (quotasError) {
+        console.error(quotasError)
     } else {
-        console.log(`Seeded ${registrationTiers.length} registration tiers.`)
+        console.log(`Seeded ${quotas.length} event quotas.`)
     }
 
     console.log("Seeding Participants...")
@@ -1094,23 +1073,24 @@ if ((await tableRowCount("nabla_events")) > 0) {
     const participants: NablaEventParticipant[] = []
 
     for (const event of events) {
-        // Stay under the event's own limit
-        const limit = event.global_registration_limit ?? 0
+        // Stay under the event's own limit (0 means no limit)
+        const limit = event.total_registration_limit ?? 0
         const attendeeCount = Math.min(
             40,
             limit > 0 ? Math.floor(limit * 0.8) : 40,
             usernames.length,
         )
 
-        const eventTiers = registrationTiers.filter((t) => t.event === event.id)
-        const defaultTier = eventTiers.find((t) => !t.nabla_group)
+        // Events are keyed by slug now (there is no id column)
+        const eventQuotas = quotas.filter((q) => q.event === event.slug)
+        const defaultQuota = eventQuotas.find((q) => !q.nabla_group)
 
-        // Make sure every group-specific tier gets a few attendees,
+        // Make sure every group-specific quota gets a few attendees,
         // then fill the rest with random users
         const picked = new Set<string>()
-        for (const tier of eventTiers) {
-            if (!tier.nabla_group) continue
-            const members = membersByGroup.get(tier.nabla_group) ?? []
+        for (const quota of eventQuotas) {
+            if (!quota.nabla_group) continue
+            const members = membersByGroup.get(quota.nabla_group) ?? []
             for (const username of faker.helpers.arrayElements(
                 members,
                 Math.min(6, members.length),
@@ -1124,15 +1104,15 @@ if ((await tableRowCount("nabla_events")) > 0) {
 
         for (const username of picked) {
             // Register under a random one of the user's own groups that has a
-            // tier for this event, otherwise under the default tier
+            // quota for this event, otherwise under the default quota
             const userGroups = groupsByUser.get(username) ?? []
-            const matchingTiers = eventTiers.filter(
-                (t) => t.nabla_group && userGroups.includes(t.nabla_group),
+            const matchingQuotas = eventQuotas.filter(
+                (q) => q.nabla_group && userGroups.includes(q.nabla_group),
             )
-            const tier =
-                matchingTiers.length > 0
-                    ? faker.helpers.arrayElement(matchingTiers)
-                    : defaultTier
+            const quota =
+                matchingQuotas.length > 0
+                    ? faker.helpers.arrayElement(matchingQuotas)
+                    : defaultQuota
 
             participants.push({
                 event: event.slug!,
@@ -1141,7 +1121,7 @@ if ((await tableRowCount("nabla_events")) > 0) {
                 registered_at: new Date(
                     Date.now() - randomInt(0, 14) * 24 * 60 * 60 * 1000,
                 ).toISOString(),
-                registration_tier: tier?.id ?? null,
+                quota: quota?.id ?? null,
             })
         }
     }

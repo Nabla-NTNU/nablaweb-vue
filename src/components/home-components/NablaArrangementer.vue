@@ -12,11 +12,11 @@
                 Arrangementer
             </div>
             <div
-                class="w-120 font-lato text-l text-fg"
                 v-for="event in events.filter(
                     (e) => e.eventType !== 'bedpress',
                 )"
-                :key="event.id"
+                :key="event.slug"
+                class="w-120 font-lato text-l text-fg"
             >
                 <router-link
                     :to="`/arrangement/${event.slug}`"
@@ -33,11 +33,11 @@
                 Bedriftspresentasjoner
             </div>
             <div
-                class="w-120 font-lato text-l text-fg"
                 v-for="bedpress in events.filter(
                     (e) => e.eventType === 'bedpress',
                 )"
-                :key="bedpress.id"
+                :key="bedpress.slug"
+                class="w-120 font-lato text-l text-fg"
             >
                 <router-link
                     :to="`/arrangement/${bedpress.slug}`"

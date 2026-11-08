@@ -3,7 +3,7 @@
     import { computed } from "vue"
     import { useI18n } from "vue-i18n"
     import { useEvent } from "@/composables/Events/useEvent.js"
-    import { useEventRegistration } from "@/composables/Events/useEventRegistration"
+    import { useEventRegistration } from "@/composables/Events/useEventQuotas"
 
     const { t } = useI18n()
     import UserCard from "@/components/general/UserCard.vue"
