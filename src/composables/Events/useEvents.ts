@@ -103,6 +103,7 @@ export function useEvents() {
                     owningGroups: [],
                     owningPeople: [],
                     participants: [],
+                    waitlisted: [],
                 }
             })
         } catch (e) {

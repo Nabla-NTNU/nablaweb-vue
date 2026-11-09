@@ -109,12 +109,13 @@ export type Event = {
     title: string
     ingress?: string
     body: string
+    participants: EventParticipant[]
+    waitlisted: EventParticipant[]
 }
 
 export type Quota = {
     id: string
-    groupId?: string // Undefined -> default tier
-    groupName?: string
+    group?: NablaGroup // Undefined -> default tier
     registrationStart: Date
     registrationEnd: Date
     deregistrationEnd: Date
@@ -123,11 +124,16 @@ export type Quota = {
     price: number
 }
 
+export type EventParticipant = {
+    user: NablaUser
+    quota: Quota
+    registrationDate: Date
+}
+
 export enum EventType {
     bedpress = "bedpress",
     ordinary = "ordinary",
     payment = "payment",
-    recurrent = "recurrent",
     undefined = "undefined",
 }
 
@@ -149,17 +155,4 @@ export enum Emote {
     heart,
     angry,
     laugh,
-}
-
-export enum EventParticipantStatus {
-    registered = "registered",
-    waitlisted = "waitlisted",
-    cancelled = "cancelled",
-}
-
-export type EventParticipant = {
-    user: NablaUser
-    quota?: Quota
-    registrationStatus: EventParticipantStatus
-    registrationDate: Date
 }

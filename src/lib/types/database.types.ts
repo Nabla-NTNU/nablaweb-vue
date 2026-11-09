@@ -250,24 +250,21 @@ export type Database = {
             nabla_events_participants: {
                 Row: {
                     event: string
-                    quota: string | null
+                    quota: string
                     registered_at: string
-                    status: Database["nablaweb_vue"]["Enums"]["participant_status"]
                     username: string
                 }
                 ComputedFields: never
                 Insert: {
                     event: string
-                    quota?: string | null
+                    quota: string
                     registered_at?: string
-                    status?: Database["nablaweb_vue"]["Enums"]["participant_status"]
                     username: string
                 }
                 Update: {
                     event?: string
-                    quota?: string | null
+                    quota?: string
                     registered_at?: string
-                    status?: Database["nablaweb_vue"]["Enums"]["participant_status"]
                     username?: string
                 }
                 Relationships: [

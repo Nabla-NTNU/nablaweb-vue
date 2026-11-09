@@ -3,22 +3,22 @@
     import { computed } from "vue"
     import { useI18n } from "vue-i18n"
     import { useEvent } from "@/composables/Events/useEvent.js"
-    import { useEventRegistration } from "@/composables/Events/useEventQuotas"
+    //    import { useEventRegistration } from "@/composables/Events/useEventQuotas"
 
     const { t } = useI18n()
     import UserCard from "@/components/general/UserCard.vue"
 
     import { useAuth } from "@/composables/useAuth.js"
     import GroupCard from "@/components/group-page/GroupCard.vue"
-    import { EventParticipantStatus } from "@/lib/types/frontend.types"
 
     const route = useRoute()
     const slug = computed(() => route.params.slug as string)
-    const { event, refresh } = useEvent(slug)
+    const { event } = useEvent(slug)
     const { username, isAdmin } = useAuth()
-    const { register, unregister } = useEventRegistration(slug)
 
-    async function registerAndRefresh() {
+    /*   const { register, unregister } = useEventRegistration(slug)
+
+     async function registerAndRefresh() {
         await register()
         await refresh()
     }
@@ -33,7 +33,7 @@
             ...event.value.waitlistedParticipants,
         ].find((p) => p.user.username === username.value)
     })
-
+ */
     const userIsAdmin = computed(() => {
         if (isAdmin.value) {
             return true
@@ -146,7 +146,7 @@
                         {{ event.body }}
                     </article>
                     <div v-if="event.requiresRegistration">
-                        <div v-if="event.registeredParticipants">
+                        <div v-if="event.participants">
                             <h2
                                 class="group mb-4 flex items-center text-subtitle-2 font-semibold tracking-tight"
                             >
@@ -154,7 +154,7 @@
                             </h2>
                             <div class="flex flex-wrap justify-center gap-6">
                                 <UserCard
-                                    v-for="eventParticipant in event.registeredParticipants"
+                                    v-for="eventParticipant in event.participants"
                                     :key="eventParticipant.user.username"
                                     :username="eventParticipant.user.username"
                                     :first-name="
@@ -169,7 +169,7 @@
                         </div>
 
                         Antall deltakere:
-                        {{ event.registeredParticipants.length }} /
+                        {{ event.participants.length }} /
                         {{ event.totalCapacity }}
                     </div>
                     <template v-if="username">
@@ -181,7 +181,7 @@
                             {{ t("registrer") }}
                         </button>
 
-                        <button
+                        <!--                         <button
                             class="max-w-[200px] rounded-full border-2 border-transparent bg-primary px-4 py-1 text-title-5 text-primary-25 duration-200 hover:border-primary-light hover:bg-primary-dark hover:text-secondary-light m:text-title-4"
                             v-else
                             @click="unregisterAndRefresh"
@@ -192,7 +192,7 @@
                                     ? t("meld_av_venteliste")
                                     : t("avregistrer")
                             }}
-                        </button>
+                        </button> -->
                     </template>
                 </div>
             </div>

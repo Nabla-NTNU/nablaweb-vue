@@ -128,8 +128,7 @@ COMMENT ON TABLE nablaweb_vue.nabla_events_quotas IS 'Registration open/close wi
 CREATE TABLE IF NOT EXISTS nablaweb_vue.nabla_events_participants (
     event                TEXT NOT NULL REFERENCES nablaweb_vue.nabla_events(slug) ON UPDATE CASCADE ON DELETE CASCADE,
     username             TEXT NOT NULL REFERENCES nablaweb_vue.nabla_users(username) ON UPDATE CASCADE ON DELETE CASCADE,
-    quota                UUID REFERENCES nablaweb_vue.nabla_events_quotas(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    status               nablaweb_vue.participant_status NOT NULL DEFAULT 'registered', 
+    quota                UUID NOT NULL REFERENCES nablaweb_vue.nabla_events_quotas(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     registered_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     PRIMARY KEY (event, username)
 );

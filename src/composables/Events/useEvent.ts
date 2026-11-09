@@ -1,19 +1,6 @@
 import { supabase } from "@/lib/supabaseClient"
-import {
-    Event,
-    EventType,
-    EventParticipant,
-    EventParticipantStatus,
-} from "@/lib/types/frontend.types"
-import {
-    Ref,
-    ref,
-    computed,
-    onMounted,
-    MaybeRefOrGetter,
-    toValue,
-    watch,
-} from "vue"
+import { Event, EventType, EventParticipant } from "@/lib/types/frontend.types"
+import { Ref, ref, onMounted, MaybeRefOrGetter, toValue, watch } from "vue"
 import { useI18n } from "vue-i18n"
 
 function makeURL(str: string): URL | undefined {
@@ -25,73 +12,10 @@ function makeURL(str: string): URL | undefined {
     }
 }
 
-type RawEvent = {
-    start_time: string
-    end_time: string
-    location: string
-    event_type: string
-    is_hidden: boolean
-    registration_required: boolean
-    event_photo: string
-    slug: string
-    total_registration_limit: number
-    translations: {
-        language: "nb" | "en"
-        title: string
-        description: string
-        body_text: string
-    }[]
-    organiser_group: {
-        id: string
-        name: string
-        subgroup: { logo: string }
-    } | null
-    owning_groups: {
-        group: {
-            id: string
-            name: string
-            subgroup: { logo: string }
-        }
-    }[]
-    owning_individuals: {
-        user: {
-            username: string
-            first_name: string
-            last_name: string
-            profile_picture: string
-        }
-    }[]
-    participants: {
-        status: string
-        registered_at: string
-        user: {
-            username: string
-            first_name: string
-            last_name: string
-            profile_picture: string
-        }
-        quota: {
-            id: string
-            group: {
-                id: string
-                name: string
-            } | null
-        } | null
-    }[]
-}
-
-type RawOwningInduviduals = {
-    owning_individuals: {
-        user: {
-            username: string
-        }
-    }[]
-}
-
 export function useEvent(slug: MaybeRefOrGetter<string>) {
-    const { locale } = useI18n()
-    const rawEvent: Ref<RawEvent | null> = ref(null)
+    const { locale, t, mergeLocaleMessage } = useI18n()
     const error: Ref<boolean> = ref(false)
+    const event: Ref<Event | undefined> = ref()
 
     async function fetchEvent() {
         try {
@@ -108,23 +32,26 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                     registration_required,
                     event_photo_url,
                     slug,
-                    total_registration_limit ,
-                    translations: nabla_events_translations (
-                        language,
-                        title,
-                        description,
-                        body_text
-                    ),
+                    total_registration_limit,
+                    nb_title,
+                    nb_description,
+                    nb_body_text,
+                    en_title,
+                    en_description,
+                    en_body_text,
+                    nn_title,
+                    nn_description,
+                    nn_body_text,
                     organiser_group: nabla_groups!organiser (
                         id,
                         name,
-                        subgroup: nabla_subgroups(logo)
+                        subgroup: nabla_subgroups (logo)
                     ),
                     owning_groups: nabla_events_owner_groups (
                         group: nabla_groups!organizing_group (
                             id,
                             name,
-                            subgroup: nabla_subgroups(logo)
+                            subgroup: nabla_subgroups (logo)
                         )
                     ),
                     owning_individuals: nabla_events_owner_individuals (
@@ -136,128 +63,145 @@ export function useEvent(slug: MaybeRefOrGetter<string>) {
                         )
                     ),
                     participants: nabla_events_participants (
-                        status,
-                        registered_at,
+                        registrationDate: registered_at,
                         user: nabla_users!username (
                             username,
-                            first_name,
-                            last_name,
-                            profile_picture
+                            firstName: first_name,
+                            lastName: last_name,
+                            profilePicture: profile_picture
                         ),
-                        registration_quota: nabla_events_quotas!nabla_events_participants_registration_quota_fkey (
+                        quota: nabla_events_quotas!quota (
                             id,
-                            group: nabla_groups!nabla_events_quotas_nabla_group_fkey (
-                                id,
+                            price: price_kr,
+                            allocatedPlaces: nabla_group_capacity,
+                            paymentEnd: payment_end,
+                            registrationStart: registration_start,
+                            registrationEnd: registration_end,
+                            deregistrationEnd: deregistration_end,
+                            group: nabla_groups!nabla_group (
+                                id, 
                                 name
                             )
                         )
                     )
-
-)
-                    )
-                `,
+                    `,
                 )
                 .eq("slug", toValue(slug))
                 .single()
 
             if (supabaseError) throw supabaseError
-            rawEvent.value = data as unknown as RawEvent
+
+            // Better ways to do this? Maybe remove the func entirely
+            type ParticipantRow = (typeof data)["participants"][number]
+
+            function mapParticipant(p: ParticipantRow): EventParticipant {
+                const q = p.quota
+                return {
+                    user: {
+                        username: p.user.username,
+                        firstName: p.user.firstName,
+                        lastName: p.user.lastName,
+                        profilePicture: p.user.profilePicture
+                            ? new URL(p.user.profilePicture)
+                            : undefined,
+                    },
+                    // We only care about the quota group in this function, but idk how to only use them
+
+                    quota: {
+                        id: q.id,
+                        group: q.group ?? undefined,
+                        price: q.price,
+                        allocatedPlaces: q.allocatedPlaces ?? undefined,
+                        paymentEnd: q.paymentEnd
+                            ? new Date(q.paymentEnd)
+                            : undefined,
+                        registrationStart: new Date(q.registrationStart),
+                        registrationEnd: new Date(q.registrationEnd),
+                        deregistrationEnd: new Date(q.deregistrationEnd),
+                    },
+                    registrationDate: new Date(p.registrationDate),
+                }
+            }
+
+            const allParticipants = data.participants.map((p) =>
+                mapParticipant(p),
+            )
+
+            mergeLocaleMessage("en", {
+                [`${data.slug}_title`]: data.en_title,
+                [`${data.slug}_ingress`]: data.en_description,
+                [`${data.slug}_body`]: data.en_body_text,
+            })
+            mergeLocaleMessage("nn", {
+                [`${data.slug}_title`]: data.nn_title,
+                [`${data.slug}_ingress`]: data.nn_description,
+                [`${data.slug}_body`]: data.nn_body_text,
+            })
+            mergeLocaleMessage("nb", {
+                [`${data.slug}_title`]: data.nb_title,
+                [`${data.slug}_ingress`]: data.nb_description,
+                [`${data.slug}_body`]: data.nb_body_text,
+            })
+
+            event.value = {
+                startTime: new Date(data.start_time),
+                endTime: new Date(data.end_time),
+                location: data.location || undefined,
+                eventType: data.event_type as EventType,
+                hiddenIfUnavailable: data.is_hidden,
+                requiresRegistration: data.registration_required,
+                image: data.event_photo_url
+                    ? new URL(data.event_photo_url)
+                    : undefined,
+                slug: data.slug,
+                totalCapacity: data.total_registration_limit,
+                organizer: data.organiser_group
+                    ? [
+                          {
+                              id: data.organiser_group.id,
+                              name: data.organiser_group.name,
+                              logo: makeURL(data.organiser_group.subgroup.logo),
+                          },
+                      ]
+                    : [],
+                title: t(`${data.slug}_title`),
+                ingress: t(`${data.slug}_ingress`),
+                body: t(`${data.slug}_body`),
+                comments: [],
+                reactions: [],
+                owningGroups: data.owning_groups.map((og) => ({
+                    id: og.group.id,
+                    name: og.group.name,
+                    //logo: og.group.subgroup.logo
+                })),
+                owningPeople: data.owning_individuals.map((oi) => ({
+                    username: oi.user.username,
+                    firstName: oi.user.first_name,
+                    lastName: oi.user.last_name,
+                })),
+                participants: allParticipants.filter(
+                    (p) => p.quota.group?.name !== "waitlist",
+                ),
+                waitlisted: allParticipants.filter(
+                    (p) => p.quota.group?.name === "waitlist",
+                ),
+            }
         } catch (e) {
             console.error("[useEvent] Error fetching:", e)
             error.value = true
         }
     }
 
-    function pickTranslation(translations: RawEvent["translations"]) {
-        return (
-            translations.find((t) => t.language === locale.value) ??
-            translations.find((t) => t.language === "nb") ??
-            translations[0]
-        )
-    }
-
-    function mapParticipant(
-        p: RawEvent["participants"][number],
-    ): EventParticipant {
-        const group = p.registration_quota?.group
-
-        return {
-            user: {
-                username: p.user.username,
-                firstName: p.user.first_name,
-                lastName: p.user.last_name,
-                profilePicture: p.user.profile_picture
-                    ? new URL(p.user.profile_picture)
-                    : undefined,
-            },
-            quota: group
-                ? {
-                      id: group.id,
-                      name: group.name,
-                  }
-                : undefined,
-            registrationStatus: p.status as EventParticipantStatus,
-            registrationDate: new Date(p.registered_at),
-        }
-    }
-
-    const event = computed<Event | undefined>(() => {
-        if (!rawEvent.value) return undefined
-        const raw = rawEvent.value
-        const translation = pickTranslation(raw.translations)
-        const participants = raw.participants.map(mapParticipant)
-
-        return {
-            startTime: new Date(raw.start_time),
-            endTime: new Date(raw.end_time),
-            location: raw.location || undefined,
-            eventType: raw.event_type as EventType,
-            hiddenIfUnavailable: raw.is_hidden,
-            requiresRegistration: raw.registration_required,
-            image: raw.event_photo ? new URL(raw.event_photo) : undefined,
-            slug: raw.slug,
-            totalCapacity: raw.total_registration_limit,
-            organizer: raw.organiser_group
-                ? [
-                      {
-                          id: raw.organiser_group.id,
-                          name: raw.organiser_group.name,
-                          logo: makeURL(raw.organiser_group.subgroup.logo),
-                      },
-                  ]
-                : [],
-            title: translation?.title ?? "",
-            ingress: translation?.description,
-            body: translation?.body_text ?? "",
-            comments: [],
-            reactions: [],
-            owningGroups: raw.owning_groups.map((og) => ({
-                id: og.group.id,
-                name: og.group.name,
-                //logo: og.group.subgroup.logo
-            })),
-            owningPeople: raw.owning_individuals.map((oi) => ({
-                username: oi.user.username,
-                firstName: oi.user.first_name,
-                lastName: oi.user.last_name,
-            })),
-            registeredParticipants: participants.filter(
-                (p) =>
-                    p.registrationStatus === EventParticipantStatus.registered,
-            ),
-            cancelledParticipants: participants.filter(
-                (p) =>
-                    p.registrationStatus === EventParticipantStatus.cancelled,
-            ),
-            waitlistedParticipants: participants.filter(
-                (p) =>
-                    p.registrationStatus === EventParticipantStatus.waitlisted,
-            ),
-        }
-    })
-
     onMounted(fetchEvent)
     watch(() => toValue(slug), fetchEvent)
+
+    watch(locale, () => {
+        if (!event.value) return
+
+        event.value.title = t(`${event.value.slug}_title`)
+        event.value.ingress = t(`${event.value.slug}_ingress`)
+        event.value.body = t(`${event.value.slug}_body`)
+    })
 
     return { event, error, refresh: fetchEvent }
 }
@@ -283,7 +227,6 @@ export async function isEventOwner(
     username: string,
     slug: string,
 ): Promise<boolean> {
-    const rawOwningInduviduals: Ref<RawOwningInduviduals | null> = ref(null)
     try {
         const { data, error } = await supabase
             .schema("nablaweb_vue")
@@ -302,8 +245,7 @@ export async function isEventOwner(
         if (error) {
             throw error
         }
-        rawOwningInduviduals.value = data as unknown as RawOwningInduviduals
-        for (const owner of rawOwningInduviduals.value.owning_individuals) {
+        for (const owner of data.owning_individuals) {
             if (owner.user.username == username) {
                 return true
             }

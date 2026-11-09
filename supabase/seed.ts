@@ -1113,15 +1113,15 @@ if ((await tableRowCount("nabla_events")) > 0) {
                 matchingQuotas.length > 0
                     ? faker.helpers.arrayElement(matchingQuotas)
                     : defaultQuota
-
+            if (!quota)
+                throw new Error(`No quota found for event ${event.slug}`)
             participants.push({
                 event: event.slug!,
                 username,
-                status: "registered",
                 registered_at: new Date(
                     Date.now() - randomInt(0, 14) * 24 * 60 * 60 * 1000,
                 ).toISOString(),
-                quota: quota?.id ?? null,
+                quota: quota.id,
             })
         }
     }
