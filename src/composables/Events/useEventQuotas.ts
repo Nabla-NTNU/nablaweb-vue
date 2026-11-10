@@ -12,17 +12,6 @@ import {
     watch,
 } from "vue"
 
-type RawRegistrationQuota = {
-    id: string
-    price_kr: number
-    nabla_group: { id: string; name: string } | null
-    nabla_group_capacity: number | null
-    payment_end: string | null
-    registration_start: string
-    registration_end: string
-    deregistration_end: string
-}
-
 export function useEventRegistration(slug: MaybeRefOrGetter<string>) {
     const rawQuotas: Ref<RawRegistrationQuota[]> = ref([])
     const { username } = useAuth()
